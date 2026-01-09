@@ -1,14 +1,12 @@
 ﻿<Window x:Class="TelAvivMuni_Exercise.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:TelAvivMuni_Exercise"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TelAvivMuni_Exercise.ViewModels"
+        xmlns:controls="clr-namespace:TelAvivMuni_Exercise.Controls"
         Title="Tel-Aviv Muni - Exercise"
         Width="520"
-        Height="430"
-        mc:Ignorable="d">
+        Height="430">
   <Window.DataContext>
     <vm:MainWindowViewModel />
   </Window.DataContext>
@@ -46,12 +44,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Center"
                        Text="Product:" />
-            <!--  Placeholder for custom control  -->
-            <Border x:Name="Example1ControlPlaceholder"
-                    Grid.Column="1"
-                    Height="30"
-                    BorderBrush="Orange"
-                    BorderThickness="2" />
+            <controls:DataBrowserBox Grid.Column="1" Height="30" />
           </Grid>
 
           <TextBlock Margin="60,5,0,0"
@@ -82,12 +75,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Center"
                        Text="Product:" />
-            <!--  Placeholder for custom control  -->
-            <Border x:Name="Example2ControlPlaceholder"
-                    Grid.Column="1"
-                    Height="30"
-                    BorderBrush="Orange"
-                    BorderThickness="2" />
+            <controls:DataBrowserBox Grid.Column="1" Height="30" />
           </Grid>
 
           <TextBlock Margin="60,5,0,0"
