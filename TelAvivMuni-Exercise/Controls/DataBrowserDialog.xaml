@@ -41,7 +41,9 @@
                   BorderBrush="#CCCCCC"
                   BorderThickness="1"
                   RowBackground="White"
-                  AlternatingRowBackground="#F9F9F9">
+                  AlternatingRowBackground="#F9F9F9"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
         </DataGrid>
 
         <!-- Items Count -->

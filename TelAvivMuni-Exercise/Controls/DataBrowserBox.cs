@@ -35,6 +35,7 @@ namespace TelAvivMuni_Exercise.Controls
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (DataBrowserBox)d;
+            control.UpdateDisplayText();
             var removedItems = e.OldValue != null ? new[] { e.OldValue } : Array.Empty<object>();
             var addedItems = e.NewValue != null ? new[] { e.NewValue } : Array.Empty<object>();
             control.RaiseEvent(new SelectionChangedEventArgs(SelectionChangedEvent, removedItems, addedItems));
@@ -65,6 +66,7 @@ namespace TelAvivMuni_Exercise.Controls
         }
 
         private Button? _browseButton;
+        private TextBox? _textBox;
 
         static DataBrowserBox()
         {
@@ -82,11 +84,14 @@ namespace TelAvivMuni_Exercise.Controls
             }
 
             _browseButton = GetTemplateChild("PART_BrowseButton") as Button;
+            _textBox = GetTemplateChild("PART_TextBox") as TextBox;
 
             if (_browseButton != null)
             {
                 _browseButton.Click += OnBrowseButtonClick;
             }
+
+            UpdateDisplayText();
         }
 
         private void OnBrowseButtonClick(object sender, RoutedEventArgs e)
@@ -103,6 +108,40 @@ namespace TelAvivMuni_Exercise.Controls
             {
                 SelectedItem = dialog.SelectedItem;
             }
+        }
+
+        private void UpdateDisplayText()
+        {
+            if (_textBox == null) return;
+
+            if (SelectedItem == null)
+            {
+                _textBox.Text = "Click to select...";
+                _textBox.Opacity = 0.5;
+            }
+            else
+            {
+                var displayValue = GetDisplayValue(SelectedItem);
+                _textBox.Text = displayValue;
+                _textBox.Opacity = 1.0;
+            }
+        }
+
+        private string GetDisplayValue(object item)
+        {
+            if (string.IsNullOrEmpty(DisplayMemberPath))
+            {
+                return item.ToString() ?? string.Empty;
+            }
+
+            var property = item.GetType().GetProperty(DisplayMemberPath);
+            if (property != null)
+            {
+                var value = property.GetValue(item);
+                return value?.ToString() ?? string.Empty;
+            }
+
+            return item.ToString() ?? string.Empty;
         }
     }
 }
