@@ -90,6 +90,7 @@ namespace TelAvivMuni_Exercise.Controls
 
         private Button? _browseButton;
         private TextBox? _textBox;
+        private Button? _clearButton;
 
         public DataBrowserBox()
         {
@@ -111,12 +112,23 @@ namespace TelAvivMuni_Exercise.Controls
                 _browseButton.Click -= OnBrowseButtonClick;
             }
 
+            if (_clearButton != null)
+            {
+                _clearButton.Click -= OnClearButtonClick;
+            }
+
             _browseButton = GetTemplateChild("PART_BrowseButton") as Button;
             _textBox = GetTemplateChild("PART_TextBox") as TextBox;
+            _clearButton = GetTemplateChild("PART_ClearButton") as Button;
 
             if (_browseButton != null)
             {
                 _browseButton.Click += OnBrowseButtonClick;
+            }
+
+            if (_clearButton != null)
+            {
+                _clearButton.Click += OnClearButtonClick;
             }
 
             UpdateDisplayText();
@@ -140,6 +152,11 @@ namespace TelAvivMuni_Exercise.Controls
             {
                 SelectedItem = result;
             }
+        }
+
+        private void OnClearButtonClick(object sender, RoutedEventArgs e)
+        {
+            SelectedItem = null;
         }
 
         private void UpdateDisplayText()
