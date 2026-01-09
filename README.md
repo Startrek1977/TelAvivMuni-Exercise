@@ -12,15 +12,21 @@ This project is a home exercise created as part of an interview for the Software
 - **Reusable WPF Custom Control** - Can be used anywhere in the application with any data type
 - **Display Member Path** - Configure which property to display in the control
 - **Two-Way Data Binding** - Full support for MVVM pattern with `SelectedItem` binding
+- **Custom Column Configuration** - Define columns with custom headers, widths, formats, and alignment
+- **Auto-Generated Columns** - Automatically generates columns from data type (default behavior)
 - **Visual Feedback** - Watermark text in italic, selected items in bold
 - **Modern UI** - Styled browse button with hover effects
+- **Selection Persistence** - Currently selected item is highlighted when dialog reopens
 
 ### Browse Dialog
 - **Modern Design** - Clean, professional interface with Material Design-inspired colors
 - **Search & Filter** - Real-time search across all item properties
 - **Clear Filter Button** - Appears when search text is entered, clears with one click
-- **Sortable Columns** - Custom column definitions (Id, Code, Name, Category, Price)
+- **Flexible Column Display** - Auto-generated or custom column definitions
+- **Column Formatting** - Support for currency, date, and custom string formats
+- **Column Alignment** - Configure horizontal alignment (Left, Right, Center)
 - **Selection Highlighting** - Bold text and blue background for selected items
+- **Selection Persistence** - Previously selected item is automatically highlighted and scrolled into view
 - **Row Hover Effects** - Visual feedback on mouse over
 - **Item Counter** - Displays total filtered items count
 - **Responsive Design** - Resizable dialog with proper scrolling
@@ -55,7 +61,8 @@ TelAvivMuni-Exercise/
 │   ├── IDialogService.cs          # Dialog service interface
 │   └── DialogService.cs           # Dialog service implementation
 ├── Models/
-│   └── Product.cs                 # Product data model
+│   ├── Product.cs                 # Product data model
+│   └── BrowserColumn.cs           # Column configuration model
 ├── Themes/
 │   └── Generic.xaml               # Control template and styles
 ├── Data/
@@ -68,6 +75,8 @@ TelAvivMuni-Exercise/
 
 ### 1. Using the DataBrowserBox Control
 
+#### Basic Usage (Auto-Generated Columns)
+
 ```xaml
 <controls:DataBrowserBox
     Height="30"
@@ -78,12 +87,39 @@ TelAvivMuni-Exercise/
     DialogService="{StaticResource DialogService}" />
 ```
 
+#### Advanced Usage (Custom Columns)
+
+```xaml
+<controls:DataBrowserBox
+    Height="30"
+    ItemsSource="{Binding Products}"
+    SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+    DisplayMemberPath="Name"
+    DialogTitle="Select Product"
+    DialogService="{StaticResource DialogService}">
+    <controls:DataBrowserBox.Columns>
+        <local:BrowserColumn DataField="Name" Header="שם מוצר" Width="200"/>
+        <local:BrowserColumn DataField="Price" Header="מחיר" Width="100" Format="C2" HorizontalAlignment="Right"/>
+        <local:BrowserColumn DataField="Category" Header="קטגוריה" Width="150"/>
+        <local:BrowserColumn DataField="Code" Header="קוד" Width="120"/>
+    </controls:DataBrowserBox.Columns>
+</controls:DataBrowserBox>
+```
+
 **Properties:**
 - `ItemsSource` - The collection of items to browse
 - `SelectedItem` - The currently selected item (two-way binding)
 - `DisplayMemberPath` - Property name to display in the control
 - `DialogTitle` - Title for the browse dialog
 - `DialogService` - Service for showing the dialog
+- `Columns` - Optional custom column definitions (if not specified, columns are auto-generated)
+
+**BrowserColumn Properties:**
+- `DataField` - The property name to bind to
+- `Header` - Column header text (supports Hebrew and other languages)
+- `Width` - Column width in pixels (optional)
+- `Format` - String format (e.g., "C2" for currency, "N0" for numbers)
+- `HorizontalAlignment` - Text alignment: "Left", "Right", or "Center"
 
 ### 2. Setting Up Dialog Service
 
@@ -111,11 +147,33 @@ Products.json example:
 
 ## Key Features Implementation
 
+### Column Configuration
+The control supports two modes for column display:
+
+1. **Auto-Generated Columns** (Default)
+   - Automatically creates columns for all public properties
+   - Simple to use, no configuration needed
+   - Good for quick prototypes and simple scenarios
+
+2. **Custom Columns**
+   - Define exactly which columns to display and in what order
+   - Support for Hebrew headers and RTL languages
+   - Custom formatting (currency, numbers, dates)
+   - Custom column widths and alignment
+   - Only displays specified columns
+
 ### Search Functionality
 - Searches across all object properties
 - Case-insensitive matching
 - Real-time filtering as you type
 - Clear button appears automatically when text is entered
+- Maintains selection after filtering (if visible)
+
+### Selection Behavior
+- **Initial Selection** - Previously selected item is highlighted when dialog opens
+- **Auto-Scroll** - Selected item is automatically scrolled into view
+- **Persistence** - Selection is maintained when dialog reopens
+- **Visual Feedback** - Bold blue text on light blue background
 
 ### Visual States
 - **Watermark** - Gray italic text: "Click to select..."
@@ -166,6 +224,7 @@ Or simply press F5 in Visual Studio.
 - Easier to test and mock
 - Centralized dialog logic
 - Supports dependency injection
+- Passes column configuration to dialog
 
 ### Error Handling Strategy
 - Defensive programming approach
@@ -173,17 +232,28 @@ Or simply press F5 in Visual Studio.
 - User-friendly error messages
 - Silent fallback for missing data files
 
+### Selection Synchronization
+- Uses `ICollectionView.MoveCurrentTo()` for proper synchronization
+- `IsSynchronizedWithCurrentItem="True"` on DataGrid
+- Dispatcher with `ContextIdle` priority ensures UI is fully rendered
+- Captures selected item reference before async operations
+- Validates selection before scrolling into view
+
 ## Future Enhancements
 
 Potential improvements for production use:
-- Add virtualization for large datasets
-- Implement column sorting
+- Add virtualization for large datasets (currently loads all items)
+- Implement column sorting (click column headers to sort)
+- Add column resizing (drag column borders)
 - Add export functionality (CSV, Excel)
-- Multi-selection support
-- Custom column templates
-- Keyboard navigation improvements
-- Accessibility features (screen reader support)
-- Localization support
+- Multi-selection support (Ctrl+Click, Shift+Click)
+- Custom column templates (images, buttons, checkboxes)
+- Keyboard navigation improvements (Arrow keys, Enter, Escape)
+- Accessibility features (screen reader support, high contrast themes)
+- Full localization support (resources for all strings)
+- Column reordering (drag-and-drop columns)
+- Save/restore column configurations
+- Advanced filtering (dropdown filters per column)
 
 ## License
 
