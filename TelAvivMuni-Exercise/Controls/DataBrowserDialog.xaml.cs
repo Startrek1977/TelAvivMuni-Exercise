@@ -18,6 +18,30 @@ namespace TelAvivMuni_Exercise.Controls
             Loaded += OnLoaded;
         }
 
+        private void SynchronizeDataGridSelection(object selectedItem)
+        {
+            if (selectedItem == null)
+                return;
+
+            _isUpdatingSelection = true;
+            try
+            {
+                if (DataContext is DataBrowserDialogViewModel viewModel)
+                {
+                    viewModel.FilteredItems.MoveCurrentTo(selectedItem);
+                }
+
+                ProductsDataGrid.SelectedItem = null;
+                ProductsDataGrid.UpdateLayout();
+                ProductsDataGrid.SelectedItem = selectedItem;
+                ProductsDataGrid.ScrollIntoView(selectedItem);
+            }
+            finally
+            {
+                _isUpdatingSelection = false;
+            }
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             // Ensure the selected item is scrolled into view when the dialog opens
@@ -29,29 +53,8 @@ namespace TelAvivMuni_Exercise.Controls
                 // Use ContextIdle priority to ensure DataGrid has fully rendered and bound
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    // Verify the selected item is still valid
-                    if (selectedItem == null)
-                        return;
-
-                    _isUpdatingSelection = true;
-                    try
-                    {
-                        // Re-synchronize the ICollectionView's CurrentItem
-                        viewModel.FilteredItems.MoveCurrentTo(selectedItem);
-
-                        // Force the DataGrid to update its selection by clearing and re-setting
-                        ProductsDataGrid.SelectedItem = null;
-                        ProductsDataGrid.UpdateLayout();
-                        ProductsDataGrid.SelectedItem = selectedItem;
-
-                        // Scroll into view and focus
-                        ProductsDataGrid.ScrollIntoView(selectedItem);
-                        ProductsDataGrid.Focus();
-                    }
-                    finally
-                    {
-                        _isUpdatingSelection = false;
-                    }
+                    SynchronizeDataGridSelection(selectedItem);
+                    ProductsDataGrid.Focus();
                 }), System.Windows.Threading.DispatcherPriority.ContextIdle);
             }
         }
@@ -93,27 +96,13 @@ namespace TelAvivMuni_Exercise.Controls
 
                         if (isInFilteredCollection)
                         {
-                            _isUpdatingSelection = true;
                             try
                             {
-                                // Item is visible, force selection refresh
-                                ProductsDataGrid.SelectedItem = null;
-                                ProductsDataGrid.UpdateLayout();
-                                ProductsDataGrid.SelectedItem = selectedItem;
-
-                                // Scroll into view if needed
-                                try
-                                {
-                                    ProductsDataGrid.ScrollIntoView(selectedItem);
-                                }
-                                catch
-                                {
-                                    // Ignore scroll errors
-                                }
+                                SynchronizeDataGridSelection(selectedItem);
                             }
-                            finally
+                            catch
                             {
-                                _isUpdatingSelection = false;
+                                // Ignore scroll errors
                             }
                         }
                     }), System.Windows.Threading.DispatcherPriority.ContextIdle);
@@ -131,6 +120,19 @@ namespace TelAvivMuni_Exercise.Controls
             if (DataContext is DataBrowserDialogViewModel viewModel && e.AddedItems.Count > 0)
             {
                 viewModel.SelectedItem = e.AddedItems[0];
+            }
+        }
+
+        private void SearchTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // Clear the search text when Escape key is pressed
+            if (e.Key == System.Windows.Input.Key.Escape)
+            {
+                if (DataContext is DataBrowserDialogViewModel viewModel)
+                {
+                    viewModel.SearchText = string.Empty;
+                }
+                e.Handled = true;
             }
         }
 
