@@ -20,6 +20,7 @@ This project is a home exercise created as part of an interview for the Software
 
 ### Browse Dialog
 - **Modern Design** - Clean, professional interface with Material Design-inspired colors
+- **Vector Search Icon** - Clean magnifying glass icon using SVG path for crisp rendering at any size
 - **Search & Filter** - Real-time search across all item properties
 - **Clear Filter Button** - Appears when search text is entered, clears with one click
 - **Flexible Column Display** - Auto-generated or custom column definitions
