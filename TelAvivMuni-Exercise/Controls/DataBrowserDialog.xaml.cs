@@ -7,8 +7,14 @@ using TelAvivMuni_Exercise.ViewModels;
 
 namespace TelAvivMuni_Exercise.Controls
 {
+    /// <summary>
+    /// Dialog window for browsing and selecting items from a collection with filtering support.
+    /// </summary>
     public partial class DataBrowserDialog : Window
     {
+        /// <summary>
+        /// Flag to prevent circular updates between DataGrid and ViewModel when programmatically updating selection.
+        /// </summary>
         private bool _isUpdatingSelection = false;
 
         public DataBrowserDialog()
@@ -16,21 +22,50 @@ namespace TelAvivMuni_Exercise.Controls
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
             Loaded += OnLoaded;
+            Closed += OnClosed;
         }
 
+        /// <summary>
+        /// Handles the Closed event to clean up event subscriptions and prevent memory leaks.
+        /// This ensures the window can be properly garbage collected.
+        /// </summary>
+        private void OnClosed(object? sender, EventArgs e)
+        {
+            // Unsubscribe from all events to prevent memory leaks
+            DataContextChanged -= OnDataContextChanged;
+            Loaded -= OnLoaded;
+            Closed -= OnClosed;
+
+            // Unsubscribe from ViewModel events
+            if (DataContext is DataBrowserDialogViewModel viewModel)
+            {
+                viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            }
+        }
+
+        /// <summary>
+        /// Synchronizes the DataGrid's selected item with the ViewModel's SelectedItem property.
+        /// This method uses a workaround to force the DataGrid to update its selection by temporarily
+        /// clearing it before setting it again, which ensures the item is properly highlighted and scrolled into view.
+        /// </summary>
+        /// <param name="selectedItem">The item to select in the DataGrid</param>
         private void SynchronizeDataGridSelection(object selectedItem)
         {
             if (selectedItem == null)
                 return;
 
+            // Set flag to prevent SelectionChanged event from updating the ViewModel
             _isUpdatingSelection = true;
             try
             {
+                // Update the collection view's current item
                 if (DataContext is DataBrowserDialogViewModel viewModel)
                 {
                     viewModel.FilteredItems.MoveCurrentTo(selectedItem);
                 }
 
+                // Force DataGrid to refresh selection by clearing and resetting
+                // This workaround ensures proper highlighting and scrolling
                 ProductsDataGrid.SelectedItem = null;
                 ProductsDataGrid.UpdateLayout();
                 ProductsDataGrid.SelectedItem = selectedItem;
@@ -38,19 +73,25 @@ namespace TelAvivMuni_Exercise.Controls
             }
             finally
             {
+                // Always restore flag to allow future user selections
                 _isUpdatingSelection = false;
             }
         }
 
+        /// <summary>
+        /// Handles the Loaded event to ensure the initially selected item is properly displayed when the dialog opens.
+        /// Uses Dispatcher.BeginInvoke with ContextIdle priority to ensure DataGrid is fully rendered before selection.
+        /// </summary>
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             // Ensure the selected item is scrolled into view when the dialog opens
             if (DataContext is DataBrowserDialogViewModel viewModel && viewModel.SelectedItem != null)
             {
-                // Capture the selected item before the async operation
                 var selectedItem = viewModel.SelectedItem;
 
-                // Use ContextIdle priority to ensure DataGrid has fully rendered and bound
+                // Dispatcher is needed here because the Loaded event fires before the DataGrid
+                // has fully rendered and virtualized its items. Without ContextIdle priority,
+                // ScrollIntoView may fail because the visual tree is not yet complete.
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     SynchronizeDataGridSelection(selectedItem);
@@ -59,21 +100,31 @@ namespace TelAvivMuni_Exercise.Controls
             }
         }
 
+        /// <summary>
+        /// Handles DataContext changes to subscribe/unsubscribe from ViewModel PropertyChanged events.
+        /// </summary>
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            // Unsubscribe from the old ViewModel's PropertyChanged event to prevent memory leaks
             if (e.OldValue is DataBrowserDialogViewModel oldViewModel)
             {
                 oldViewModel.PropertyChanged -= OnViewModelPropertyChanged;
             }
 
+            // Subscribe to the new ViewModel's PropertyChanged event
             if (e.NewValue is DataBrowserDialogViewModel newViewModel)
             {
                 newViewModel.PropertyChanged += OnViewModelPropertyChanged;
             }
         }
 
+        /// <summary>
+        /// Handles ViewModel property changes to synchronize UI state with the ViewModel.
+        /// Specifically handles DialogResult changes and SearchText changes.
+        /// </summary>
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            // Handle DialogResult changes to close the dialog
             if (e.PropertyName == nameof(DataBrowserDialogViewModel.DialogResult))
             {
                 if (DataContext is DataBrowserDialogViewModel viewModel && viewModel.DialogResult.HasValue)
@@ -81,48 +132,92 @@ namespace TelAvivMuni_Exercise.Controls
                     DialogResult = viewModel.DialogResult;
                 }
             }
+            // Handle SearchText changes to preserve selection when filtering
             else if (e.PropertyName == nameof(DataBrowserDialogViewModel.SearchText))
             {
-                // When search text changes, preserve the DataGrid selection
+                // When search text changes, preserve the DataGrid selection if it's still visible
                 if (DataContext is DataBrowserDialogViewModel viewModel && viewModel.SelectedItem != null)
                 {
                     var selectedItem = viewModel.SelectedItem;
 
-                    // Use a dispatcher to ensure the filtered items have been updated
-                    Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        // Check if the selected item is in the filtered collection
-                        bool isInFilteredCollection = viewModel.FilteredItems.Cast<object>().Contains(selectedItem);
+                    // Check if the selected item is still visible in the filtered collection
+                    bool isInFilteredCollection = viewModel.FilteredItems.Cast<object>().Contains(selectedItem);
 
-                        if (isInFilteredCollection)
+                    if (isInFilteredCollection)
+                    {
+                        try
                         {
-                            try
-                            {
-                                SynchronizeDataGridSelection(selectedItem);
-                            }
-                            catch
-                            {
-                                // Ignore scroll errors
-                            }
+                            SynchronizeDataGridSelection(selectedItem);
                         }
-                    }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+                        catch
+                        {
+                            // Ignore scroll errors if item is not yet in the visual tree
+                        }
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Handles DataGrid SelectionChanged events to update the ViewModel when the user manually selects an item.
+        /// Ignores selection changes triggered programmatically by SynchronizeDataGridSelection.
+        /// </summary>
         private void ProductsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Don't update ViewModel if we're programmatically updating the selection
+            // to prevent circular updates
             if (_isUpdatingSelection)
                 return;
 
-            // Update the ViewModel when user manually selects an item
+            // Update the ViewModel when user manually selects an item from the DataGrid
             if (DataContext is DataBrowserDialogViewModel viewModel && e.AddedItems.Count > 0)
             {
                 viewModel.SelectedItem = e.AddedItems[0];
             }
         }
 
+        /// <summary>
+        /// Handles PreviewKeyDown events at the Window level to automatically focus the search textbox
+        /// when the user starts typing. This provides a convenient "type-to-search" experience.
+        /// Also handles Escape key to close the dialog (cancel action).
+        /// </summary>
+        private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // Handle Escape key to close the dialog (invoke Cancel command)
+            // Don't handle if search box has focus - it clears the filter in that case
+            if (e.Key == System.Windows.Input.Key.Escape && !SearchTextBox.IsFocused)
+            {
+                if (DataContext is DataBrowserDialogViewModel viewModel)
+                {
+                    if (viewModel.CancelCommand.CanExecute(null))
+                    {
+                        viewModel.CancelCommand.Execute(null);
+                        e.Handled = true;
+                    }
+                }
+                return;
+            }
+
+            // Only handle text input keys (letters, numbers, space)
+            // Don't interfere with navigation keys, function keys, etc.
+            if ((e.Key >= System.Windows.Input.Key.A && e.Key <= System.Windows.Input.Key.Z) ||
+                (e.Key >= System.Windows.Input.Key.D0 && e.Key <= System.Windows.Input.Key.D9) ||
+                (e.Key >= System.Windows.Input.Key.NumPad0 && e.Key <= System.Windows.Input.Key.NumPad9) ||
+                e.Key == System.Windows.Input.Key.Space)
+            {
+                // Only focus search box if it's not already focused
+                if (!SearchTextBox.IsFocused)
+                {
+                    SearchTextBox.Focus();
+                    // Let the event continue so the character is typed in the search box
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles KeyDown events in the search textbox.
+        /// Clears the search text when Escape key is pressed.
+        /// </summary>
         private void SearchTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             // Clear the search text when Escape key is pressed
@@ -132,27 +227,58 @@ namespace TelAvivMuni_Exercise.Controls
                 {
                     viewModel.SearchText = string.Empty;
                 }
+                // Mark event as handled to prevent further processing
                 e.Handled = true;
             }
         }
 
+        /// <summary>
+        /// Handles PreviewKeyDown events in the DataGrid to prevent Enter key from navigating rows.
+        /// Instead, Enter should activate the OK button (if enabled) by invoking its command.
+        /// </summary>
+        private void ProductsDataGrid_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // When Enter is pressed in the DataGrid, invoke the OK command instead of navigating rows
+            if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
+            {
+                if (DataContext is DataBrowserDialogViewModel viewModel)
+                {
+                    // Only execute if the command can execute (OK button is enabled)
+                    if (viewModel.OkCommand.CanExecute(null))
+                    {
+                        viewModel.OkCommand.Execute(null);
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the AutoGeneratingColumn event to apply custom column configurations.
+        /// This event is fired for each column as the DataGrid auto-generates columns from the data source.
+        /// Custom columns can specify header text, width, format, and horizontal alignment.
+        /// Columns not in the custom configuration are hidden.
+        /// </summary>
         private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
+            // Only apply custom column configuration if columns are defined in the ViewModel
             if (DataContext is not DataBrowserDialogViewModel viewModel || !viewModel.HasCustomColumns)
                 return;
 
+            // Find the custom column configuration for this property
             var customColumn = viewModel.Columns?.FirstOrDefault(c => c.DataField == e.PropertyName);
 
             if (customColumn == null)
             {
-                e.Cancel = true; // Hide columns not in custom configuration
+                // Hide columns that are not in the custom configuration
+                e.Cancel = true;
                 return;
             }
 
-            // Set custom header
+            // Set custom header text
             e.Column.Header = customColumn.Header;
 
-            // Set custom width
+            // Set custom width if specified
             if (!double.IsNaN(customColumn.Width))
             {
                 e.Column.Width = new DataGridLength(customColumn.Width);
@@ -161,7 +287,7 @@ namespace TelAvivMuni_Exercise.Controls
             // Apply formatting and alignment for text columns
             if (e.Column is DataGridTextColumn textColumn)
             {
-                // Apply format if specified
+                // Apply format string if specified (e.g., currency, date formats)
                 if (!string.IsNullOrEmpty(customColumn.Format))
                 {
                     textColumn.Binding = new Binding(e.PropertyName)
@@ -170,7 +296,7 @@ namespace TelAvivMuni_Exercise.Controls
                     };
                 }
 
-                // Apply alignment if specified
+                // Apply horizontal alignment if specified
                 if (!string.IsNullOrEmpty(customColumn.HorizontalAlignment))
                 {
                     var style = new Style(typeof(TextBlock));

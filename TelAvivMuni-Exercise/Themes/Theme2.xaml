@@ -2,17 +2,19 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:TelAvivMuni_Exercise.Controls">
 
+  <!-- Theme2: Dark Green/Teal Theme with Rounded Corners -->
+
   <!-- Base Button Style -->
   <Style x:Key="BaseButtonStyle" TargetType="Button">
     <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontWeight" Value="SemiBold" />
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
           <Border Background="{TemplateBinding Background}"
-                  CornerRadius="3"
-                  Padding="16,6">
+                  CornerRadius="8"
+                  Padding="20,8">
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Border>
         </ControlTemplate>
@@ -20,34 +22,34 @@
     </Setter>
   </Style>
 
-  <!-- Blue Button Style (Primary actions) -->
+  <!-- Blue Button Style (Primary actions) - Using Teal/Green -->
   <Style x:Key="BlueButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-    <Setter Property="Background" Value="#2196F3" />
+    <Setter Property="Background" Value="#009688" />
     <Setter Property="Foreground" Value="White" />
     <Style.Triggers>
       <Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Background" Value="#1976D2" />
+        <Setter Property="Background" Value="#00796B" />
       </Trigger>
       <Trigger Property="IsPressed" Value="True">
-        <Setter Property="Background" Value="#0D47A1" />
+        <Setter Property="Background" Value="#00695C" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Background" Value="#BDBDBD" />
+        <Setter Property="Background" Value="#B0BEC5" />
         <Setter Property="Foreground" Value="#FFFFFF" />
       </Trigger>
     </Style.Triggers>
   </Style>
 
-  <!-- Gray Button Style (Secondary actions) -->
+  <!-- Gray Button Style (Secondary actions) - Using Dark Gray -->
   <Style x:Key="GrayButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-    <Setter Property="Background" Value="#F5F5F5" />
-    <Setter Property="Foreground" Value="#424242" />
+    <Setter Property="Background" Value="#455A64" />
+    <Setter Property="Foreground" Value="White" />
     <Style.Triggers>
       <Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Background" Value="#EEEEEE" />
+        <Setter Property="Background" Value="#37474F" />
       </Trigger>
       <Trigger Property="IsPressed" Value="True">
-        <Setter Property="Background" Value="#E0E0E0" />
+        <Setter Property="Background" Value="#263238" />
       </Trigger>
     </Style.Triggers>
   </Style>
@@ -61,7 +63,7 @@
     <Setter Property="Content" Value="&#x2715;" />
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="FontSize" Value="12" />
-    <Setter Property="Foreground" Value="#9E9E9E" />
+    <Setter Property="Foreground" Value="#607D8B" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
@@ -72,7 +74,8 @@
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="#F0F0F0" />
+              <Setter Property="Background" Value="#E0F2F1" />
+              <Setter Property="Foreground" Value="#00796B" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -82,29 +85,30 @@
 
   <!-- Browse Button Style (... button for DataBrowserBox) -->
   <Style x:Key="BrowseButtonStyle" TargetType="Button">
-    <Setter Property="Width" Value="30" />
-    <Setter Property="Background" Value="#F5F5F5" />
-    <Setter Property="Foreground" Value="#424242" />
+    <Setter Property="Width" Value="35" />
+    <Setter Property="Background" Value="#009688" />
+    <Setter Property="Foreground" Value="White" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Content" Value="..." />
     <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="FontSize" Value="14" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
           <Border Background="{TemplateBinding Background}"
-                  BorderBrush="#E0E0E0"
-                  BorderThickness="1,0,0,0"
-                  CornerRadius="0,0,0,0"
+                  BorderBrush="#00796B"
+                  BorderThickness="2,0,0,0"
+                  CornerRadius="0,4,4,0"
                   Padding="8,6">
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="#EEEEEE" />
+              <Setter Property="Background" Value="#00796B" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-              <Setter Property="Background" Value="#E0E0E0" />
+              <Setter Property="Background" Value="#00695C" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -118,28 +122,31 @@
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="IsReadOnly" Value="True" />
-    <Setter Property="Padding" Value="5,0,25,0" />
+    <Setter Property="Padding" Value="8,0,28,0" />
+    <Setter Property="Foreground" Value="#263238" />
     <Style.Triggers>
       <Trigger Property="Opacity" Value="0.5">
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="Foreground" Value="#78909C" />
       </Trigger>
       <Trigger Property="Opacity" Value="1">
-        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="FontStyle" Value="Normal" />
+        <Setter Property="Foreground" Value="#263238" />
       </Trigger>
     </Style.Triggers>
   </Style>
 
   <!-- DataGrid Column Header Style -->
   <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
-    <Setter Property="Background" Value="#FAFAFA" />
-    <Setter Property="Foreground" Value="#616161" />
-    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Background" Value="#009688" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="FontWeight" Value="Bold" />
     <Setter Property="FontSize" Value="12" />
     <Setter Property="Padding" Value="12,10" />
-    <Setter Property="BorderBrush" Value="#E0E0E0" />
-    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="BorderBrush" Value="#00796B" />
+    <Setter Property="BorderThickness" Value="0,0,0,2" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
   </Style>
 
@@ -148,7 +155,7 @@
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Padding" Value="12,8" />
     <Setter Property="FontSize" Value="13" />
-    <Setter Property="Foreground" Value="#424242" />
+    <Setter Property="Foreground" Value="#263238" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="DataGridCell">
@@ -163,8 +170,8 @@
     </Setter>
     <Style.Triggers>
       <Trigger Property="IsSelected" Value="True">
-        <Setter Property="Background" Value="#E3F2FD" />
-        <Setter Property="Foreground" Value="#1976D2" />
+        <Setter Property="Background" Value="#B2DFDB" />
+        <Setter Property="Foreground" Value="#00695C" />
         <Setter Property="FontWeight" Value="Bold" />
       </Trigger>
     </Style.Triggers>
@@ -175,10 +182,10 @@
     <Setter Property="Background" Value="White" />
     <Style.Triggers>
       <Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Background" Value="#F5F5F5" />
+        <Setter Property="Background" Value="#E0F2F1" />
       </Trigger>
       <Trigger Property="IsSelected" Value="True">
-        <Setter Property="Background" Value="#E3F2FD" />
+        <Setter Property="Background" Value="#B2DFDB" />
       </Trigger>
     </Style.Triggers>
   </Style>

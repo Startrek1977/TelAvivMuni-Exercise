@@ -10,12 +10,19 @@ using TelAvivMuni_Exercise.Models;
 
 namespace TelAvivMuni_Exercise.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the DataBrowserDialog which provides filtering and selection functionality
+    /// for browsing a collection of items.
+    /// </summary>
     public class DataBrowserDialogViewModel : ObservableObject
     {
         private readonly ObservableCollection<object> _items;
         private readonly ICollectionView _filteredItems;
         private readonly ObservableCollection<BrowserColumn>? _columns;
 
+        /// <summary>
+        /// Gets or sets the search text used to filter the items collection.
+        /// </summary>
         private string _searchText = string.Empty;
         public string SearchText
         {
@@ -29,11 +36,16 @@ namespace TelAvivMuni_Exercise.ViewModels
             }
         }
 
+        /// <summary>
+        /// Refreshes the filtered items collection while preserving the current selection.
+        /// This method is called when the search text changes.
+        /// </summary>
         private void RefreshFilterWithSelectionPreservation()
         {
             // Preserve the selected item before refreshing the filter
             var currentSelection = _selectedItem;
 
+            // Refresh the filtered collection based on the current search text
             _filteredItems.Refresh();
             OnPropertyChanged(nameof(ItemsCount));
             OnPropertyChanged(nameof(HasSearchText));
@@ -52,8 +64,12 @@ namespace TelAvivMuni_Exercise.ViewModels
                     OnPropertyChanged(nameof(SelectedItem));
                 }
                 // Don't clear the SelectedItem even if it's filtered out
-                // This ensures the OK button remains enabled and selection is preserved
+                // This preserves the selection in the ViewModel
             }
+
+            // Notify the OK command to re-evaluate its CanExecute state
+            // This will disable the OK button if the selected item is filtered out
+            OkCommand.NotifyCanExecuteChanged();
         }
 
         public bool HasSearchText => !string.IsNullOrWhiteSpace(SearchText);
@@ -148,9 +164,19 @@ namespace TelAvivMuni_Exercise.ViewModels
             DialogResult = true;
         }
 
+        /// <summary>
+        /// Determines whether the OK button should be enabled.
+        /// The button is enabled only if an item is selected AND it's visible in the filtered collection.
+        /// </summary>
         private bool CanOk()
         {
-            return SelectedItem != null;
+            // Check if an item is selected
+            if (SelectedItem == null)
+                return false;
+
+            // Check if the selected item is visible in the filtered collection
+            // (not filtered out by search text)
+            return _filteredItems.Cast<object>().Contains(SelectedItem);
         }
 
         private void OnCancel()
