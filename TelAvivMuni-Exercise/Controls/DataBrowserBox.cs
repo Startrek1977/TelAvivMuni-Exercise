@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
+using TelAvivMuni_Exercise.Services;
 
 namespace TelAvivMuni_Exercise.Controls
 {
@@ -20,6 +21,10 @@ namespace TelAvivMuni_Exercise.Controls
 
         public static readonly DependencyProperty DialogTitleProperty =
             DependencyProperty.Register(nameof(DialogTitle), typeof(string), typeof(DataBrowserBox),
+                new PropertyMetadata(null));
+
+        public static readonly DependencyProperty DialogServiceProperty =
+            DependencyProperty.Register(nameof(DialogService), typeof(IDialogService), typeof(DataBrowserBox),
                 new PropertyMetadata(null));
 
         public static readonly RoutedEvent SelectionChangedEvent =
@@ -65,6 +70,12 @@ namespace TelAvivMuni_Exercise.Controls
             set => SetValue(DialogTitleProperty, value);
         }
 
+        public IDialogService DialogService
+        {
+            get => (IDialogService)GetValue(DialogServiceProperty);
+            set => SetValue(DialogServiceProperty, value);
+        }
+
         private Button? _browseButton;
         private TextBox? _textBox;
 
@@ -96,17 +107,15 @@ namespace TelAvivMuni_Exercise.Controls
 
         private void OnBrowseButtonClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new DataBrowserDialog
-            {
-                Owner = Window.GetWindow(this),
-                Title = DialogTitle ?? "Select Product"
-            };
+            if (DialogService == null)
+                return;
 
-            dialog.SetItemsSource(ItemsSource);
+            var title = DialogTitle ?? "Select Item";
+            var result = DialogService.ShowBrowseDialog(ItemsSource, title, SelectedItem);
 
-            if (dialog.ShowDialog() == true && dialog.SelectedItem != null)
+            if (result != null)
             {
-                SelectedItem = dialog.SelectedItem;
+                SelectedItem = result;
             }
         }
 

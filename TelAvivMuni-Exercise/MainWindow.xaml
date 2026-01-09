@@ -49,7 +49,7 @@
                                        SelectedItem="{Binding SelectedProduct1, Mode=TwoWay}"
                                        DisplayMemberPath="Name"
                                        DialogTitle="בחר מוצר"
-                                       SelectionChanged="OnProductSelected" />
+                                       DialogService="{StaticResource DialogService}" />
           </Grid>
 
           <TextBlock Margin="60,5,0,0"
@@ -85,7 +85,7 @@
                                        SelectedItem="{Binding SelectedProduct2, Mode=TwoWay}"
                                        DisplayMemberPath="Name"
                                        DialogTitle="בחר מוצר"
-                                       SelectionChanged="OnProductSelected" />
+                                       DialogService="{StaticResource DialogService}" />
           </Grid>
 
           <TextBlock Margin="60,5,0,0"

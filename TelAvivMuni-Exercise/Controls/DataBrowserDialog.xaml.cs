@@ -1,47 +1,39 @@
-using System.Collections;
+using System.ComponentModel;
 using System.Windows;
+using TelAvivMuni_Exercise.ViewModels;
 
 namespace TelAvivMuni_Exercise.Controls
 {
     public partial class DataBrowserDialog : Window
     {
-        public object? SelectedItem { get; private set; }
-
         public DataBrowserDialog()
         {
             InitializeComponent();
+            DataContextChanged += OnDataContextChanged;
         }
 
-        public void SetItemsSource(IEnumerable? items)
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ItemsDataGrid.ItemsSource = items;
-            UpdateItemsCount();
-        }
-
-        private void UpdateItemsCount()
-        {
-            var count = 0;
-            if (ItemsDataGrid.ItemsSource != null)
+            if (e.OldValue is DataBrowserDialogViewModel oldViewModel)
             {
-                foreach (var _ in ItemsDataGrid.ItemsSource)
+                oldViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            }
+
+            if (e.NewValue is DataBrowserDialogViewModel newViewModel)
+            {
+                newViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            }
+        }
+
+        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(DataBrowserDialogViewModel.DialogResult))
+            {
+                if (DataContext is DataBrowserDialogViewModel viewModel && viewModel.DialogResult.HasValue)
                 {
-                    count++;
+                    DialogResult = viewModel.DialogResult;
                 }
             }
-            ItemsCountTextBlock.Text = $"{count} items";
-        }
-
-        private void OnOkClick(object sender, RoutedEventArgs e)
-        {
-            SelectedItem = ItemsDataGrid.SelectedItem;
-            DialogResult = true;
-            Close();
-        }
-
-        private void OnCancelClick(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-            Close();
         }
     }
 }

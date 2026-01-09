@@ -1,0 +1,108 @@
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using TelAvivMuni_Exercise.Infrastructure;
+
+namespace TelAvivMuni_Exercise.ViewModels
+{
+    public class DataBrowserDialogViewModel : ObservableObject
+    {
+        private readonly ObservableCollection<object> _items;
+        private readonly ICollectionView _filteredItems;
+
+        private string _searchText = string.Empty;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (SetProperty(ref _searchText, value))
+                {
+                    _filteredItems.Refresh();
+                    OnPropertyChanged(nameof(ItemsCount));
+                }
+            }
+        }
+
+        private object? _selectedItem;
+        public object? SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (SetProperty(ref _selectedItem, value))
+                {
+                    OkCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        public ICollectionView FilteredItems => _filteredItems;
+
+        public int ItemsCount => _filteredItems.Cast<object>().Count();
+
+        private bool? _dialogResult;
+        public bool? DialogResult
+        {
+            get => _dialogResult;
+            set => SetProperty(ref _dialogResult, value);
+        }
+
+        private ICommand? _okCommand;
+        public ICommand OkCommand => _okCommand ??= new RelayCommand(OnOk, CanOk);
+
+        private ICommand? _cancelCommand;
+        public ICommand CancelCommand => _cancelCommand ??= new RelayCommand(OnCancel);
+
+        public DataBrowserDialogViewModel(IEnumerable items, object? currentSelection)
+        {
+            _items = new ObservableCollection<object>();
+            foreach (var item in items)
+            {
+                _items.Add(item);
+            }
+
+            _filteredItems = CollectionViewSource.GetDefaultView(_items);
+            _filteredItems.Filter = FilterItems;
+
+            SelectedItem = currentSelection;
+        }
+
+        private bool FilterItems(object item)
+        {
+            if (string.IsNullOrWhiteSpace(SearchText))
+                return true;
+
+            var searchLower = SearchText.ToLower();
+            var type = item.GetType();
+
+            foreach (var property in type.GetProperties())
+            {
+                var value = property.GetValue(item);
+                if (value != null && value.ToString()?.ToLower().Contains(searchLower) == true)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void OnOk()
+        {
+            DialogResult = true;
+        }
+
+        private bool CanOk()
+        {
+            return SelectedItem != null;
+        }
+
+        private void OnCancel()
+        {
+            DialogResult = false;
+        }
+    }
+}
