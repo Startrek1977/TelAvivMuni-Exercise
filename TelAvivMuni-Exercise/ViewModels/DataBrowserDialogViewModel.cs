@@ -114,32 +114,11 @@ namespace TelAvivMuni_Exercise.ViewModels
         private ICommand? _clearSearchCommand;
         public ICommand ClearSearchCommand => _clearSearchCommand ??= new RelayCommand(OnClearSearch);
 
-        public DataBrowserDialogViewModel()
+        public DataBrowserDialogViewModel(IEnumerable items, object? currentSelection, ObservableCollection<BrowserColumn>? columns = null)
         {
             _items = new ObservableCollection<object>();
-            _filteredItems = CollectionViewSource.GetDefaultView(_items);
-            _filteredItems.Filter = FilterItems;
-        }
-
-        /// <summary>
-        /// Resets the ViewModel with new data for reuse.
-        /// </summary>
-        /// <param name="items">The collection of items to browse</param>
-        /// <param name="currentSelection">The currently selected item (if any)</param>
-        /// <param name="columns">Optional custom column configurations</param>
-        public void Reset(IEnumerable items, object? currentSelection, ObservableCollection<BrowserColumn>? columns = null)
-        {
-            // Reset state
-            _searchText = string.Empty;
-            OnPropertyChanged(nameof(SearchText));
-            OnPropertyChanged(nameof(HasSearchText));
-
-            _selectedItem = null;
-            _dialogResult = null;
             _columns = columns;
 
-            // Clear and repopulate items
-            _items.Clear();
             if (items != null)
             {
                 foreach (var item in items)
@@ -148,17 +127,11 @@ namespace TelAvivMuni_Exercise.ViewModels
                 }
             }
 
-            // Refresh the filter
-            _filteredItems.Refresh();
-            OnPropertyChanged(nameof(ItemsCount));
-            OnPropertyChanged(nameof(Columns));
-            OnPropertyChanged(nameof(HasCustomColumns));
-            OnPropertyChanged(nameof(SelectedItem));
+            _filteredItems = CollectionViewSource.GetDefaultView(_items);
+            _filteredItems.Filter = FilterItems;
 
-            // Store the pending selection to be applied after the view is fully loaded
+            // Store the pending selection to be applied after the view is fully rendered
             _pendingSelection = currentSelection;
-
-            OkCommand.NotifyCanExecuteChanged();
         }
 
         private bool FilterItems(object item)

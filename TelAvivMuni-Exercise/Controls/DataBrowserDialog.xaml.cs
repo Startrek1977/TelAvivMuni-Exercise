@@ -8,7 +8,6 @@ namespace TelAvivMuni_Exercise.Controls
     /// <summary>
     /// Dialog window for browsing and selecting items from a collection with filtering support.
     /// Uses attached behaviors for keyboard handling and dialog closing (MVVM pattern).
-    /// The dialog and its ViewModel are designed to be created once and reused.
     /// </summary>
     public partial class DataBrowserDialog : Window
     {

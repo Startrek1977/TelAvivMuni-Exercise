@@ -19,11 +19,8 @@ namespace TelAvivMuni_Exercise.Services
 
             var mainWindow = Application.Current.MainWindow;
 
-            // Create fresh ViewModel and Dialog each time
-            // The ViewModel is bound to the dialog via DialogCloseBehavior which requires a fresh instance
-            var viewModel = new DataBrowserDialogViewModel();
-            viewModel.Reset(items, currentSelection, columns);
-
+            // Create fresh instances each time (simple, no state leakage, GC handles cleanup)
+            var viewModel = new DataBrowserDialogViewModel(items, currentSelection, columns);
             var dialog = new DataBrowserDialog
             {
                 DataContext = viewModel,
