@@ -38,5 +38,805 @@
     "Category": "Storage",
     "Price": 129.99,
     "Stock": 198
+  },
+  {
+    "Id": 6,
+    "Code": "LAP-003",
+    "Name": "Gaming Laptop 17",
+    "Category": "Computers",
+    "Price": 1899.99,
+    "Stock": 23
+  },
+  {
+    "Id": 7,
+    "Code": "DES-001",
+    "Name": "Desktop Workstation",
+    "Category": "Computers",
+    "Price": 2499.99,
+    "Stock": 15
+  },
+  {
+    "Id": 8,
+    "Code": "TAB-001",
+    "Name": "Tablet Pro 12.9",
+    "Category": "Computers",
+    "Price": 1099.99,
+    "Stock": 67
+  },
+  {
+    "Id": 9,
+    "Code": "MOU-001",
+    "Name": "Wireless Gaming Mouse",
+    "Category": "Peripherals",
+    "Price": 89.99,
+    "Stock": 234
+  },
+  {
+    "Id": 10,
+    "Code": "MOU-002",
+    "Name": "Ergonomic Mouse",
+    "Category": "Peripherals",
+    "Price": 49.99,
+    "Stock": 189
+  },
+  {
+    "Id": 11,
+    "Code": "MON-002",
+    "Name": "4K Monitor 32",
+    "Category": "Displays",
+    "Price": 699.99,
+    "Stock": 41
+  },
+  {
+    "Id": 12,
+    "Code": "MON-003",
+    "Name": "Curved Gaming Monitor 34",
+    "Category": "Displays",
+    "Price": 849.99,
+    "Stock": 28
+  },
+  {
+    "Id": 13,
+    "Code": "HDD-001",
+    "Name": "External HDD 2TB",
+    "Category": "Storage",
+    "Price": 79.99,
+    "Stock": 312
+  },
+  {
+    "Id": 14,
+    "Code": "SSD-002",
+    "Name": "NVMe SSD 512GB",
+    "Category": "Storage",
+    "Price": 89.99,
+    "Stock": 178
+  },
+  {
+    "Id": 15,
+    "Code": "SSD-003",
+    "Name": "Internal SSD 2TB",
+    "Category": "Storage",
+    "Price": 199.99,
+    "Stock": 95
+  },
+  {
+    "Id": 16,
+    "Code": "HEA-001",
+    "Name": "Wireless Headphones Premium",
+    "Category": "Audio",
+    "Price": 299.99,
+    "Stock": 124
+  },
+  {
+    "Id": 17,
+    "Code": "HEA-002",
+    "Name": "Gaming Headset RGB",
+    "Category": "Audio",
+    "Price": 119.99,
+    "Stock": 167
+  },
+  {
+    "Id": 18,
+    "Code": "WEB-001",
+    "Name": "HD Webcam 1080p",
+    "Category": "Peripherals",
+    "Price": 69.99,
+    "Stock": 203
+  },
+  {
+    "Id": 19,
+    "Code": "WEB-002",
+    "Name": "4K Webcam Pro",
+    "Category": "Peripherals",
+    "Price": 149.99,
+    "Stock": 87
+  },
+  {
+    "Id": 20,
+    "Code": "SPE-001",
+    "Name": "Bluetooth Speaker Portable",
+    "Category": "Audio",
+    "Price": 59.99,
+    "Stock": 256
+  },
+  {
+    "Id": 21,
+    "Code": "ROU-001",
+    "Name": "WiFi Router AC1900",
+    "Category": "Networking",
+    "Price": 129.99,
+    "Stock": 143
+  },
+  {
+    "Id": 22,
+    "Code": "ROU-002",
+    "Name": "Mesh WiFi System 3-Pack",
+    "Category": "Networking",
+    "Price": 349.99,
+    "Stock": 52
+  },
+  {
+    "Id": 23,
+    "Code": "KEY-002",
+    "Name": "Wireless Keyboard Compact",
+    "Category": "Peripherals",
+    "Price": 79.99,
+    "Stock": 198
+  },
+  {
+    "Id": 24,
+    "Code": "KEY-003",
+    "Name": "Gaming Keyboard RGB",
+    "Category": "Peripherals",
+    "Price": 169.99,
+    "Stock": 112
+  },
+  {
+    "Id": 25,
+    "Code": "RAM-001",
+    "Name": "DDR4 RAM 16GB Kit",
+    "Category": "Components",
+    "Price": 79.99,
+    "Stock": 234
+  },
+  {
+    "Id": 26,
+    "Code": "RAM-002",
+    "Name": "DDR5 RAM 32GB Kit",
+    "Category": "Components",
+    "Price": 189.99,
+    "Stock": 156
+  },
+  {
+    "Id": 27,
+    "Code": "GPU-001",
+    "Name": "Graphics Card RTX",
+    "Category": "Components",
+    "Price": 799.99,
+    "Stock": 34
+  },
+  {
+    "Id": 28,
+    "Code": "CPU-001",
+    "Name": "Processor 8-Core",
+    "Category": "Components",
+    "Price": 349.99,
+    "Stock": 78
+  },
+  {
+    "Id": 29,
+    "Code": "CPU-002",
+    "Name": "Processor 16-Core",
+    "Category": "Components",
+    "Price": 649.99,
+    "Stock": 45
+  },
+  {
+    "Id": 30,
+    "Code": "CAS-001",
+    "Name": "Laptop Sleeve 15",
+    "Category": "Accessories",
+    "Price": 29.99,
+    "Stock": 412
+  },
+  {
+    "Id": 31,
+    "Code": "CAS-002",
+    "Name": "Hard Shell Laptop Case",
+    "Category": "Accessories",
+    "Price": 39.99,
+    "Stock": 367
+  },
+  {
+    "Id": 32,
+    "Code": "STA-001",
+    "Name": "Laptop Stand Aluminum",
+    "Category": "Accessories",
+    "Price": 49.99,
+    "Stock": 289
+  },
+  {
+    "Id": 33,
+    "Code": "STA-002",
+    "Name": "Monitor Arm Dual",
+    "Category": "Accessories",
+    "Price": 119.99,
+    "Stock": 134
+  },
+  {
+    "Id": 34,
+    "Code": "CAB-001",
+    "Name": "USB-C Cable 2m",
+    "Category": "Accessories",
+    "Price": 19.99,
+    "Stock": 678
+  },
+  {
+    "Id": 35,
+    "Code": "CAB-002",
+    "Name": "HDMI Cable 4K 3m",
+    "Category": "Accessories",
+    "Price": 24.99,
+    "Stock": 545
+  },
+  {
+    "Id": 36,
+    "Code": "MIC-001",
+    "Name": "USB Microphone Studio",
+    "Category": "Audio",
+    "Price": 129.99,
+    "Stock": 98
+  },
+  {
+    "Id": 37,
+    "Code": "MIC-002",
+    "Name": "Lavalier Microphone Wireless",
+    "Category": "Audio",
+    "Price": 89.99,
+    "Stock": 156
+  },
+  {
+    "Id": 38,
+    "Code": "PRO-001",
+    "Name": "Mini Projector 1080p",
+    "Category": "Displays",
+    "Price": 399.99,
+    "Stock": 67
+  },
+  {
+    "Id": 39,
+    "Code": "PRO-002",
+    "Name": "4K Projector Home Theater",
+    "Category": "Displays",
+    "Price": 1299.99,
+    "Stock": 23
+  },
+  {
+    "Id": 40,
+    "Code": "USB-001",
+    "Name": "USB Flash Drive 64GB",
+    "Category": "Storage",
+    "Price": 14.99,
+    "Stock": 892
+  },
+  {
+    "Id": 41,
+    "Code": "USB-002",
+    "Name": "USB Flash Drive 256GB",
+    "Category": "Storage",
+    "Price": 39.99,
+    "Stock": 534
+  },
+  {
+    "Id": 42,
+    "Code": "DOC-001",
+    "Name": "USB-C Docking Station",
+    "Category": "Accessories",
+    "Price": 199.99,
+    "Stock": 89
+  },
+  {
+    "Id": 43,
+    "Code": "DOC-002",
+    "Name": "Thunderbolt Dock Pro",
+    "Category": "Accessories",
+    "Price": 299.99,
+    "Stock": 56
+  },
+  {
+    "Id": 44,
+    "Code": "PAD-001",
+    "Name": "Gaming Mouse Pad XXL",
+    "Category": "Accessories",
+    "Price": 34.99,
+    "Stock": 423
+  },
+  {
+    "Id": 45,
+    "Code": "PAD-002",
+    "Name": "RGB Mouse Pad",
+    "Category": "Accessories",
+    "Price": 44.99,
+    "Stock": 298
+  },
+  {
+    "Id": 46,
+    "Code": "CHA-001",
+    "Name": "Wireless Charger 15W",
+    "Category": "Accessories",
+    "Price": 29.99,
+    "Stock": 456
+  },
+  {
+    "Id": 47,
+    "Code": "CHA-002",
+    "Name": "Multi-Device Charging Station",
+    "Category": "Accessories",
+    "Price": 79.99,
+    "Stock": 234
+  },
+  {
+    "Id": 48,
+    "Code": "LAP-004",
+    "Name": "Ultrabook 14",
+    "Category": "Computers",
+    "Price": 1399.99,
+    "Stock": 61
+  },
+  {
+    "Id": 49,
+    "Code": "LAP-005",
+    "Name": "Chromebook 11",
+    "Category": "Computers",
+    "Price": 349.99,
+    "Stock": 145
+  },
+  {
+    "Id": 50,
+    "Code": "TAB-002",
+    "Name": "Tablet 10.5",
+    "Category": "Computers",
+    "Price": 499.99,
+    "Stock": 178
+  },
+  {
+    "Id": 51,
+    "Code": "TAB-003",
+    "Name": "Drawing Tablet Pro",
+    "Category": "Peripherals",
+    "Price": 649.99,
+    "Stock": 45
+  },
+  {
+    "Id": 52,
+    "Code": "MON-004",
+    "Name": "Portable Monitor 15.6",
+    "Category": "Displays",
+    "Price": 249.99,
+    "Stock": 123
+  },
+  {
+    "Id": 53,
+    "Code": "MON-005",
+    "Name": "Ultrawide Monitor 49",
+    "Category": "Displays",
+    "Price": 1499.99,
+    "Stock": 18
+  },
+  {
+    "Id": 54,
+    "Code": "SWI-001",
+    "Name": "Network Switch 8-Port",
+    "Category": "Networking",
+    "Price": 49.99,
+    "Stock": 267
+  },
+  {
+    "Id": 55,
+    "Code": "SWI-002",
+    "Name": "Managed Switch 24-Port",
+    "Category": "Networking",
+    "Price": 299.99,
+    "Stock": 78
+  },
+  {
+    "Id": 56,
+    "Code": "EXT-001",
+    "Name": "WiFi Range Extender",
+    "Category": "Networking",
+    "Price": 59.99,
+    "Stock": 312
+  },
+  {
+    "Id": 57,
+    "Code": "POW-001",
+    "Name": "UPS Battery Backup 1500VA",
+    "Category": "Accessories",
+    "Price": 179.99,
+    "Stock": 89
+  },
+  {
+    "Id": 58,
+    "Code": "POW-002",
+    "Name": "Surge Protector 12 Outlet",
+    "Category": "Accessories",
+    "Price": 39.99,
+    "Stock": 445
+  },
+  {
+    "Id": 59,
+    "Code": "SPE-002",
+    "Name": "Soundbar 2.1 Channel",
+    "Category": "Audio",
+    "Price": 199.99,
+    "Stock": 134
+  },
+  {
+    "Id": 60,
+    "Code": "SPE-003",
+    "Name": "Desktop Speakers Studio",
+    "Category": "Audio",
+    "Price": 149.99,
+    "Stock": 167
+  },
+  {
+    "Id": 61,
+    "Code": "HEA-003",
+    "Name": "Earbuds Wireless Pro",
+    "Category": "Audio",
+    "Price": 179.99,
+    "Stock": 289
+  },
+  {
+    "Id": 62,
+    "Code": "HEA-004",
+    "Name": "Studio Headphones",
+    "Category": "Audio",
+    "Price": 249.99,
+    "Stock": 112
+  },
+  {
+    "Id": 63,
+    "Code": "PRI-001",
+    "Name": "Laser Printer B&W",
+    "Category": "Peripherals",
+    "Price": 299.99,
+    "Stock": 67
+  },
+  {
+    "Id": 64,
+    "Code": "PRI-002",
+    "Name": "Inkjet Printer Color",
+    "Category": "Peripherals",
+    "Price": 179.99,
+    "Stock": 98
+  },
+  {
+    "Id": 65,
+    "Code": "SCA-001",
+    "Name": "Document Scanner",
+    "Category": "Peripherals",
+    "Price": 249.99,
+    "Stock": 78
+  },
+  {
+    "Id": 66,
+    "Code": "DES-002",
+    "Name": "Mini PC",
+    "Category": "Computers",
+    "Price": 599.99,
+    "Stock": 124
+  },
+  {
+    "Id": 67,
+    "Code": "DES-003",
+    "Name": "All-in-One Desktop 24",
+    "Category": "Computers",
+    "Price": 1199.99,
+    "Stock": 56
+  },
+  {
+    "Id": 68,
+    "Code": "GPU-002",
+    "Name": "Graphics Card GTX",
+    "Category": "Components",
+    "Price": 449.99,
+    "Stock": 67
+  },
+  {
+    "Id": 69,
+    "Code": "MOT-001",
+    "Name": "Motherboard ATX Gaming",
+    "Category": "Components",
+    "Price": 229.99,
+    "Stock": 89
+  },
+  {
+    "Id": 70,
+    "Code": "MOT-002",
+    "Name": "Motherboard Mini-ITX",
+    "Category": "Components",
+    "Price": 179.99,
+    "Stock": 112
+  },
+  {
+    "Id": 71,
+    "Code": "COO-001",
+    "Name": "CPU Cooler AIO 240mm",
+    "Category": "Components",
+    "Price": 119.99,
+    "Stock": 145
+  },
+  {
+    "Id": 72,
+    "Code": "COO-002",
+    "Name": "CPU Cooler Air Tower",
+    "Category": "Components",
+    "Price": 49.99,
+    "Stock": 234
+  },
+  {
+    "Id": 73,
+    "Code": "PSU-001",
+    "Name": "Power Supply 750W Modular",
+    "Category": "Components",
+    "Price": 129.99,
+    "Stock": 167
+  },
+  {
+    "Id": 74,
+    "Code": "PSU-002",
+    "Name": "Power Supply 1000W Gold",
+    "Category": "Components",
+    "Price": 199.99,
+    "Stock": 98
+  },
+  {
+    "Id": 75,
+    "Code": "CSE-001",
+    "Name": "PC Case Mid Tower RGB",
+    "Category": "Components",
+    "Price": 89.99,
+    "Stock": 156
+  },
+  {
+    "Id": 76,
+    "Code": "CSE-002",
+    "Name": "PC Case Full Tower",
+    "Category": "Components",
+    "Price": 149.99,
+    "Stock": 87
+  },
+  {
+    "Id": 77,
+    "Code": "FAN-001",
+    "Name": "Case Fans RGB 3-Pack",
+    "Category": "Components",
+    "Price": 39.99,
+    "Stock": 378
+  },
+  {
+    "Id": 78,
+    "Code": "HDD-002",
+    "Name": "Internal HDD 4TB",
+    "Category": "Storage",
+    "Price": 99.99,
+    "Stock": 189
+  },
+  {
+    "Id": 79,
+    "Code": "HDD-003",
+    "Name": "NAS HDD 8TB",
+    "Category": "Storage",
+    "Price": 219.99,
+    "Stock": 134
+  },
+  {
+    "Id": 80,
+    "Code": "NAS-001",
+    "Name": "NAS 2-Bay",
+    "Category": "Storage",
+    "Price": 299.99,
+    "Stock": 67
+  },
+  {
+    "Id": 81,
+    "Code": "NAS-002",
+    "Name": "NAS 4-Bay Pro",
+    "Category": "Storage",
+    "Price": 599.99,
+    "Stock": 34
+  },
+  {
+    "Id": 82,
+    "Code": "MEM-001",
+    "Name": "SD Card 128GB",
+    "Category": "Storage",
+    "Price": 24.99,
+    "Stock": 567
+  },
+  {
+    "Id": 83,
+    "Code": "MEM-002",
+    "Name": "MicroSD Card 256GB",
+    "Category": "Storage",
+    "Price": 44.99,
+    "Stock": 489
+  },
+  {
+    "Id": 84,
+    "Code": "REA-001",
+    "Name": "Card Reader USB-C",
+    "Category": "Accessories",
+    "Price": 29.99,
+    "Stock": 312
+  },
+  {
+    "Id": 85,
+    "Code": "HUB-001",
+    "Name": "USB Hub 7-Port",
+    "Category": "Accessories",
+    "Price": 34.99,
+    "Stock": 267
+  },
+  {
+    "Id": 86,
+    "Code": "HUB-002",
+    "Name": "USB-C Hub Multiport",
+    "Category": "Accessories",
+    "Price": 59.99,
+    "Stock": 234
+  },
+  {
+    "Id": 87,
+    "Code": "CAB-003",
+    "Name": "DisplayPort Cable 2m",
+    "Category": "Accessories",
+    "Price": 19.99,
+    "Stock": 445
+  },
+  {
+    "Id": 88,
+    "Code": "CAB-004",
+    "Name": "Ethernet Cable Cat8 5m",
+    "Category": "Networking",
+    "Price": 29.99,
+    "Stock": 378
+  },
+  {
+    "Id": 89,
+    "Code": "ADU-001",
+    "Name": "USB to Ethernet Adapter",
+    "Category": "Networking",
+    "Price": 24.99,
+    "Stock": 289
+  },
+  {
+    "Id": 90,
+    "Code": "ADU-002",
+    "Name": "Bluetooth USB Adapter",
+    "Category": "Networking",
+    "Price": 14.99,
+    "Stock": 534
+  },
+  {
+    "Id": 91,
+    "Code": "LIG-001",
+    "Name": "LED Strip Lights 5m RGB",
+    "Category": "Accessories",
+    "Price": 29.99,
+    "Stock": 412
+  },
+  {
+    "Id": 92,
+    "Code": "LIG-002",
+    "Name": "Desk Lamp LED USB",
+    "Category": "Accessories",
+    "Price": 39.99,
+    "Stock": 298
+  },
+  {
+    "Id": 93,
+    "Code": "CHI-001",
+    "Name": "Gaming Chair Ergonomic",
+    "Category": "Furniture",
+    "Price": 299.99,
+    "Stock": 45
+  },
+  {
+    "Id": 94,
+    "Code": "DES-004",
+    "Name": "Standing Desk Electric",
+    "Category": "Furniture",
+    "Price": 499.99,
+    "Stock": 34
+  },
+  {
+    "Id": 95,
+    "Code": "WRI-001",
+    "Name": "Wrist Rest Keyboard",
+    "Category": "Accessories",
+    "Price": 19.99,
+    "Stock": 456
+  },
+  {
+    "Id": 96,
+    "Code": "WRI-002",
+    "Name": "Wrist Rest Mouse Gel",
+    "Category": "Accessories",
+    "Price": 14.99,
+    "Stock": 523
+  },
+  {
+    "Id": 97,
+    "Code": "CLN-001",
+    "Name": "Screen Cleaning Kit",
+    "Category": "Accessories",
+    "Price": 12.99,
+    "Stock": 678
+  },
+  {
+    "Id": 98,
+    "Code": "CLN-002",
+    "Name": "Compressed Air Duster",
+    "Category": "Accessories",
+    "Price": 9.99,
+    "Stock": 789
+  },
+  {
+    "Id": 99,
+    "Code": "BAG-001",
+    "Name": "Laptop Backpack 17",
+    "Category": "Accessories",
+    "Price": 69.99,
+    "Stock": 234
+  },
+  {
+    "Id": 100,
+    "Code": "BAG-002",
+    "Name": "Tech Organizer Pouch",
+    "Category": "Accessories",
+    "Price": 24.99,
+    "Stock": 445
+  },
+  {
+    "Id": 101,
+    "Code": "PEN-001",
+    "Name": "Stylus Pen Universal",
+    "Category": "Peripherals",
+    "Price": 39.99,
+    "Stock": 312
+  },
+  {
+    "Id": 102,
+    "Code": "PEN-002",
+    "Name": "Digital Pen Pro",
+    "Category": "Peripherals",
+    "Price": 129.99,
+    "Stock": 98
+  },
+  {
+    "Id": 103,
+    "Code": "KVM-001",
+    "Name": "KVM Switch 2-Port",
+    "Category": "Accessories",
+    "Price": 49.99,
+    "Stock": 167
+  },
+  {
+    "Id": 104,
+    "Code": "SPL-001",
+    "Name": "HDMI Splitter 4-Port",
+    "Category": "Accessories",
+    "Price": 44.99,
+    "Stock": 189
+  },
+  {
+    "Id": 105,
+    "Code": "CAP-001",
+    "Name": "Video Capture Card 4K",
+    "Category": "Peripherals",
+    "Price": 179.99,
+    "Stock": 78
   }
 ]
