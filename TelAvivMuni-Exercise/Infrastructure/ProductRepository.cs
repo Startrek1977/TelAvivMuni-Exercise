@@ -113,11 +113,8 @@ namespace TelAvivMuni_Exercise.Infrastructure
                 : OperationResult.Fail($"Product with Id {entity.Id} was not found.");
         }
 
-        /// <summary>
-        /// Saves all changes to the data store.
-        /// </summary>
-        /// <returns>The number of entities saved.</returns>
-        internal async Task<int> SaveAsync()
+        /// <inheritdoc />
+        public async Task<int> SaveAsync()
         {
             return await _dataStore.SaveAsync(_entities);
         }
@@ -127,7 +124,7 @@ namespace TelAvivMuni_Exercise.Infrastructure
         /// </summary>
         public async Task ReloadAsync()
         {
-            _entities = new List<Product>(await _dataStore.LoadAsync());
+            _entities = [.. await _dataStore.LoadAsync()];
             _isLoaded = true;
         }
 

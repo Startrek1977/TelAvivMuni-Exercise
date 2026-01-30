@@ -6,10 +6,8 @@
         xmlns:vm="clr-namespace:TelAvivMuni_Exercise.ViewModels"
         Title="Tel-Aviv Muni - Exercise"
         Width="520"
-        Height="430">
-  <Window.DataContext>
-    <vm:MainWindowViewModel />
-  </Window.DataContext>
+        Height="430"
+        DataContext="{Binding MainWindow, Source={StaticResource Locator}}">
   <Grid>
     <StackPanel Margin="20">
       <!--  Header  -->
