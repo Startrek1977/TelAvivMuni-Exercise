@@ -82,7 +82,8 @@ TelAvivMuni-Exercise/
 │   ├── UnitOfWork.cs              # Unit of Work implementation
 │   ├── FileDataStore.cs           # File-based data store
 │   ├── JsonSerializer.cs          # JSON serialization implementation
-│   └── OperationResult.cs         # Operation result with error messages
+│   ├── OperationResult.cs         # Operation result with error messages
+│   └── ViewModelLocator.cs        # DI-based ViewModel resolution for XAML
 ├── Models/
 │   ├── Product.cs                 # Product data model
 │   └── BrowserColumn.cs           # Column configuration model

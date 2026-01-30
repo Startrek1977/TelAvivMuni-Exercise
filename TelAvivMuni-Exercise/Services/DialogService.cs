@@ -8,9 +8,20 @@ using TelAvivMuni_Exercise.ViewModels;
 
 namespace TelAvivMuni_Exercise.Services
 {
+    /// <summary>
+    /// Provides dialog display services for the application.
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class DialogService : IDialogService
     {
+        /// <summary>
+        /// Displays a modal browse dialog for selecting an item from a collection.
+        /// </summary>
+        /// <param name="items">The collection of items to display in the dialog.</param>
+        /// <param name="title">The dialog window title.</param>
+        /// <param name="currentSelection">The currently selected item, if any.</param>
+        /// <param name="columns">Optional column configuration for the data grid.</param>
+        /// <returns>The selected item if confirmed; otherwise, the original selection.</returns>
         public object? ShowBrowseDialog(IEnumerable items, string title, object? currentSelection, ObservableCollection<BrowserColumn>? columns = null)
         {
             if (items == null)

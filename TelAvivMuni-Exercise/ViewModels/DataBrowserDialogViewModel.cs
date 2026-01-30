@@ -151,6 +151,11 @@ namespace TelAvivMuni_Exercise.ViewModels
             IsLoading = false;
         }
 
+        /// <summary>
+        /// Filters items based on the current search text by checking all property values.
+        /// </summary>
+        /// <param name="item">The item to evaluate for filtering.</param>
+        /// <returns>True if the item matches the search criteria or search is empty; otherwise, false.</returns>
         private bool FilterItems(object item)
         {
             if (string.IsNullOrWhiteSpace(SearchText))
@@ -169,6 +174,9 @@ namespace TelAvivMuni_Exercise.ViewModels
             return false;
         }
 
+        /// <summary>
+        /// Handles the OK command by setting the dialog result to true.
+        /// </summary>
         private void OnOk()
         {
             DialogResult = true;
@@ -189,11 +197,17 @@ namespace TelAvivMuni_Exercise.ViewModels
             return _filteredItems.Cast<object>().Contains(SelectedItem);
         }
 
+        /// <summary>
+        /// Handles the Cancel command by setting the dialog result to false.
+        /// </summary>
         private void OnCancel()
         {
             DialogResult = false;
         }
 
+        /// <summary>
+        /// Clears the search text, restoring all items to the filtered view.
+        /// </summary>
         private void OnClearSearch()
         {
             SearchText = string.Empty;

@@ -11,5 +11,11 @@ namespace TelAvivMuni_Exercise.Infrastructure
         Task<OperationResult> AddAsync(TEntity entity);
         Task<OperationResult> UpdateAsync(TEntity entity);
         Task<OperationResult> DeleteAsync(TEntity entity);
+
+        /// <summary>
+        /// Saves all changes to the data store.
+        /// </summary>
+        /// <returns>The number of entities saved.</returns>
+        Task<int> SaveAsync();
     }
 }

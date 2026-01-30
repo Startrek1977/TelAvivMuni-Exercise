@@ -25,11 +25,13 @@ public class UnitOfWorkTests : IDisposable
         }
     }
 
+    private UnitOfWork CreateUnitOfWork() => new UnitOfWork(new ProductRepository() as IRepository<Product>);
+
     [Fact]
     public void Products_ReturnsRepository()
     {
         // Arrange
-        using var unitOfWork = new UnitOfWork();
+        using var unitOfWork = CreateUnitOfWork();
 
         // Act
         var products = unitOfWork.Products;
@@ -43,7 +45,7 @@ public class UnitOfWorkTests : IDisposable
     public async Task SaveChangesAsync_ReturnsCount()
     {
         // Arrange
-        using var unitOfWork = new UnitOfWork();
+        using var unitOfWork = CreateUnitOfWork();
 
         // Load and save without changes
         await unitOfWork.Products.GetAllAsync();
@@ -59,7 +61,7 @@ public class UnitOfWorkTests : IDisposable
     public void Dispose_CanBeCalledMultipleTimes()
     {
         // Arrange
-        var unitOfWork = new UnitOfWork();
+        var unitOfWork = CreateUnitOfWork();
 
         // Act & Assert - should not throw
         unitOfWork.Dispose();
@@ -71,7 +73,7 @@ public class UnitOfWorkTests : IDisposable
     public void Products_SameInstance_MultipleCalls()
     {
         // Arrange
-        using var unitOfWork = new UnitOfWork();
+        using var unitOfWork = CreateUnitOfWork();
 
         // Act
         var products1 = unitOfWork.Products;
@@ -85,7 +87,7 @@ public class UnitOfWorkTests : IDisposable
     public async Task IntegrationTest_AddAndSave()
     {
         // Arrange
-        using var unitOfWork = new UnitOfWork();
+        using var unitOfWork = CreateUnitOfWork();
         var product = new Product
         {
             Id = 0,

@@ -9,22 +9,14 @@ namespace TelAvivMuni_Exercise.Infrastructure
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ProductRepository _productRepository;
+        private readonly IRepository<Product> _productRepository;
         private bool _disposed;
 
         /// <summary>
-        /// Initializes a new instance of UnitOfWork with a default ProductRepository.
-        /// </summary>
-        public UnitOfWork()
-            : this(new ProductRepository())
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of UnitOfWork with a custom repository.
+        /// Initializes a new instance of UnitOfWork with the specified repository.
         /// </summary>
         /// <param name="productRepository">The product repository to use.</param>
-        public UnitOfWork(ProductRepository productRepository)
+        public UnitOfWork(IRepository<Product> productRepository)
         {
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
