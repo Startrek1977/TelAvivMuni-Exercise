@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TelAvivMuni-Exercise\TelAvivMuni-Exercise.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Infrastructure\TelAvivMuni-Exercise.Infrastructure.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Core\TelAvivMuni-Exercise.Core.csproj" />
   </ItemGroup>
 
 </Project>
