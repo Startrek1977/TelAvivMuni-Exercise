@@ -4,8 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TelAvivMuni_Exercise.Models;
+using TelAvivMuni_Exercise.Infrastructure;
 
-namespace TelAvivMuni_Exercise.Infrastructure
+namespace TelAvivMuni_Exercise.Core
 {
     /// <summary>
     /// Repository for Product entities.
