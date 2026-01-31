@@ -52,7 +52,79 @@ This project is a home exercise created as part of an interview for the Software
   - xUnit - For unit testing
   - Moq - For mocking in tests
 
-## Project Structure
+## Solution Structure
+
+The solution is organized into multiple projects to separate concerns and promote reusability:
+
+### TelAvivMuni-Exercise.Infrastructure
+Generic, reusable infrastructure code that can be used in any project:
+- **Interfaces:**
+  - `IDataStore<T>` - Data persistence abstraction
+  - `IRepository<T>` - Generic repository interface
+  - `IEntity` - Base entity interface
+  - `ISerializer<T>` - Serialization abstraction
+  - `IUnitOfWork` - Unit of Work interface
+  - `IColumnConfiguration` - Column configuration interface
+  - `IDeferredInitialization` - View-First initialization interface
+  - `ICommand.Extension` - Command extension methods
+- **Implementations:**
+  - `FileDataStore<T>` - File-based data store with thread-safe async operations
+  - `JsonSerializer<T>` - JSON serialization using System.Text.Json
+  - `OperationResult` - Operation result with success/failure states
+
+### TelAvivMuni-Exercise.Core
+Application-specific but reusable business logic and models:
+- **Models:**
+  - `Product` - Product data model implementing IEntity
+  - `BrowserColumn` - Column configuration for data browser
+- **Repositories:**
+  - `ProductRepository` - Product-specific repository implementation
+  - `UnitOfWork` - Unit of Work coordination pattern
+- **Services:**
+  - `IDialogService` - Dialog service interface
+
+### TelAvivMuni-Exercise (Main WPF Application)
+WPF-specific UI code:
+- **Controls:**
+  - `DataBrowserBox` - Custom reusable control for item selection
+  - `DataBrowserDialog` - Browse dialog UI
+- **ViewModels:**
+  - `MainWindowViewModel` - Main window view model
+  - `DataBrowserDialogViewModel` - Dialog view model
+- **Services:**
+  - `DialogService` - Dialog service implementation (WPF-dependent)
+- **Infrastructure/Behaviors:** - WPF Attached Behaviors (MVVM pattern)
+  - `AutoFocusSearchBehavior` - Auto-focus on typing
+  - `DataGridEnterBehavior` - Handle Enter key in DataGrid
+  - `DataGridScrollIntoViewBehavior` - Scroll to selected item
+  - `DialogCloseBehavior` - MVVM-friendly dialog closing
+  - `EscapeClearBehavior` - Clear text on Escape key
+- **Infrastructure:**
+  - `ViewModelLocator` - DI-based ViewModel resolution for XAML
+- **Themes:** - Control templates and styles
+- **Data:** - Sample product data (Products.json)
+
+### TelAvivMuni-Exercise.Tests
+Unit tests for all projects
+
+### Project Dependencies
+```
+TelAvivMuni-Exercise (WPF)
+    ├── → TelAvivMuni-Exercise.Core
+    └── → TelAvivMuni-Exercise.Infrastructure
+
+TelAvivMuni-Exercise.Core
+    └── → TelAvivMuni-Exercise.Infrastructure
+
+TelAvivMuni-Exercise.Tests
+    ├── → TelAvivMuni-Exercise (WPF)
+    ├── → TelAvivMuni-Exercise.Core
+    └── → TelAvivMuni-Exercise.Infrastructure
+```
+
+## Project Structure (Legacy - for reference)
+
+The original project structure before separation:
 
 ```
 TelAvivMuni-Exercise/
