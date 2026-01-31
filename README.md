@@ -63,10 +63,7 @@ Generic, reusable infrastructure code that can be used in any project:
   - `IRepository<T>` - Generic repository interface
   - `IEntity` - Base entity interface
   - `ISerializer<T>` - Serialization abstraction
-  - `IUnitOfWork` - Unit of Work interface
-  - `IColumnConfiguration` - Column configuration interface
   - `IDeferredInitialization` - View-First initialization interface
-  - `ICommand.Extension` - Command extension methods
 - **Implementations:**
   - `FileDataStore<T>` - File-based data store with thread-safe async operations
   - `JsonSerializer<T>` - JSON serialization using System.Text.Json
@@ -80,8 +77,10 @@ Application-specific but reusable business logic and models:
 - **Repositories:**
   - `ProductRepository` - Product-specific repository implementation
   - `UnitOfWork` - Unit of Work coordination pattern
-- **Services:**
+- **Interfaces:**
   - `IDialogService` - Dialog service interface
+  - `IUnitOfWork` - Unit of Work interface
+  - `IColumnConfiguration` - Column configuration interface
 
 ### TelAvivMuni-Exercise (Main WPF Application)
 WPF-specific UI code:
@@ -101,6 +100,7 @@ WPF-specific UI code:
   - `EscapeClearBehavior` - Clear text on Escape key
 - **Infrastructure:**
   - `ViewModelLocator` - DI-based ViewModel resolution for XAML
+  - `ICommand.Extension` - Command extension methods (WPF/MVVM-dependent)
 - **Themes:** - Control templates and styles
 - **Data:** - Sample product data (Products.json)
 
