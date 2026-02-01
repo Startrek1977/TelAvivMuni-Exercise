@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TelAvivMuni_Exercise.Core;
 using TelAvivMuni_Exercise.Infrastructure;
 using TelAvivMuni_Exercise.Models;
 using TelAvivMuni_Exercise.ViewModels;

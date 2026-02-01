@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using TelAvivMuni_Exercise.Core;
 using TelAvivMuni_Exercise.Infrastructure;
 using TelAvivMuni_Exercise.Models;
 using TelAvivMuni_Exercise.ViewModels;

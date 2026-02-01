@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using TelAvivMuni_Exercise.Core;
 using TelAvivMuni_Exercise.Infrastructure;
 using TelAvivMuni_Exercise.Models;
 using Xunit;

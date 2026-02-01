@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using TelAvivMuni_Exercise.Core;
 using TelAvivMuni_Exercise.Infrastructure;
 using TelAvivMuni_Exercise.Models;
 
