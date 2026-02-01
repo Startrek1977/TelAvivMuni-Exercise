@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using TelAvivMuni_Exercise.Models;
+using TelAvivMuni_Exercise.Infrastructure;
 
-namespace TelAvivMuni_Exercise.Infrastructure
+namespace TelAvivMuni_Exercise.Core
 {
     /// <summary>
     /// Coordinates operations across repositories and manages persistence.

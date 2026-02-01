@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using TelAvivMuni_Exercise.Models;
 
-namespace TelAvivMuni_Exercise.Infrastructure
+namespace TelAvivMuni_Exercise.Core
 {
     /// <summary>
     /// Interface for ViewModels that provide custom column configuration for DataGrids.

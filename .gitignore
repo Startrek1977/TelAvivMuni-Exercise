@@ -1,3 +1,4 @@
 /.vs
-/TelAvivMuni-Exercise/obj
+**/obj/
+**/bin/
 /nul
