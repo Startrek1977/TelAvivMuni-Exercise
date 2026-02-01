@@ -119,7 +119,7 @@ namespace TelAvivMuni_Exercise.ViewModels
         /// </summary>
         public DataBrowserDialogViewModel(IEnumerable? items, object? currentSelection, ObservableCollection<BrowserColumn>? columns = null)
         {
-            _items = new ObservableCollection<object>();
+            _items = [];
             _columns = columns;
             _pendingItems = items;
             _pendingSelection = currentSelection;
@@ -168,7 +168,7 @@ namespace TelAvivMuni_Exercise.ViewModels
             foreach (var property in type.GetProperties())
             {
                 var value = property.GetValue(item);
-                if (value != null && value.ToString()?.ToLower().Contains(searchLower) == true)
+                if (value != null && value.ToString()?.ToLower().Contains(searchLower, StringComparison.CurrentCultureIgnoreCase) == true)
                     return true;
             }
 
