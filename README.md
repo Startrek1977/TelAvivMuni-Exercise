@@ -130,70 +130,78 @@ TelAvivMuni-Exercise.Tests
     └── → TelAvivMuni-Exercise.Infrastructure
 ```
 
-## Project Structure (Legacy - for reference)
-
-The original project structure before separation:
+## Project Structure
 
 ```
-TelAvivMuni-Exercise/
-├── Controls/
-│   ├── DataBrowserBox.cs          # Custom control implementation
-│   └── DataBrowserDialog.xaml     # Browse dialog UI
-├── ViewModels/
-│   ├── MainWindowViewModel.cs     # Main window view model
-│   └── DataBrowserDialogViewModel.cs # Dialog view model
-├── Services/
-│   ├── IDialogService.cs          # Dialog service interface
-│   └── DialogService.cs           # Dialog service implementation
-├── Infrastructure/
-│   ├── Behaviors/                 # WPF Attached Behaviors (MVVM pattern)
-│   │   ├── AutoFocusSearchBehavior.cs    # Auto-focus on typing
-│   │   ├── DataGridEnterBehavior.cs      # Handle Enter key in DataGrid
-│   │   ├── DataGridScrollIntoViewBehavior.cs # Scroll to selected item
-│   │   ├── DialogCloseBehavior.cs        # MVVM-friendly dialog closing
-│   │   └── EscapeClearBehavior.cs        # Clear text on Escape key
-│   ├── IColumnConfiguration.cs    # Interface for custom column configuration
-│   ├── ICommand.Extension.cs      # ICommand extension methods
-│   ├── IDataStore.cs              # Data persistence abstraction
-│   ├── IDeferredInitialization.cs # Interface for View-First initialization
-│   ├── IEntity.cs                 # Base entity interface
-│   ├── IFactory.cs                # Factory interface
-│   ├── IRepositoryT.cs            # Generic repository interface
-│   ├── ISerializer.cs             # Serialization abstraction
-│   ├── IUnitOfWork.cs             # Unit of Work interface
-│   ├── FileDataStore.cs           # File-based data store
-│   ├── JsonSerializer.cs          # JSON serialization implementation
-│   ├── OperationResult.cs         # Operation result with error messages
-│   ├── ProductRepository.cs       # Product-specific repository
-│   ├── UnitOfWork.cs              # Unit of Work implementation
-│   └── ViewModelLocator.cs        # DI-based ViewModel resolution for XAML
-├── Models/
-│   ├── Product.cs                 # Product data model
-│   └── BrowserColumn.cs           # Column configuration model
-├── Themes/
-│   ├── Generic.xaml               # Control template and styles
-│   ├── Theme1.xaml                # Theme variant 1
-│   └── Theme2.xaml                # Theme variant 2
-├── Data/
-│   └── Products.json              # Sample product data
-├── MainWindow.xaml                # Main application window
-├── App.xaml                       # Application entry point
+TelAvivMuni-Exercise.sln
 │
-TelAvivMuni-Exercise.Tests/        # Unit test project
-├── Infrastructure/
-│   ├── ProductRepositoryTests.cs  # Repository unit tests
-│   ├── UnitOfWorkTests.cs         # Unit of Work tests
-│   ├── FileDataStoreTests.cs      # Data store tests
-│   ├── JsonSerializerTests.cs     # Serializer tests
-│   ├── OperationResultTests.cs    # OperationResult unit tests
-│   └── IEntityTests.cs            # IEntity interface tests
-├── Models/
-│   └── BrowserColumnTests.cs      # BrowserColumn model tests
-└── ViewModels/
-    ├── MainWindowViewModelTests.cs           # MainWindow ViewModel tests
-    └── DataBrowserDialogViewModelTests.cs    # Dialog ViewModel tests
+├── TelAvivMuni-Exercise.Infrastructure/     # Generic, reusable infrastructure
+│   ├── Data/
+│   │   └── FileDataStore.cs                 # File-based data store
+│   ├── IDataStore.cs                        # Data persistence abstraction
+│   ├── IDeferredInitialization.cs           # View-First initialization interface
+│   ├── IEntity.cs                           # Base entity interface
+│   ├── IRepositoryT.cs                      # Generic repository interface
+│   ├── ISerializer.cs                       # Serialization abstraction
+│   ├── JsonSerializer.cs                    # JSON serialization implementation
+│   └── OperationResult.cs                   # Operation result with error messages
 │
-coverlet.runsettings               # Code coverage configuration
+├── TelAvivMuni-Exercise.Core/               # Application-specific business logic
+│   ├── Config/
+│   │   └── IColumnConfiguration.cs          # Column configuration interface
+│   ├── Contracts/
+│   │   └── IUnitOfWork.cs                   # Unit of Work interface
+│   ├── Models/
+│   │   ├── BrowserColumn.cs                 # Column configuration model
+│   │   └── Product.cs                       # Product data model
+│   ├── Services/
+│   │   └── IDialogService.cs                # Dialog service interface
+│   ├── ProductRepository.cs                 # Product-specific repository
+│   └── UnitOfWork.cs                        # Unit of Work implementation
+│
+├── TelAvivMuni-Exercise/                    # WPF Application
+│   ├── Controls/
+│   │   ├── DataBrowserBox.cs                # Custom reusable control
+│   │   └── DataBrowserDialog.xaml(.cs)      # Browse dialog UI
+│   ├── Infrastructure/
+│   │   ├── Behaviors/                       # WPF Attached Behaviors (MVVM)
+│   │   │   ├── AutoFocusSearchBehavior.cs
+│   │   │   ├── DataGridEnterBehavior.cs
+│   │   │   ├── DataGridScrollIntoViewBehavior.cs
+│   │   │   ├── DialogCloseBehavior.cs
+│   │   │   └── EscapeClearBehavior.cs
+│   │   ├── ICommand.Extension.cs            # ICommand extension methods
+│   │   ├── IFactory.cs                      # Factory interface
+│   │   └── ViewModelLocator.cs              # DI-based ViewModel resolution
+│   ├── Services/
+│   │   └── DialogService.cs                 # Dialog service implementation
+│   ├── Themes/
+│   │   ├── Generic.xaml                     # Control templates and styles
+│   │   ├── Theme1.xaml
+│   │   └── Theme2.xaml
+│   ├── ViewModels/
+│   │   ├── DataBrowserDialogViewModel.cs    # Dialog view model
+│   │   └── MainWindowViewModel.cs           # Main window view model
+│   ├── Data/
+│   │   └── Products.json                    # Sample product data
+│   ├── App.xaml(.cs)                        # Application entry point with DI
+│   └── MainWindow.xaml(.cs)                 # Main application window
+│
+├── TelAvivMuni-Exercise.Tests/              # Unit test project
+│   ├── Infrastructure/
+│   │   ├── FileDataStoreTests.cs
+│   │   ├── IEntityTests.cs
+│   │   ├── JsonSerializerTests.cs
+│   │   ├── OperationResultTests.cs
+│   │   ├── ProductRepositoryTests.cs
+│   │   └── UnitOfWorkTests.cs
+│   ├── Models/
+│   │   └── BrowserColumnTests.cs
+│   └── ViewModels/
+│       ├── DataBrowserDialogViewModelTests.cs
+│       └── MainWindowViewModelTests.cs
+│
+└── coverlet.runsettings                     # Code coverage configuration
 ```
 
 ## How to Use
@@ -408,7 +416,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **141 unit tests** with **96.6% line coverage** on all testable code:
+The test suite includes **141 unit tests** with **95.5% line coverage** on all testable code:
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -475,9 +483,9 @@ The test suite includes **141 unit tests** with **96.6% line coverage** on all t
 
 ### Test Coverage (v4.0)
 - **141 unit tests** - Comprehensive test coverage for all business logic
-- **96.6% line coverage** - 343 of 355 coverable lines covered
-- **96.3% method coverage** - 105 of 109 methods covered
-- **91% branch coverage** - 102 of 112 branches covered
+- **95.5% line coverage** - 513 of 537 coverable lines covered
+- **95.1% method coverage** - 157 of 165 methods covered
+- **90% branch coverage** - 153 of 170 branches covered
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 
