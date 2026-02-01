@@ -64,8 +64,9 @@ Generic, reusable infrastructure code that can be used in any project:
   - `IEntity` - Base entity interface
   - `ISerializer<T>` - Serialization abstraction
   - `IDeferredInitialization` - View-First initialization interface
-- **Implementations:**
+- **Data:**
   - `FileDataStore<T>` - File-based data store with thread-safe async operations
+- **Implementations:**
   - `JsonSerializer<T>` - JSON serialization using System.Text.Json
   - `OperationResult` - Operation result with success/failure states
 
@@ -77,9 +78,11 @@ Application-specific but reusable business logic and models:
 - **Repositories:**
   - `ProductRepository` - Product-specific repository implementation
   - `UnitOfWork` - Unit of Work coordination pattern
-- **Interfaces:**
-  - `IDialogService` - Dialog service interface
+- **Contracts:**
   - `IUnitOfWork` - Unit of Work interface
+- **Services:**
+  - `IDialogService` - Dialog service interface
+- **Config:**
   - `IColumnConfiguration` - Column configuration interface
 
 ### TelAvivMuni-Exercise (Main WPF Application)

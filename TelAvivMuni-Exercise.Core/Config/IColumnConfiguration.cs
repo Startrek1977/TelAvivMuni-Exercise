@@ -19,4 +19,3 @@ namespace TelAvivMuni_Exercise.Core
         bool HasCustomColumns { get; }
     }
 }
-}
