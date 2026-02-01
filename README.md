@@ -47,10 +47,15 @@ This project is a home exercise created as part of an interview for the Software
 - **Language:** C# 12
 - **UI Pattern:** MVVM (Model-View-ViewModel)
 - **Libraries:**
-  - CommunityToolkit.Mvvm - For MVVM infrastructure
+  - CommunityToolkit.Mvvm 8.4.0 - For MVVM infrastructure
+  - Microsoft.Extensions.DependencyInjection 10.0.2 - IoC container
+  - Microsoft.Extensions.DependencyInjection.Abstractions 10.0.2 - DI abstractions
+  - Microsoft.Extensions.Hosting 10.0.2 - Host builder for DI setup
+  - Microsoft.Xaml.Behaviors.Wpf 1.1.135 - Attached behaviors
   - System.Text.Json - For JSON serialization
-  - xUnit - For unit testing
-  - Moq - For mocking in tests
+  - xUnit 2.7.0 - For unit testing
+  - Moq 4.20.70 - For mocking in tests
+  - coverlet.collector 6.0.1 - For code coverage
 
 ## Project Structure
 
@@ -72,23 +77,28 @@ TelAvivMuni-Exercise/
 │   │   ├── DataGridScrollIntoViewBehavior.cs # Scroll to selected item
 │   │   ├── DialogCloseBehavior.cs        # MVVM-friendly dialog closing
 │   │   └── EscapeClearBehavior.cs        # Clear text on Escape key
-│   ├── IDeferredInitialization.cs # Interface for View-First initialization
 │   ├── IColumnConfiguration.cs    # Interface for custom column configuration
-│   ├── IRepository.cs             # Generic repository interface
-│   ├── IUnitOfWork.cs             # Unit of Work interface
+│   ├── ICommand.Extension.cs      # ICommand extension methods
 │   ├── IDataStore.cs              # Data persistence abstraction
+│   ├── IDeferredInitialization.cs # Interface for View-First initialization
+│   ├── IEntity.cs                 # Base entity interface
+│   ├── IFactory.cs                # Factory interface
+│   ├── IRepositoryT.cs            # Generic repository interface
 │   ├── ISerializer.cs             # Serialization abstraction
-│   ├── ProductRepository.cs       # Product-specific repository
-│   ├── UnitOfWork.cs              # Unit of Work implementation
+│   ├── IUnitOfWork.cs             # Unit of Work interface
 │   ├── FileDataStore.cs           # File-based data store
 │   ├── JsonSerializer.cs          # JSON serialization implementation
 │   ├── OperationResult.cs         # Operation result with error messages
+│   ├── ProductRepository.cs       # Product-specific repository
+│   ├── UnitOfWork.cs              # Unit of Work implementation
 │   └── ViewModelLocator.cs        # DI-based ViewModel resolution for XAML
 ├── Models/
 │   ├── Product.cs                 # Product data model
 │   └── BrowserColumn.cs           # Column configuration model
 ├── Themes/
-│   └── Generic.xaml               # Control template and styles
+│   ├── Generic.xaml               # Control template and styles
+│   ├── Theme1.xaml                # Theme variant 1
+│   └── Theme2.xaml                # Theme variant 2
 ├── Data/
 │   └── Products.json              # Sample product data
 ├── MainWindow.xaml                # Main application window
@@ -323,7 +333,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **141 unit tests** with **100% code coverage** on all testable code:
+The test suite includes **141 unit tests** with **96.6% line coverage** on all testable code:
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -388,11 +398,11 @@ The test suite includes **141 unit tests** with **100% code coverage** on all te
 
 ## Recent Improvements
 
-### 100% Test Coverage (v4.0)
+### Test Coverage (v4.0)
 - **141 unit tests** - Comprehensive test coverage for all business logic
-- **100% line coverage** - All testable code paths are covered
-- **100% method coverage** - Every method in testable classes is tested
-- **94.4% branch coverage** - Nearly all conditional branches are tested
+- **96.6% line coverage** - 343 of 355 coverable lines covered
+- **96.3% method coverage** - 105 of 109 methods covered
+- **91% branch coverage** - 102 of 112 branches covered
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 
