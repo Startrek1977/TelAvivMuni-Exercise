@@ -2,8 +2,13 @@ name: Build and Release
 
 on:
   release:
-    types: [created, published]
+    types: [published]
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/build-and-release.yml'
 
 permissions:
   contents: write
@@ -13,6 +18,22 @@ jobs:
     runs-on: windows-latest
     
     steps:
+      - name: Debug Event Information
+        run: |
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Event Action: ${{ github.event.action }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          if ("${{ github.event_name }}" -eq "release") {
+            echo "Release Tag: ${{ github.event.release.tag_name }}"
+            echo "Release Name: ${{ github.event.release.name }}"
+            echo "Release ID: ${{ github.event.release.id }}"
+            echo "Is Prerelease: ${{ github.event.release.prerelease }}"
+            echo "Is Draft: ${{ github.event.release.draft }}"
+          }
+        shell: pwsh
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -48,18 +69,36 @@ jobs:
 
       - name: Create zip archives
         run: |
+          # Determine version tag
+          if ("${{ github.event_name }}" -eq "release") {
+            $version = "${{ github.event.release.tag_name }}"
+          } else {
+            $version = "${{ github.sha }}".Substring(0, 7)
+          }
+          
+          echo "Using version: $version"
+          
           # Create framework-dependent zip (requires .NET 8 Runtime installed)
-          Compress-Archive -Path ./publish/framework-dependent/* -DestinationPath TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-framework-dependent.zip
+          Compress-Archive -Path ./publish/framework-dependent/* -DestinationPath "TelAvivMuni-Exercise-${version}-framework-dependent.zip"
           
           # Create self-contained zip (includes .NET runtime, larger but no dependencies)
-          Compress-Archive -Path ./publish/self-contained/* -DestinationPath TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-win-x64.zip
+          Compress-Archive -Path ./publish/self-contained/* -DestinationPath "TelAvivMuni-Exercise-${version}-win-x64.zip"
         shell: pwsh
 
       - name: Upload release assets
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-framework-dependent.zip
-            TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-win-x64.zip
+            TelAvivMuni-Exercise-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifacts (for testing)
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            TelAvivMuni-Exercise-*.zip
+          retention-days: 7
