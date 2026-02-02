@@ -26,17 +26,39 @@ jobs:
       - name: Build solution
         run: dotnet build TelAvivMuni-Exercise.sln --configuration Release --no-restore
 
-      - name: Publish application
-        run: dotnet publish TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj --configuration Release --output ./publish --no-build
-
-      - name: Create zip archive
+      - name: Publish application (Framework-dependent)
         run: |
-          Compress-Archive -Path ./publish/* -DestinationPath TelAvivMuni-Exercise-binaries.zip
+          dotnet publish TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj `
+            --configuration Release `
+            --output ./publish/framework-dependent `
+            --no-build `
+            --self-contained false
         shell: pwsh
 
-      - name: Upload release asset
+      - name: Publish application (Self-contained)
+        run: |
+          dotnet publish TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj `
+            --configuration Release `
+            --output ./publish/self-contained `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=false
+        shell: pwsh
+
+      - name: Create zip archives
+        run: |
+          # Create framework-dependent zip (requires .NET 8 Runtime installed)
+          Compress-Archive -Path ./publish/framework-dependent/* -DestinationPath TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-framework-dependent.zip
+          
+          # Create self-contained zip (includes .NET runtime, larger but no dependencies)
+          Compress-Archive -Path ./publish/self-contained/* -DestinationPath TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-win-x64.zip
+        shell: pwsh
+
+      - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
-          files: TelAvivMuni-Exercise-binaries.zip
+          files: |
+            TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-framework-dependent.zip
+            TelAvivMuni-Exercise-${{ github.event.release.tag_name }}-win-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
