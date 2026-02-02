@@ -1,0 +1,42 @@
+name: Build and Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore TelAvivMuni-Exercise.sln
+
+      - name: Build solution
+        run: dotnet build TelAvivMuni-Exercise.sln --configuration Release --no-restore
+
+      - name: Publish application
+        run: dotnet publish TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj --configuration Release --output ./publish --no-build
+
+      - name: Create zip archive
+        run: |
+          Compress-Archive -Path ./publish/* -DestinationPath TelAvivMuni-Exercise-binaries.zip
+        shell: pwsh
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: TelAvivMuni-Exercise-binaries.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
