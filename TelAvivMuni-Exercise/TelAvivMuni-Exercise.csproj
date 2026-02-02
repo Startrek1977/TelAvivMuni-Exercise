@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TelAvivMuni-Exercise.Infrastructure\TelAvivMuni-Exercise.Infrastructure.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Core\TelAvivMuni-Exercise.Core.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Core.Contracts\TelAvivMuni-Exercise.Core.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

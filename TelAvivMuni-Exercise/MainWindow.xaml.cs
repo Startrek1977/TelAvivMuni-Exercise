@@ -6,9 +6,9 @@ namespace TelAvivMuni_Exercise;
 [ExcludeFromCodeCoverage]
 public partial class MainWindow : Window
 {
-    public MainWindow()
-    {
-        InitializeComponent();
-        // No ViewModel reference here - it's bound in XAML
-    }
+	public MainWindow()
+	{
+		InitializeComponent();
+		// No ViewModel reference here - it's bound in XAML
+	}
 }

@@ -54,6 +54,8 @@ This project is a home exercise created as part of an interview for the Software
   - Microsoft.Xaml.Behaviors.Wpf 1.1.135 - Attached behaviors
   - System.Text.Json - For JSON serialization
   - xUnit 2.7.0 - For unit testing
+  - xunit.runner.visualstudio 2.5.7 - Test runner for Visual Studio
+  - Microsoft.NET.Test.Sdk 17.9.0 - Test platform
   - Moq 4.20.70 - For mocking in tests
   - coverlet.collector 6.0.1 - For code coverage
 
@@ -137,27 +139,33 @@ TelAvivMuni-Exercise.sln
 │
 ├── TelAvivMuni-Exercise.Infrastructure/     # Generic, reusable infrastructure
 │   ├── Data/
-│   │   └── FileDataStore.cs                 # File-based data store
-│   ├── IDataStore.cs                        # Data persistence abstraction
-│   ├── IDeferredInitialization.cs           # View-First initialization interface
-│   ├── IEntity.cs                           # Base entity interface
-│   ├── IRepositoryT.cs                      # Generic repository interface
-│   ├── ISerializer.cs                       # Serialization abstraction
-│   ├── JsonSerializer.cs                    # JSON serialization implementation
-│   └── OperationResult.cs                   # Operation result with error messages
+│   │   ├── FileDataStore.cs                 # File-based data store
+│   │   └── IDataStore.cs                    # Data persistence abstraction
+│   ├── Models/
+│   │   └── IEntity.cs                       # Base entity interface
+│   ├── Patterns/
+│   │   └── IDeferredInitialization.cs       # View-First initialization interface
+│   └── Serializers/
+│       ├── ISerializer.cs                   # Serialization abstraction
+│       └── JsonSerializer.cs                # JSON serialization implementation
 │
-├── TelAvivMuni-Exercise.Core/               # Application-specific business logic
+├── TelAvivMuni-Exercise.Core.Contracts/     # Shared contracts and models
 │   ├── Config/
 │   │   └── IColumnConfiguration.cs          # Column configuration interface
-│   ├── Contracts/
-│   │   └── IUnitOfWork.cs                   # Unit of Work interface
 │   ├── Models/
 │   │   ├── BrowserColumn.cs                 # Column configuration model
+│   │   ├── OperationResult.cs               # Operation result with error messages
 │   │   └── Product.cs                       # Product data model
-│   ├── Services/
-│   │   └── IDialogService.cs                # Dialog service interface
-│   ├── ProductRepository.cs                 # Product-specific repository
-│   └── UnitOfWork.cs                        # Unit of Work implementation
+│   ├── Patterns/
+│   │   ├── IRepositoryT.cs                  # Generic repository interface
+│   │   └── IUnitOfWork.cs                   # Unit of Work interface
+│   └── Services/
+│       └── IDialogService.cs                # Dialog service interface
+│
+├── TelAvivMuni-Exercise.Core/               # Application-specific business logic
+│   └── Patterns/
+│       ├── ProductRepository.cs             # Product-specific repository
+│       └── UnitOfWork.cs                    # Unit of Work implementation
 │
 ├── TelAvivMuni-Exercise/                    # WPF Application
 │   ├── Controls/
@@ -171,7 +179,6 @@ TelAvivMuni-Exercise.sln
 │   │   │   ├── DialogCloseBehavior.cs
 │   │   │   └── EscapeClearBehavior.cs
 │   │   ├── ICommand.Extension.cs            # ICommand extension methods
-│   │   ├── IFactory.cs                      # Factory interface
 │   │   └── ViewModelLocator.cs              # DI-based ViewModel resolution
 │   ├── Services/
 │   │   └── DialogService.cs                 # Dialog service implementation
@@ -416,7 +423,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **141 unit tests** with **95.5% line coverage** on all testable code:
+The test suite includes **141 unit tests** with **93.1% line coverage** on all testable code:
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -483,9 +490,9 @@ The test suite includes **141 unit tests** with **95.5% line coverage** on all t
 
 ### Test Coverage (v4.0)
 - **141 unit tests** - Comprehensive test coverage for all business logic
-- **95.5% line coverage** - 513 of 537 coverable lines covered
-- **95.1% method coverage** - 157 of 165 methods covered
-- **90% branch coverage** - 153 of 170 branches covered
+- **93.1% line coverage** - 164 of 176 coverable lines covered
+- **92.8% method coverage** - 52 of 56 methods covered
+- **82.8% branch coverage** - 53 of 64 branches covered
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 

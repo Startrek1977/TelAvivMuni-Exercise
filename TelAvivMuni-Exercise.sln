@@ -11,6 +11,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelAvivMuni-Exercise.Infras
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelAvivMuni-Exercise.Core", "TelAvivMuni-Exercise.Core\TelAvivMuni-Exercise.Core.csproj", "{0FA0A3E7-0DA6-4D96-927C-BD90BE3B1989}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelAvivMuni-Exercise.Core.Contracts", "TelAvivMuni-Exercise.Core.Contracts\TelAvivMuni-Exercise.Core.Contracts.csproj", "{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,8 +76,23 @@ Global
 		{0FA0A3E7-0DA6-4D96-927C-BD90BE3B1989}.Release|x64.Build.0 = Release|Any CPU
 		{0FA0A3E7-0DA6-4D96-927C-BD90BE3B1989}.Release|x86.ActiveCfg = Release|Any CPU
 		{0FA0A3E7-0DA6-4D96-927C-BD90BE3B1989}.Release|x86.Build.0 = Release|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Debug|x64.Build.0 = Debug|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Debug|x86.Build.0 = Debug|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Release|x64.ActiveCfg = Release|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Release|x64.Build.0 = Release|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Release|x86.ActiveCfg = Release|Any CPU
+		{86F1F2F4-8FA6-8CC4-4941-B2CB894F4262}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AF793E6E-F88E-4CC6-B3C6-4C0B1F7277BF}
 	EndGlobalSection
 EndGlobal
