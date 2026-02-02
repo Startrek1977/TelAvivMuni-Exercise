@@ -3,6 +3,7 @@ name: Build and Release
 on:
   release:
     types: [created, published]
+  workflow_dispatch:
 
 permissions:
   contents: write
