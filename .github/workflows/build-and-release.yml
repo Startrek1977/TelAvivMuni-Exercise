@@ -1,18 +1,104 @@
 name: Build and Release
 
 on:
+  release:
+    types: [created, published]
+  workflow_dispatch:
   push:
     branches:
       - main
-  release:
-    types: [created, published]
+    paths:
+      - '.github/workflows/build-and-release.yml'
+
+permissions:
+  contents: write
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-upload:
+    runs-on: windows-latest
+    
     steps:
+      - name: Debug Event Information
+        run: |
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Event Action: ${{ github.event.action }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          if ("${{ github.event_name }}" -eq "release") {
+            echo "Release Tag: ${{ github.event.release.tag_name }}"
+            echo "Release Name: ${{ github.event.release.name }}"
+            echo "Release ID: ${{ github.event.release.id }}"
+            echo "Is Prerelease: ${{ github.event.release.prerelease }}"
+            echo "Is Draft: ${{ github.event.release.draft }}"
+          }
+        shell: pwsh
+
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build
-        run: echo "Building..."
-      - name: Release
-        run: echo "Releasing..."
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore TelAvivMuni-Exercise.sln
+
+      - name: Build solution
+        run: dotnet build TelAvivMuni-Exercise.sln --configuration Release --no-restore
+
+      - name: Publish application (Framework-dependent)
+        run: |
+          dotnet publish TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj `
+            --configuration Release `
+            --output ./publish/framework-dependent `
+            --no-build `
+            --self-contained false
+        shell: pwsh
+
+      - name: Publish application (Self-contained)
+        run: |
+          dotnet publish TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj `
+            --configuration Release `
+            --output ./publish/self-contained `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=false
+        shell: pwsh
+
+      - name: Create zip archives
+        run: |
+          # Determine version tag
+          if ("${{ github.event_name }}" -eq "release") {
+            $version = "${{ github.event.release.tag_name }}"
+          } else {
+            $version = "${{ github.sha }}".Substring(0, 7)
+          }
+          
+          echo "Using version: $version"
+          
+          # Create framework-dependent zip (requires .NET 8 Runtime installed)
+          Compress-Archive -Path ./publish/framework-dependent/* -DestinationPath "TelAvivMuni-Exercise-${version}-framework-dependent.zip"
+          
+          # Create self-contained zip (includes .NET runtime, larger but no dependencies)
+          Compress-Archive -Path ./publish/self-contained/* -DestinationPath "TelAvivMuni-Exercise-${version}-win-x64.zip"
+        shell: pwsh
+
+      - name: Upload release assets
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            TelAvivMuni-Exercise-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifacts (for testing)
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            TelAvivMuni-Exercise-*.zip
+          retention-days: 7
