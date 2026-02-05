@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using TelAvivMuni_Exercise.Core.Contracts;
 
@@ -35,6 +36,30 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			await using var context = await _contextFactory.CreateDbContextAsync();
 			return await context.Set<TEntity>().ToArrayAsync();
 		}
+		catch (SqlException ex)
+		{
+			throw new InvalidOperationException(
+				$"Database connection failed: {ex.Message}. Please check your connection string and ensure SQL Server is running.",
+				ex);
+		}
+		catch (TimeoutException ex)
+		{
+			throw new InvalidOperationException(
+				$"Database operation timed out: {ex.Message}. The server may be overloaded or unreachable.",
+				ex);
+		}
+		catch (DbUpdateException ex)
+		{
+			throw new InvalidOperationException(
+				$"Database operation failed: {ex.Message}",
+				ex);
+		}
+		catch (Exception ex) when (ex is not InvalidOperationException)
+		{
+			throw new InvalidOperationException(
+				$"An unexpected error occurred while loading data: {ex.Message}",
+				ex);
+		}
 		finally
 		{
 			_semaphore.Release();
@@ -61,6 +86,30 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			await context.SaveChangesAsync();
 
 			return entityArray.Length;
+		}
+		catch (SqlException ex)
+		{
+			throw new InvalidOperationException(
+				$"Database connection failed: {ex.Message}. Please check your connection string and ensure SQL Server is running.",
+				ex);
+		}
+		catch (TimeoutException ex)
+		{
+			throw new InvalidOperationException(
+				$"Database operation timed out: {ex.Message}. The server may be overloaded or unreachable.",
+				ex);
+		}
+		catch (DbUpdateException ex)
+		{
+			throw new InvalidOperationException(
+				$"Database update failed: {ex.Message}. This may be due to constraint violations or data integrity issues.",
+				ex);
+		}
+		catch (Exception ex) when (ex is not InvalidOperationException and not ArgumentNullException)
+		{
+			throw new InvalidOperationException(
+				$"An unexpected error occurred while saving data: {ex.Message}",
+				ex);
 		}
 		finally
 		{
