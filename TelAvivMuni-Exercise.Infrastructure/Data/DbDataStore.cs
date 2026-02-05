@@ -43,15 +43,9 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			throw new InvalidOperationException(
 				$"Database error occurred while loading data: {ex.Message}", ex);
 		}
-		catch (DbUpdateException ex)
+		catch (Exception ex) when (ex is not InvalidOperationException and not OperationCanceledException)
 		{
-			// Handle EF Core update exceptions (shouldn't occur in Load, but handle defensively)
-			throw new InvalidOperationException(
-				$"Database operation failed while loading data: {ex.Message}", ex);
-		}
-		catch (Exception ex) when (ex is not InvalidOperationException)
-		{
-			// Handle any other unexpected exceptions
+			// Handle any other unexpected exceptions (network issues, etc.)
 			throw new InvalidOperationException(
 				$"Unexpected error occurred while loading data: {ex.Message}", ex);
 		}
@@ -81,12 +75,6 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 
 			return entityArray.Length;
 		}
-		catch (DbUpdateException ex)
-		{
-			// Handle constraint violations, unique key conflicts, foreign key violations
-			throw new InvalidOperationException(
-				$"Database constraint violation or update error occurred while saving data: {ex.Message}", ex);
-		}
 		catch (SqlException ex)
 		{
 			// Handle SQL Server specific errors including deadlocks and timeouts
@@ -101,7 +89,28 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			
 			throw new InvalidOperationException(errorMessage, ex);
 		}
-		catch (Exception ex) when (ex is not InvalidOperationException and not ArgumentNullException)
+		catch (DbUpdateException ex)
+		{
+			// Handle constraint violations, unique key conflicts, foreign key violations
+			// Check if the inner exception is a SqlException for more specific error messages
+			if (ex.InnerException is SqlException sqlEx)
+			{
+				var errorMessage = sqlEx.Number switch
+				{
+					-2 => "Database operation timed out. The server might be busy or unreachable.",
+					1205 => "Database deadlock detected. Please retry the operation.",
+					2601 or 2627 => "Cannot insert duplicate data. A unique constraint was violated.",
+					547 => "Cannot complete operation due to foreign key constraint violation.",
+					_ => $"Database error occurred while saving data: {sqlEx.Message}"
+				};
+				
+				throw new InvalidOperationException(errorMessage, ex);
+			}
+			
+			throw new InvalidOperationException(
+				$"Database constraint violation or update error occurred while saving data: {ex.Message}", ex);
+		}
+		catch (Exception ex) when (ex is not InvalidOperationException and not ArgumentNullException and not OperationCanceledException)
 		{
 			// Handle any other unexpected exceptions (network issues, memory issues, etc.)
 			throw new InvalidOperationException(
