@@ -230,6 +230,37 @@ TelAvivMuni-Exercise.sln
 └── coverlet.runsettings                     # Code coverage configuration
 ```
 
+## Configuration
+
+### Database Connection String
+
+The application uses a SQL Server database for data persistence. The connection string is configured in `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True"
+  }
+}
+```
+
+**Configuration Files:**
+- `appsettings.json` - Default configuration for all environments
+- `appsettings.Development.json` - Development-specific overrides (optional)
+
+**To configure for your environment:**
+1. Update the connection string in `appsettings.json` to point to your SQL Server instance
+2. For development, you can create `appsettings.Development.json` with your local settings
+3. The application uses `Host.CreateDefaultBuilder()` which automatically loads configuration files based on the environment
+
+**Example connection strings:**
+```
+Local SQL Server Express: Server=localhost\\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True
+Remote SQL Server: Server=myserver.example.com;Database=TelAvivMuni;User Id=myuser;Password=mypassword;TrustServerCertificate=True
+```
+
+**Note:** Never commit sensitive credentials (usernames/passwords) to source control. Use environment-specific configuration files or secure configuration providers for production deployments.
+
 ## How to Use
 
 ### 1. Using the DataBrowserBox Control
