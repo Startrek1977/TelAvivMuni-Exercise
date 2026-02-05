@@ -39,19 +39,13 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 		catch (SqlException ex)
 		{
 			throw new InvalidOperationException(
-				$"Database connection failed: {ex.Message}. Please check your connection string and ensure SQL Server is running.",
+				$"Database connection failed: {ex.Message}. Please check your connection string and ensure the database server is running.",
 				ex);
 		}
 		catch (TimeoutException ex)
 		{
 			throw new InvalidOperationException(
 				$"Database operation timed out: {ex.Message}. The server may be overloaded or unreachable.",
-				ex);
-		}
-		catch (DbUpdateException ex)
-		{
-			throw new InvalidOperationException(
-				$"Database operation failed: {ex.Message}",
 				ex);
 		}
 		catch (Exception ex) when (ex is not InvalidOperationException)
@@ -90,7 +84,7 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 		catch (SqlException ex)
 		{
 			throw new InvalidOperationException(
-				$"Database connection failed: {ex.Message}. Please check your connection string and ensure SQL Server is running.",
+				$"Database connection failed: {ex.Message}. Please check your connection string and ensure the database server is running.",
 				ex);
 		}
 		catch (TimeoutException ex)
