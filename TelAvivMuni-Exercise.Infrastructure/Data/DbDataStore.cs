@@ -27,6 +27,24 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 		_contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
 	}
 
+	/// <summary>
+	/// Maps SQL Server error codes to user-friendly error messages.
+	/// </summary>
+	/// <param name="errorNumber">The SQL Server error number.</param>
+	/// <param name="defaultMessage">The default message to use if no specific mapping exists.</param>
+	/// <returns>A user-friendly error message.</returns>
+	private static string GetSqlErrorMessage(int errorNumber, string defaultMessage)
+	{
+		return errorNumber switch
+		{
+			-2 => "Database operation timed out. The server might be busy or unreachable.",
+			1205 => "Database deadlock detected. Please retry the operation.",
+			2601 or 2627 => "Cannot insert duplicate data. A unique constraint was violated.",
+			547 => "Cannot complete operation due to foreign key constraint violation.",
+			_ => defaultMessage
+		};
+	}
+
 	/// <inheritdoc />
 	public async Task<TEntity[]> LoadAsync()
 	{
