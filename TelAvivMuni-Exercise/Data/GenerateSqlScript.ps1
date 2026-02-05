@@ -1,4 +1,4 @@
-$json = Get-Content 'D:\WORK\TelAvviMinu-Exercise\TelAvviMinu-Exercise\TelAvivMuni-Exercise\Data\Products.json' | ConvertFrom-Json
+$json = Get-Content 'D:\WORK\TelAvivMuni-Exercise\TelAvivMuni-Exercise\TelAvivMuni-Exercise\Data\Products.json' | ConvertFrom-Json
 
 $sb = [System.Text.StringBuilder]::new()
 
