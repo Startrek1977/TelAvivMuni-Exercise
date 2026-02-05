@@ -48,6 +48,8 @@ This project is a home exercise created as part of an interview for the Software
 - **UI Pattern:** MVVM (Model-View-ViewModel)
 - **Libraries:**
   - CommunityToolkit.Mvvm 8.4.0 - For MVVM infrastructure
+  - Microsoft.EntityFrameworkCore 8.0.12 - ORM for database access
+  - Microsoft.EntityFrameworkCore.SqlServer 8.0.12 - SQL Server provider
   - Microsoft.Extensions.DependencyInjection 10.0.2 - IoC container
   - Microsoft.Extensions.DependencyInjection.Abstractions 10.0.2 - DI abstractions
   - Microsoft.Extensions.Hosting 10.0.2 - Host builder for DI setup
@@ -56,6 +58,7 @@ This project is a home exercise created as part of an interview for the Software
   - xUnit 2.7.0 - For unit testing
   - xunit.runner.visualstudio 2.5.7 - Test runner for Visual Studio
   - Microsoft.NET.Test.Sdk 17.9.0 - Test platform
+  - Microsoft.EntityFrameworkCore.InMemory 8.0.12 - For database testing
   - Moq 4.20.70 - For mocking in tests
   - coverlet.collector 6.0.1 - For code coverage
 
@@ -71,8 +74,9 @@ Generic, reusable infrastructure code that can be used in any project:
   - `IEntity` - Base entity interface
   - `ISerializer<T>` - Serialization abstraction
   - `IDeferredInitialization` - View-First initialization interface
-- **Data:**
+- **Data Stores:**
   - `FileDataStore<T>` - File-based data store with thread-safe async operations
+  - `DbDataStore<TEntity, TContext>` - SQL Server database data store using Entity Framework Core
 - **Implementations:**
   - `JsonSerializer<T>` - JSON serialization using System.Text.Json
   - `OperationResult` - Operation result with success/failure states
@@ -82,6 +86,8 @@ Application-specific but reusable business logic and models:
 - **Models:**
   - `Product` - Product data model implementing IEntity
   - `BrowserColumn` - Column configuration for data browser
+- **Data:**
+  - `AppDbContext` - Entity Framework Core DbContext for SQL Server
 - **Repositories:**
   - `ProductRepository` - Product-specific repository implementation
   - `UnitOfWork` - Unit of Work coordination pattern
@@ -139,6 +145,7 @@ TelAvivMuni-Exercise.sln
 │
 ├── TelAvivMuni-Exercise.Infrastructure/     # Generic, reusable infrastructure
 │   ├── Data/
+│   │   ├── DbDataStore.cs                   # Database data store (EF Core)
 │   │   ├── FileDataStore.cs                 # File-based data store
 │   │   └── IDataStore.cs                    # Data persistence abstraction
 │   ├── Models/
@@ -163,6 +170,8 @@ TelAvivMuni-Exercise.sln
 │       └── IDialogService.cs                # Dialog service interface
 │
 ├── TelAvivMuni-Exercise.Core/               # Application-specific business logic
+│   ├── Data/
+│   │   └── AppDbContext.cs                  # EF Core DbContext
 │   └── Patterns/
 │       ├── ProductRepository.cs             # Product-specific repository
 │       └── UnitOfWork.cs                    # Unit of Work implementation
@@ -196,6 +205,8 @@ TelAvivMuni-Exercise.sln
 │
 ├── TelAvivMuni-Exercise.Tests/              # Unit test project
 │   ├── Infrastructure/
+│   │   ├── AppDbContextTests.cs
+│   │   ├── DbDataStoreTests.cs
 │   │   ├── FileDataStoreTests.cs
 │   │   ├── IEntityTests.cs
 │   │   ├── JsonSerializerTests.cs
@@ -335,13 +346,16 @@ The persistence layer uses Strategy pattern for flexibility:
 ```
 ProductRepository
     └── IDataStore<Product>
-            └── FileDataStore<Product>
-                    └── ISerializer<Product>
-                            └── JsonSerializer<Product>
+            ├── FileDataStore<Product>           # File-based (JSON)
+            │       └── ISerializer<Product>
+            │               └── JsonSerializer<Product>
+            │
+            └── DbDataStore<Product, AppDbContext>  # Database (SQL Server)
+                    └── IDbContextFactory<AppDbContext>
 ```
 
 This allows:
-- Swapping file-based storage for database storage
+- Swapping file-based storage for database storage (just change DI registration)
 - Changing serialization format (JSON → XML) without changing repository
 - Testing with in-memory implementations
 
@@ -423,11 +437,13 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **141 unit tests** with **93.1% line coverage** on all testable code:
+The test suite includes **158 unit tests** with comprehensive coverage on all testable code:
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
-- Data store and serialization
+- Data store and serialization (File and Database)
+- AppDbContext entity operations
+- DbDataStore CRUD operations
 - OperationResult success/failure patterns
 - BrowserColumn model properties
 - DataBrowserDialogViewModel search, filter, and selection logic
@@ -488,11 +504,16 @@ The test suite includes **141 unit tests** with **93.1% line coverage** on all t
 
 ## Recent Improvements
 
+### Database Support (v5.0)
+- **Entity Framework Core 8.0** - Added SQL Server database support
+- **DbDataStore<TEntity, TContext>** - Generic database data store implementing `IDataStore<T>`
+- **AppDbContext** - EF Core DbContext with Product entity configuration
+- **Pluggable persistence** - Switch between file and database storage via DI configuration
+- **158 unit tests** - Expanded test coverage including database operations
+- **InMemory testing** - Database tests use EF Core InMemory provider
+
 ### Test Coverage (v4.0)
-- **141 unit tests** - Comprehensive test coverage for all business logic
-- **93.1% line coverage** - 164 of 176 coverable lines covered
-- **92.8% method coverage** - 52 of 56 methods covered
-- **82.8% branch coverage** - 53 of 64 branches covered
+- **158 unit tests** - Comprehensive test coverage for all business logic
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 

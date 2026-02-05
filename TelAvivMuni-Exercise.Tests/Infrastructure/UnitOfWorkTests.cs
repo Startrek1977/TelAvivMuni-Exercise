@@ -1,6 +1,7 @@
 using System.IO;
 using TelAvivMuni_Exercise.Core;
 using TelAvivMuni_Exercise.Core.Contracts;
+using TelAvivMuni_Exercise.Infrastructure;
 using Xunit;
 
 namespace TelAvivMuni_Exercise.Tests.Infrastructure;
@@ -25,7 +26,7 @@ public class UnitOfWorkTests : IDisposable
 		}
 	}
 
-	private UnitOfWork CreateUnitOfWork() => new UnitOfWork(new ProductRepository() as IRepository<Product>);
+	private UnitOfWork CreateUnitOfWork() => new(new ProductRepository(new FileDataStore<Product>(_testJsonPath, new JsonSerializer<Product>())));
 
 	[Fact]
 	public void Products_ReturnsRepository()

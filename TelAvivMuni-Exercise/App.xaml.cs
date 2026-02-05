@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TelAvivMuni_Exercise.Core;
@@ -34,7 +35,11 @@ public partial class App : Application
 	private static void ConfigureServices(IServiceCollection services)
 	{
 		// Register infrastructure
-		services.AddSingleton<IRepository<Product>, ProductRepository>();
+		services.AddDbContextFactory<AppDbContext>(options =>
+			options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True"));
+		services.AddSingleton<IDataStore<Product>, DbDataStore<Product, AppDbContext>>();
+        services.AddSingleton<IRepository<Product>>(sp => 
+			new ProductRepository(sp.GetRequiredService<IDataStore<Product>>()));
 		services.AddSingleton<IUnitOfWork, UnitOfWork>();
 
 		// Register ViewModels
