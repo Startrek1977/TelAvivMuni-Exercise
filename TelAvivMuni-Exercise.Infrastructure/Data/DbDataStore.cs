@@ -52,9 +52,8 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			await using var context = await _contextFactory.CreateDbContextAsync();
 			var entityArray = entities as TEntity[] ?? entities.ToArray();
 
-			// Clear existing entities (compatible with both SQL Server and InMemory providers)
-			var existingEntities = await context.Set<TEntity>().ToListAsync();
-			context.Set<TEntity>().RemoveRange(existingEntities);
+			// Clear existing entities using a set-based delete for better performance
+			await context.Set<TEntity>().ExecuteDeleteAsync();
 
 			// Add new entities (matches FileDataStore overwrite behavior)
 			context.Set<TEntity>().AddRange(entityArray);
