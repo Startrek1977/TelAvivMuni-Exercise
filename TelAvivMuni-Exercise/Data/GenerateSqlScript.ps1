@@ -74,8 +74,8 @@ for ($i = 0; $i -lt $json.Count; $i += $batchSize) {
 [void]$sb.AppendLine('GO')
 
 # Write to file
-$sb.ToString() | Out-File -FilePath 'D:\WORK\TelAvviMinu-Exercise\TelAvviMinu-Exercise\TelAvivMuni-Exercise\Data\CreateProductsDatabase.sql' -Encoding UTF8
+$sb.ToString() | Out-File -FilePath 'D:\WORK\TelAvivMuni-Exercise\TelAvivMuni-Exercise\TelAvivMuni-Exercise\Data\CreateProductsDatabase.sql' -Encoding UTF8
 
 Write-Host 'SQL script generated successfully!'
-Write-Host ('File: D:\WORK\TelAvviMinu-Exercise\TelAvviMinu-Exercise\TelAvivMuni-Exercise\Data\CreateProductsDatabase.sql')
+Write-Host ('File: D:\WORK\TelAvivMuni-Exercise\TelAvivMuni-Exercise\TelAvivMuni-Exercise\Data\CreateProductsDatabase.sql')
 Write-Host ('Total products: ' + $json.Count)
