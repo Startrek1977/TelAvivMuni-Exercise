@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TelAvivMuni_Exercise.Core.Contracts;
 
 namespace TelAvivMuni_Exercise.Infrastructure;
 

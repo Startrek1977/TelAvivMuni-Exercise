@@ -1,5 +1,4 @@
 using TelAvivMuni_Exercise.Core.Contracts;
-using TelAvivMuni_Exercise.Infrastructure;
 using Xunit;
 
 namespace TelAvivMuni_Exercise.Tests.Infrastructure;

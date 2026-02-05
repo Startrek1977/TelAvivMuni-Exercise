@@ -66,37 +66,37 @@ This project is a home exercise created as part of an interview for the Software
 
 The solution is organized into multiple projects to separate concerns and promote reusability:
 
-### TelAvivMuni-Exercise.Infrastructure
-Generic, reusable infrastructure code that can be used in any project:
+### TelAvivMuni-Exercise.Core.Contracts
+Shared contracts, interfaces, and models used across all projects:
 - **Interfaces:**
-  - `IDataStore<T>` - Data persistence abstraction
+  - `IEntity` - Base entity interface with Id property
   - `IRepository<T>` - Generic repository interface
-  - `IEntity` - Base entity interface
-  - `ISerializer<T>` - Serialization abstraction
-  - `IDeferredInitialization` - View-First initialization interface
-- **Data Stores:**
-  - `FileDataStore<T>` - File-based data store with thread-safe async operations
-  - `DbDataStore<TEntity, TContext>` - SQL Server database data store using Entity Framework Core
-- **Implementations:**
-  - `JsonSerializer<T>` - JSON serialization using System.Text.Json
-  - `OperationResult` - Operation result with success/failure states
-
-### TelAvivMuni-Exercise.Core
-Application-specific but reusable business logic and models:
+  - `IUnitOfWork` - Unit of Work interface
+  - `IDialogService` - Dialog service interface
+  - `IColumnConfiguration` - Column configuration interface
 - **Models:**
   - `Product` - Product data model implementing IEntity
   - `BrowserColumn` - Column configuration for data browser
+  - `OperationResult` - Operation result with success/failure states
+
+### TelAvivMuni-Exercise.Infrastructure
+Data persistence layer with Entity Framework Core support:
 - **Data:**
   - `AppDbContext` - Entity Framework Core DbContext for SQL Server
+  - `IDataStore<T>` - Data persistence abstraction
+  - `FileDataStore<T>` - File-based data store with thread-safe async operations
+  - `DbDataStore<TEntity, TContext>` - SQL Server database data store using Entity Framework Core
+- **Patterns:**
+  - `IDeferredInitialization` - View-First initialization interface
+- **Serializers:**
+  - `ISerializer<T>` - Serialization abstraction
+  - `JsonSerializer<T>` - JSON serialization using System.Text.Json
+
+### TelAvivMuni-Exercise.Core
+Application-specific business logic (no EF Core dependency):
 - **Repositories:**
   - `ProductRepository` - Product-specific repository implementation
   - `UnitOfWork` - Unit of Work coordination pattern
-- **Contracts:**
-  - `IUnitOfWork` - Unit of Work interface
-- **Services:**
-  - `IDialogService` - Dialog service interface
-- **Config:**
-  - `IColumnConfiguration` - Column configuration interface
 
 ### TelAvivMuni-Exercise (Main WPF Application)
 WPF-specific UI code:
@@ -125,11 +125,21 @@ Unit tests for all projects
 
 ### Project Dependencies
 ```
-TelAvivMuni-Exercise (WPF)
-    ├── → TelAvivMuni-Exercise.Core
-    └── → TelAvivMuni-Exercise.Infrastructure
+TelAvivMuni-Exercise.Core.Contracts (no dependencies)
+    └── Shared interfaces, models (IEntity, Product, IRepository<T>, etc.)
+
+TelAvivMuni-Exercise.Infrastructure
+    └── → TelAvivMuni-Exercise.Core.Contracts
+    └── Contains: AppDbContext, DbDataStore, FileDataStore, IDataStore
 
 TelAvivMuni-Exercise.Core
+    ├── → TelAvivMuni-Exercise.Core.Contracts
+    └── → TelAvivMuni-Exercise.Infrastructure
+    └── Contains: ProductRepository, UnitOfWork (no EF Core packages)
+
+TelAvivMuni-Exercise (WPF)
+    ├── → TelAvivMuni-Exercise.Core
+    ├── → TelAvivMuni-Exercise.Core.Contracts
     └── → TelAvivMuni-Exercise.Infrastructure
 
 TelAvivMuni-Exercise.Tests
@@ -143,24 +153,12 @@ TelAvivMuni-Exercise.Tests
 ```
 TelAvivMuni-Exercise.sln
 │
-├── TelAvivMuni-Exercise.Infrastructure/     # Generic, reusable infrastructure
-│   ├── Data/
-│   │   ├── DbDataStore.cs                   # Database data store (EF Core)
-│   │   ├── FileDataStore.cs                 # File-based data store
-│   │   └── IDataStore.cs                    # Data persistence abstraction
-│   ├── Models/
-│   │   └── IEntity.cs                       # Base entity interface
-│   ├── Patterns/
-│   │   └── IDeferredInitialization.cs       # View-First initialization interface
-│   └── Serializers/
-│       ├── ISerializer.cs                   # Serialization abstraction
-│       └── JsonSerializer.cs                # JSON serialization implementation
-│
-├── TelAvivMuni-Exercise.Core.Contracts/     # Shared contracts and models
+├── TelAvivMuni-Exercise.Core.Contracts/     # Shared contracts and models (no dependencies)
 │   ├── Config/
 │   │   └── IColumnConfiguration.cs          # Column configuration interface
 │   ├── Models/
 │   │   ├── BrowserColumn.cs                 # Column configuration model
+│   │   ├── IEntity.cs                       # Base entity interface
 │   │   ├── OperationResult.cs               # Operation result with error messages
 │   │   └── Product.cs                       # Product data model
 │   ├── Patterns/
@@ -169,9 +167,19 @@ TelAvivMuni-Exercise.sln
 │   └── Services/
 │       └── IDialogService.cs                # Dialog service interface
 │
-├── TelAvivMuni-Exercise.Core/               # Application-specific business logic
+├── TelAvivMuni-Exercise.Infrastructure/     # Data persistence layer (EF Core)
 │   ├── Data/
-│   │   └── AppDbContext.cs                  # EF Core DbContext
+│   │   ├── AppDbContext.cs                  # EF Core DbContext for SQL Server
+│   │   ├── DbDataStore.cs                   # Database data store (EF Core)
+│   │   ├── FileDataStore.cs                 # File-based data store
+│   │   └── IDataStore.cs                    # Data persistence abstraction
+│   ├── Patterns/
+│   │   └── IDeferredInitialization.cs       # View-First initialization interface
+│   └── Serializers/
+│       ├── ISerializer.cs                   # Serialization abstraction
+│       └── JsonSerializer.cs                # JSON serialization implementation
+│
+├── TelAvivMuni-Exercise.Core/               # Business logic (no EF Core dependency)
 │   └── Patterns/
 │       ├── ProductRepository.cs             # Product-specific repository
 │       └── UnitOfWork.cs                    # Unit of Work implementation
@@ -503,6 +511,13 @@ The test suite includes **158 unit tests** with comprehensive coverage on all te
 - **No Code-Behind** - All keyboard handling implemented via reusable attached behaviors
 
 ## Recent Improvements
+
+### Architectural Layering Refactor (v6.0)
+- **Moved `IEntity` to Core.Contracts** - Base entity interface now in the contracts layer where it belongs
+- **Moved `AppDbContext` to Infrastructure** - EF Core DbContext consolidated with other persistence code
+- **Core project no longer depends on EF Core** - Clean separation of business logic from infrastructure
+- **Eliminated circular dependencies** - Core.Contracts has no project dependencies
+- **Better layering** - Infrastructure owns all persistence, Core owns business logic patterns
 
 ### Database Support (v5.0)
 - **Entity Framework Core 8.0** - Added SQL Server database support

@@ -1,5 +1,3 @@
-using TelAvivMuni_Exercise.Infrastructure;
-
 namespace TelAvivMuni_Exercise.Core.Contracts;
 
 public class Product : IEntity
