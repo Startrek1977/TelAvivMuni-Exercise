@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TelAvivMuni_Exercise.Core;
@@ -24,7 +25,7 @@ public partial class App : Application
 		_host = Host.CreateDefaultBuilder()
 			.ConfigureServices((context, services) =>
 			{
-				ConfigureServices(services);
+				ConfigureServices(services, context);
 			})
 			.Build();
 
@@ -32,11 +33,15 @@ public partial class App : Application
 		ViewModelLocator.Initialize(_host.Services);
 	}
 
-	private static void ConfigureServices(IServiceCollection services)
+	private static void ConfigureServices(IServiceCollection services, HostBuilderContext context)
 	{
+		// Get connection string from configuration
+		var connectionString = context.Configuration.GetConnectionString("DefaultConnection")
+			?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found in configuration.");
+
 		// Register infrastructure
 		services.AddDbContextFactory<AppDbContext>(options =>
-			options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True"));
+			options.UseSqlServer(connectionString));
 		services.AddSingleton<IDataStore<Product>, DbDataStore<Product, AppDbContext>>();
         services.AddSingleton<IRepository<Product>>(sp => 
 			new ProductRepository(sp.GetRequiredService<IDataStore<Product>>()));

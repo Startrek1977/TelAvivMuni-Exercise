@@ -182,6 +182,38 @@ public class DbDataStoreTests : IDisposable
 		Assert.Equal(999.99m, loaded.Price);
 		Assert.Equal(50, loaded.Stock);
 	}
+
+	[Fact]
+	public async Task LoadAsync_ThrowsInvalidOperationException_WithMeaningfulMessage_OnDatabaseError()
+	{
+		// Arrange - Create a factory that will throw an exception
+		var faultyFactory = new FaultyDbContextFactory<TestDbContext>(new Exception("Simulated database error"));
+		var dataStore = new DbDataStore<Product, TestDbContext>(faultyFactory);
+
+		// Act & Assert
+		var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => dataStore.LoadAsync());
+		Assert.Contains("unexpected error occurred while loading data", exception.Message);
+		Assert.Contains("Simulated database error", exception.Message);
+		Assert.NotNull(exception.InnerException);
+	}
+
+	[Fact]
+	public async Task SaveAsync_ThrowsInvalidOperationException_WithMeaningfulMessage_OnDatabaseError()
+	{
+		// Arrange
+		var faultyFactory = new FaultyDbContextFactory<TestDbContext>(new Exception("Simulated save error"));
+		var dataStore = new DbDataStore<Product, TestDbContext>(faultyFactory);
+		var products = new List<Product>
+		{
+			new() { Id = 1, Name = "Test", Code = "T001", Category = "Cat", Price = 10.00m, Stock = 100 }
+		};
+
+		// Act & Assert
+		var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => dataStore.SaveAsync(products));
+		Assert.Contains("unexpected error occurred while saving data", exception.Message);
+		Assert.Contains("Simulated save error", exception.Message);
+		Assert.NotNull(exception.InnerException);
+	}
 }
 
 /// <summary>
@@ -222,5 +254,24 @@ public class TestDbContextFactory : IDbContextFactory<TestDbContext>
 	public TestDbContext CreateDbContext()
 	{
 		return new TestDbContext(_options);
+	}
+}
+
+/// <summary>
+/// Faulty DbContext factory for testing error handling.
+/// </summary>
+public class FaultyDbContextFactory<TContext> : IDbContextFactory<TContext>
+	where TContext : DbContext
+{
+	private readonly Exception _exceptionToThrow;
+
+	public FaultyDbContextFactory(Exception exceptionToThrow)
+	{
+		_exceptionToThrow = exceptionToThrow;
+	}
+
+	public TContext CreateDbContext()
+	{
+		throw _exceptionToThrow;
 	}
 }

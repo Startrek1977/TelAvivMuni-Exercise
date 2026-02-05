@@ -230,6 +230,37 @@ TelAvivMuni-Exercise.sln
 └── coverlet.runsettings                     # Code coverage configuration
 ```
 
+## Configuration
+
+### Database Connection String
+
+The application uses a SQL Server database for data persistence. The connection string is configured in `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True"
+  }
+}
+```
+
+**Configuration Files:**
+- `appsettings.json` - Default configuration for all environments
+- `appsettings.Development.json` - Development-specific overrides (optional)
+
+**To configure for your environment:**
+1. Update the connection string in `appsettings.json` to point to your SQL Server instance
+2. For development, you can create `appsettings.Development.json` with your local settings
+3. The application uses `Host.CreateDefaultBuilder()` which automatically loads configuration files based on the environment
+
+**Example connection strings:**
+```
+Local SQL Server Express: Server=localhost\\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True
+Remote SQL Server: Server=myserver.example.com;Database=TelAvivMuni;User Id=myuser;Password=mypassword;TrustServerCertificate=True
+```
+
+**Note:** Never commit sensitive credentials (usernames/passwords) to source control. Use environment-specific configuration files or secure configuration providers for production deployments.
+
 ## How to Use
 
 ### 1. Using the DataBrowserBox Control
@@ -527,6 +558,44 @@ The test suite includes **158 unit tests** with comprehensive coverage on all te
 - **158 unit tests** - Expanded test coverage including database operations
 - **InMemory testing** - Database tests use EF Core InMemory provider
 
+### Local Database Setup
+
+Follow these steps to run the SQL Server–backed version of the application locally.
+
+1. **Install SQL Server (or use a local container)**
+   - Install **SQL Server Developer** or **SQL Server Express** on your machine  
+     – or –  
+     run a local SQL Server container (for example, using the official `mcr.microsoft.com/mssql/server` image).
+   - Ensure you have a SQL client tool installed, such as **SQL Server Management Studio (SSMS)**, **Azure Data Studio**, or the `sqlcmd` CLI.
+
+2. **Generate and/or run the database script**
+   - Option A – **PowerShell script**  
+     Run `GenerateSqlScript.ps1` from a PowerShell prompt in the repository root (or the folder where the script resides):
+     ```powershell
+     pwsh ./GenerateSqlScript.ps1
+     ```
+     This will generate the SQL script needed to create the database and tables (if applicable).
+   - Option B – **SQL script**  
+     Open `CreateProductsDatabase.sql` in your SQL client and execute it against your local SQL Server instance.
+
+3. **Create the database and tables**
+   - Ensure that the script is executed against the intended server/instance (for example, `localhost` or `localhost,1433`).
+   - After running `CreateProductsDatabase.sql` (directly or via the PowerShell script), verify that:
+     - A database (for example, `ProductsDb`) has been created.
+     - The `Products` table (and any other required tables) exists and was created without errors.
+
+4. **Configure the connection string**
+   - Locate the application’s connection string configuration (for example, in `appsettings.json`, `App.config`, or `appsettings.Development.json`).
+   - Update the SQL Server connection string used by the application (for example, a connection named `ProductsConnection`) so that:
+     - `Server` (or `Data Source`) points to your local SQL Server instance, such as `localhost` or `localhost\\SQLEXPRESS`.
+     - `Database` (or `Initial Catalog`) matches the database name created by `CreateProductsDatabase.sql`.
+     - Authentication (Integrated Security or User ID/Password) matches how you connect to your local SQL Server.
+
+5. **Verify the setup**
+   - Start your local SQL Server instance and confirm the database is reachable using your SQL client.
+   - Run the WPF application.
+   - Navigate to the part of the UI that loads products. If the database is configured correctly, product data should load from SQL Server without errors.
+   - Optionally, add or edit a product in the application and confirm that the changes appear in the `Products` table when queried from your SQL client.
 ### Test Coverage (v4.0)
 - **158 unit tests** - Comprehensive test coverage for all business logic
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
