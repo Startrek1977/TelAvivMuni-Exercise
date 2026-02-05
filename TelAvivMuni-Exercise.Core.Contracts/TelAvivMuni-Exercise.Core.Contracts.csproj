@@ -18,8 +18,4 @@
     <NoWarn>1701;1702</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TelAvivMuni-Exercise.Infrastructure\TelAvivMuni-Exercise.Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

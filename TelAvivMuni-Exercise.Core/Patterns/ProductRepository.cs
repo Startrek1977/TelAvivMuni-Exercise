@@ -23,14 +23,6 @@ public class ProductRepository(IDataStore<Product> dataStore) : IRepository<Prod
 	private List<Product> _entities = [];
 	private bool _isLoaded;
 
-	/// <summary>
-	/// Initializes a new instance of the ProductRepository with the default file-based JSON storage.
-	/// </summary>
-	public ProductRepository()
-		: this(new FileDataStore<Product>(DefaultDataPath, new JsonSerializer<Product>()))
-	{
-	}
-
     /// <summary>
     /// Gets the in-memory entities.
     /// </summary>

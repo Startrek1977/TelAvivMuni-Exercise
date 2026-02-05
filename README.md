@@ -48,6 +48,8 @@ This project is a home exercise created as part of an interview for the Software
 - **UI Pattern:** MVVM (Model-View-ViewModel)
 - **Libraries:**
   - CommunityToolkit.Mvvm 8.4.0 - For MVVM infrastructure
+  - Microsoft.EntityFrameworkCore 8.0.12 - ORM for database access
+  - Microsoft.EntityFrameworkCore.SqlServer 8.0.12 - SQL Server provider
   - Microsoft.Extensions.DependencyInjection 10.0.2 - IoC container
   - Microsoft.Extensions.DependencyInjection.Abstractions 10.0.2 - DI abstractions
   - Microsoft.Extensions.Hosting 10.0.2 - Host builder for DI setup
@@ -56,6 +58,7 @@ This project is a home exercise created as part of an interview for the Software
   - xUnit 2.7.0 - For unit testing
   - xunit.runner.visualstudio 2.5.7 - Test runner for Visual Studio
   - Microsoft.NET.Test.Sdk 17.9.0 - Test platform
+  - Microsoft.EntityFrameworkCore.InMemory 8.0.12 - For database testing
   - Moq 4.20.70 - For mocking in tests
   - coverlet.collector 6.0.1 - For code coverage
 
@@ -63,34 +66,37 @@ This project is a home exercise created as part of an interview for the Software
 
 The solution is organized into multiple projects to separate concerns and promote reusability:
 
-### TelAvivMuni-Exercise.Infrastructure
-Generic, reusable infrastructure code that can be used in any project:
+### TelAvivMuni-Exercise.Core.Contracts
+Shared contracts, interfaces, and models used across all projects:
 - **Interfaces:**
-  - `IDataStore<T>` - Data persistence abstraction
+  - `IEntity` - Base entity interface with Id property
   - `IRepository<T>` - Generic repository interface
-  - `IEntity` - Base entity interface
-  - `ISerializer<T>` - Serialization abstraction
-  - `IDeferredInitialization` - View-First initialization interface
-- **Data:**
-  - `FileDataStore<T>` - File-based data store with thread-safe async operations
-- **Implementations:**
-  - `JsonSerializer<T>` - JSON serialization using System.Text.Json
-  - `OperationResult` - Operation result with success/failure states
-
-### TelAvivMuni-Exercise.Core
-Application-specific but reusable business logic and models:
+  - `IUnitOfWork` - Unit of Work interface
+  - `IDialogService` - Dialog service interface
+  - `IColumnConfiguration` - Column configuration interface
 - **Models:**
   - `Product` - Product data model implementing IEntity
   - `BrowserColumn` - Column configuration for data browser
+  - `OperationResult` - Operation result with success/failure states
+
+### TelAvivMuni-Exercise.Infrastructure
+Data persistence layer with Entity Framework Core support:
+- **Data:**
+  - `AppDbContext` - Entity Framework Core DbContext for SQL Server
+  - `IDataStore<T>` - Data persistence abstraction
+  - `FileDataStore<T>` - File-based data store with thread-safe async operations
+  - `DbDataStore<TEntity, TContext>` - SQL Server database data store using Entity Framework Core
+- **Patterns:**
+  - `IDeferredInitialization` - View-First initialization interface
+- **Serializers:**
+  - `ISerializer<T>` - Serialization abstraction
+  - `JsonSerializer<T>` - JSON serialization using System.Text.Json
+
+### TelAvivMuni-Exercise.Core
+Application-specific business logic (no EF Core dependency):
 - **Repositories:**
   - `ProductRepository` - Product-specific repository implementation
   - `UnitOfWork` - Unit of Work coordination pattern
-- **Contracts:**
-  - `IUnitOfWork` - Unit of Work interface
-- **Services:**
-  - `IDialogService` - Dialog service interface
-- **Config:**
-  - `IColumnConfiguration` - Column configuration interface
 
 ### TelAvivMuni-Exercise (Main WPF Application)
 WPF-specific UI code:
@@ -119,11 +125,21 @@ Unit tests for all projects
 
 ### Project Dependencies
 ```
-TelAvivMuni-Exercise (WPF)
-    ├── → TelAvivMuni-Exercise.Core
-    └── → TelAvivMuni-Exercise.Infrastructure
+TelAvivMuni-Exercise.Core.Contracts (no dependencies)
+    └── Shared interfaces, models (IEntity, Product, IRepository<T>, etc.)
+
+TelAvivMuni-Exercise.Infrastructure
+    └── → TelAvivMuni-Exercise.Core.Contracts
+    └── Contains: AppDbContext, DbDataStore, FileDataStore, IDataStore
 
 TelAvivMuni-Exercise.Core
+    ├── → TelAvivMuni-Exercise.Core.Contracts
+    └── → TelAvivMuni-Exercise.Infrastructure
+    └── Contains: ProductRepository, UnitOfWork (no EF Core packages)
+
+TelAvivMuni-Exercise (WPF)
+    ├── → TelAvivMuni-Exercise.Core
+    ├── → TelAvivMuni-Exercise.Core.Contracts
     └── → TelAvivMuni-Exercise.Infrastructure
 
 TelAvivMuni-Exercise.Tests
@@ -137,23 +153,12 @@ TelAvivMuni-Exercise.Tests
 ```
 TelAvivMuni-Exercise.sln
 │
-├── TelAvivMuni-Exercise.Infrastructure/     # Generic, reusable infrastructure
-│   ├── Data/
-│   │   ├── FileDataStore.cs                 # File-based data store
-│   │   └── IDataStore.cs                    # Data persistence abstraction
-│   ├── Models/
-│   │   └── IEntity.cs                       # Base entity interface
-│   ├── Patterns/
-│   │   └── IDeferredInitialization.cs       # View-First initialization interface
-│   └── Serializers/
-│       ├── ISerializer.cs                   # Serialization abstraction
-│       └── JsonSerializer.cs                # JSON serialization implementation
-│
-├── TelAvivMuni-Exercise.Core.Contracts/     # Shared contracts and models
+├── TelAvivMuni-Exercise.Core.Contracts/     # Shared contracts and models (no dependencies)
 │   ├── Config/
 │   │   └── IColumnConfiguration.cs          # Column configuration interface
 │   ├── Models/
 │   │   ├── BrowserColumn.cs                 # Column configuration model
+│   │   ├── IEntity.cs                       # Base entity interface
 │   │   ├── OperationResult.cs               # Operation result with error messages
 │   │   └── Product.cs                       # Product data model
 │   ├── Patterns/
@@ -162,7 +167,19 @@ TelAvivMuni-Exercise.sln
 │   └── Services/
 │       └── IDialogService.cs                # Dialog service interface
 │
-├── TelAvivMuni-Exercise.Core/               # Application-specific business logic
+├── TelAvivMuni-Exercise.Infrastructure/     # Data persistence layer (EF Core)
+│   ├── Data/
+│   │   ├── AppDbContext.cs                  # EF Core DbContext for SQL Server
+│   │   ├── DbDataStore.cs                   # Database data store (EF Core)
+│   │   ├── FileDataStore.cs                 # File-based data store
+│   │   └── IDataStore.cs                    # Data persistence abstraction
+│   ├── Patterns/
+│   │   └── IDeferredInitialization.cs       # View-First initialization interface
+│   └── Serializers/
+│       ├── ISerializer.cs                   # Serialization abstraction
+│       └── JsonSerializer.cs                # JSON serialization implementation
+│
+├── TelAvivMuni-Exercise.Core/               # Business logic (no EF Core dependency)
 │   └── Patterns/
 │       ├── ProductRepository.cs             # Product-specific repository
 │       └── UnitOfWork.cs                    # Unit of Work implementation
@@ -196,6 +213,8 @@ TelAvivMuni-Exercise.sln
 │
 ├── TelAvivMuni-Exercise.Tests/              # Unit test project
 │   ├── Infrastructure/
+│   │   ├── AppDbContextTests.cs
+│   │   ├── DbDataStoreTests.cs
 │   │   ├── FileDataStoreTests.cs
 │   │   ├── IEntityTests.cs
 │   │   ├── JsonSerializerTests.cs
@@ -335,13 +354,16 @@ The persistence layer uses Strategy pattern for flexibility:
 ```
 ProductRepository
     └── IDataStore<Product>
-            └── FileDataStore<Product>
-                    └── ISerializer<Product>
-                            └── JsonSerializer<Product>
+            ├── FileDataStore<Product>           # File-based (JSON)
+            │       └── ISerializer<Product>
+            │               └── JsonSerializer<Product>
+            │
+            └── DbDataStore<Product, AppDbContext>  # Database (SQL Server)
+                    └── IDbContextFactory<AppDbContext>
 ```
 
 This allows:
-- Swapping file-based storage for database storage
+- Swapping file-based storage for database storage (just change DI registration)
 - Changing serialization format (JSON → XML) without changing repository
 - Testing with in-memory implementations
 
@@ -423,11 +445,13 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **141 unit tests** with **93.1% line coverage** on all testable code:
+The test suite includes **158 unit tests** with comprehensive coverage on all testable code:
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
-- Data store and serialization
+- Data store and serialization (File and Database)
+- AppDbContext entity operations
+- DbDataStore CRUD operations
 - OperationResult success/failure patterns
 - BrowserColumn model properties
 - DataBrowserDialogViewModel search, filter, and selection logic
@@ -488,11 +512,61 @@ The test suite includes **141 unit tests** with **93.1% line coverage** on all t
 
 ## Recent Improvements
 
+### Architectural Layering Refactor (v6.0)
+- **Moved `IEntity` to Core.Contracts** - Base entity interface now in the contracts layer where it belongs
+- **Moved `AppDbContext` to Infrastructure** - EF Core DbContext consolidated with other persistence code
+- **Core project no longer depends on EF Core** - Clean separation of business logic from infrastructure
+- **Eliminated circular dependencies** - Core.Contracts has no project dependencies
+- **Better layering** - Infrastructure owns all persistence, Core owns business logic patterns
+
+### Database Support (v5.0)
+- **Entity Framework Core 8.0** - Added SQL Server database support
+- **DbDataStore<TEntity, TContext>** - Generic database data store implementing `IDataStore<T>`
+- **AppDbContext** - EF Core DbContext with Product entity configuration
+- **Pluggable persistence** - Switch between file and database storage via DI configuration
+- **158 unit tests** - Expanded test coverage including database operations
+- **InMemory testing** - Database tests use EF Core InMemory provider
+
+### Local Database Setup
+
+Follow these steps to run the SQL Server–backed version of the application locally.
+
+1. **Install SQL Server (or use a local container)**
+   - Install **SQL Server Developer** or **SQL Server Express** on your machine  
+     – or –  
+     run a local SQL Server container (for example, using the official `mcr.microsoft.com/mssql/server` image).
+   - Ensure you have a SQL client tool installed, such as **SQL Server Management Studio (SSMS)**, **Azure Data Studio**, or the `sqlcmd` CLI.
+
+2. **Generate and/or run the database script**
+   - Option A – **PowerShell script**  
+     Run `GenerateSqlScript.ps1` from a PowerShell prompt in the repository root (or the folder where the script resides):
+     ```powershell
+     pwsh ./GenerateSqlScript.ps1
+     ```
+     This will generate the SQL script needed to create the database and tables (if applicable).
+   - Option B – **SQL script**  
+     Open `CreateProductsDatabase.sql` in your SQL client and execute it against your local SQL Server instance.
+
+3. **Create the database and tables**
+   - Ensure that the script is executed against the intended server/instance (for example, `localhost` or `localhost,1433`).
+   - After running `CreateProductsDatabase.sql` (directly or via the PowerShell script), verify that:
+     - A database (for example, `ProductsDb`) has been created.
+     - The `Products` table (and any other required tables) exists and was created without errors.
+
+4. **Configure the connection string**
+   - Locate the application’s connection string configuration (for example, in `appsettings.json`, `App.config`, or `appsettings.Development.json`).
+   - Update the SQL Server connection string used by the application (for example, a connection named `ProductsConnection`) so that:
+     - `Server` (or `Data Source`) points to your local SQL Server instance, such as `localhost` or `localhost\\SQLEXPRESS`.
+     - `Database` (or `Initial Catalog`) matches the database name created by `CreateProductsDatabase.sql`.
+     - Authentication (Integrated Security or User ID/Password) matches how you connect to your local SQL Server.
+
+5. **Verify the setup**
+   - Start your local SQL Server instance and confirm the database is reachable using your SQL client.
+   - Run the WPF application.
+   - Navigate to the part of the UI that loads products. If the database is configured correctly, product data should load from SQL Server without errors.
+   - Optionally, add or edit a product in the application and confirm that the changes appear in the `Products` table when queried from your SQL client.
 ### Test Coverage (v4.0)
-- **141 unit tests** - Comprehensive test coverage for all business logic
-- **93.1% line coverage** - 164 of 176 coverable lines covered
-- **92.8% method coverage** - 52 of 56 methods covered
-- **82.8% branch coverage** - 53 of 64 branches covered
+- **158 unit tests** - Comprehensive test coverage for all business logic
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 
