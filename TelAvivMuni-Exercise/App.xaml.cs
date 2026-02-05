@@ -36,7 +36,9 @@ public partial class App : Application
 	{
 		// Register infrastructure
 		services.AddDbContextFactory<AppDbContext>(options =>
-			options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True"));
+			options.UseSqlServer(
+				@"Server=localhost\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True",
+				sqlOptions => sqlOptions.EnableRetryOnFailure()));
 		services.AddSingleton<IDataStore<Product>, DbDataStore<Product, AppDbContext>>();
         services.AddSingleton<IRepository<Product>>(sp => 
 			new ProductRepository(sp.GetRequiredService<IDataStore<Product>>()));
