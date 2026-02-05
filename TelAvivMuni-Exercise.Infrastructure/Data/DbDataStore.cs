@@ -1,3 +1,5 @@
+using System.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using TelAvivMuni_Exercise.Core.Contracts;
 
@@ -35,6 +37,24 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			await using var context = await _contextFactory.CreateDbContextAsync();
 			return await context.Set<TEntity>().ToArrayAsync();
 		}
+		catch (SqlException ex)
+		{
+			// Handle SQL Server specific errors (connection failures, timeouts, etc.)
+			throw new InvalidOperationException(
+				$"Database error occurred while loading data: {ex.Message}", ex);
+		}
+		catch (DbUpdateException ex)
+		{
+			// Handle EF Core update exceptions (shouldn't occur in Load, but handle defensively)
+			throw new InvalidOperationException(
+				$"Database operation failed while loading data: {ex.Message}", ex);
+		}
+		catch (Exception ex) when (ex is not InvalidOperationException)
+		{
+			// Handle any other unexpected exceptions
+			throw new InvalidOperationException(
+				$"Unexpected error occurred while loading data: {ex.Message}", ex);
+		}
 		finally
 		{
 			_semaphore.Release();
@@ -60,6 +80,32 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			await context.SaveChangesAsync();
 
 			return entityArray.Length;
+		}
+		catch (DbUpdateException ex)
+		{
+			// Handle constraint violations, unique key conflicts, foreign key violations
+			throw new InvalidOperationException(
+				$"Database constraint violation or update error occurred while saving data: {ex.Message}", ex);
+		}
+		catch (SqlException ex)
+		{
+			// Handle SQL Server specific errors including deadlocks and timeouts
+			var errorMessage = ex.Number switch
+			{
+				-2 => "Database operation timed out. The server might be busy or unreachable.",
+				1205 => "Database deadlock detected. Please retry the operation.",
+				2601 or 2627 => "Cannot insert duplicate data. A unique constraint was violated.",
+				547 => "Cannot complete operation due to foreign key constraint violation.",
+				_ => $"Database error occurred while saving data: {ex.Message}"
+			};
+			
+			throw new InvalidOperationException(errorMessage, ex);
+		}
+		catch (Exception ex) when (ex is not InvalidOperationException and not ArgumentNullException)
+		{
+			// Handle any other unexpected exceptions (network issues, memory issues, etc.)
+			throw new InvalidOperationException(
+				$"Unexpected error occurred while saving data: {ex.Message}", ex);
 		}
 		finally
 		{
