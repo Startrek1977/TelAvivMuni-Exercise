@@ -56,15 +56,21 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 		}
 		catch (SqlException ex)
 		{
-			// Handle SQL Server specific errors (connection failures, timeouts, etc.)
 			throw new InvalidOperationException(
-				$"Database error occurred while loading data: {ex.Message}", ex);
+				$"Database connection failed: {ex.Message}. Please check your connection string and ensure the database server is running.",
+				ex);
 		}
-		catch (Exception ex) when (ex is not InvalidOperationException and not OperationCanceledException)
+		catch (TimeoutException ex)
 		{
-			// Handle any other unexpected exceptions (network issues, etc.)
 			throw new InvalidOperationException(
-				$"Unexpected error occurred while loading data: {ex.Message}", ex);
+				$"Database operation timed out: {ex.Message}. The server may be overloaded or unreachable.",
+				ex);
+		}
+		catch (Exception ex) when (ex is not InvalidOperationException)
+		{
+			throw new InvalidOperationException(
+				$"An unexpected error occurred while loading data: {ex.Message}",
+				ex);
 		}
 		finally
 		{
@@ -94,32 +100,27 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 		}
 		catch (SqlException ex)
 		{
-			// Handle SQL Server specific errors including deadlocks and timeouts
-			var errorMessage = GetSqlErrorMessage(ex.Number, 
-				$"Database error occurred while saving data: {ex.Message}");
-			
-			throw new InvalidOperationException(errorMessage, ex);
+			throw new InvalidOperationException(
+				$"Database connection failed: {ex.Message}. Please check your connection string and ensure the database server is running.",
+				ex);
+		}
+		catch (TimeoutException ex)
+		{
+			throw new InvalidOperationException(
+				$"Database operation timed out: {ex.Message}. The server may be overloaded or unreachable.",
+				ex);
 		}
 		catch (DbUpdateException ex)
 		{
-			// Handle constraint violations, unique key conflicts, foreign key violations
-			// Check if the inner exception is a SqlException for more specific error messages
-			if (ex.InnerException is SqlException sqlEx)
-			{
-				var errorMessage = GetSqlErrorMessage(sqlEx.Number,
-					$"Database error occurred while saving data: {sqlEx.Message}");
-				
-				throw new InvalidOperationException(errorMessage, ex);
-			}
-			
 			throw new InvalidOperationException(
-				$"Database constraint violation or update error occurred while saving data: {ex.Message}", ex);
+				$"Database update failed: {ex.Message}. This may be due to constraint violations or data integrity issues.",
+				ex);
 		}
-		catch (Exception ex) when (ex is not InvalidOperationException and not ArgumentNullException and not OperationCanceledException)
+		catch (Exception ex) when (ex is not InvalidOperationException and not ArgumentNullException)
 		{
-			// Handle any other unexpected exceptions (network issues, memory issues, etc.)
 			throw new InvalidOperationException(
-				$"Unexpected error occurred while saving data: {ex.Message}", ex);
+				$"An unexpected error occurred while saving data: {ex.Message}",
+				ex);
 		}
 		finally
 		{
