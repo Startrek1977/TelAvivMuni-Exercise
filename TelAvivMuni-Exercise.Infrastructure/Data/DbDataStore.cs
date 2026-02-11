@@ -1,6 +1,5 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using TelAvivMuni_Exercise.Core.Contracts;
 
 namespace TelAvivMuni_Exercise.Infrastructure;
 
@@ -89,8 +88,9 @@ public class DbDataStore<TEntity, TContext> : IDataStore<TEntity>
 			await using var context = await _contextFactory.CreateDbContextAsync();
 			var entityArray = entities as TEntity[] ?? entities.ToArray();
 
-			// Clear existing entities using a set-based delete for better performance
-			await context.Set<TEntity>().ExecuteDeleteAsync();
+			// Clear existing entities
+			var existing = await context.Set<TEntity>().ToListAsync();
+			context.Set<TEntity>().RemoveRange(existing);
 
 			// Add new entities (matches FileDataStore overwrite behavior)
 			context.Set<TEntity>().AddRange(entityArray);

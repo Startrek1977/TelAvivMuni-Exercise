@@ -1,0 +1,13 @@
+using TelAvivMuni_Exercise.Infrastructure;
+
+namespace TelAvivMuni_Exercise.Domain;
+
+public class Product : IEntity
+{
+	public int Id { get; set; }
+	public string? Code { get; set; }
+	public string? Name { get; set; }
+	public string? Category { get; set; }
+	public decimal Price { get; set; }
+	public int Stock { get; set; }
+}

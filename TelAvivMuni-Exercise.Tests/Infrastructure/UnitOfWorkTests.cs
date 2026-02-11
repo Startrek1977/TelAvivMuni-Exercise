@@ -1,6 +1,7 @@
 using System.IO;
 using TelAvivMuni_Exercise.Core;
 using TelAvivMuni_Exercise.Core.Contracts;
+using TelAvivMuni_Exercise.Domain;
 using TelAvivMuni_Exercise.Infrastructure;
 using Xunit;
 

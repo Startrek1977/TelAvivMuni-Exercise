@@ -1,3 +1,5 @@
+using TelAvivMuni_Exercise.Domain;
+
 namespace TelAvivMuni_Exercise.Core.Contracts;
 
 public interface IRepository<TEntity> where TEntity : class
