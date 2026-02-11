@@ -1,19 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\TelAvivMuni-Exercise.Core.Contracts\TelAvivMuni-Exercise.Core.Contracts.csproj" />
-    <ProjectReference Include="..\TelAvivMuni-Exercise.Infrastructure\TelAvivMuni-Exercise.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>TelAvivMuni_Exercise</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Core.Contracts\TelAvivMuni-Exercise.Core.Contracts.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Infrastructure\TelAvivMuni-Exercise.Infrastructure.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Domain\TelAvivMuni-Exercise.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+  </ItemGroup>
 
 </Project>

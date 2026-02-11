@@ -47,13 +47,13 @@ This project is a home exercise created as part of an interview for the Software
 - **Language:** C# 12
 - **UI Pattern:** MVVM (Model-View-ViewModel)
 - **Libraries:**
-  - CommunityToolkit.Mvvm 8.4.0 - For MVVM infrastructure
-  - Microsoft.EntityFrameworkCore 8.0.12 - ORM for database access
-  - Microsoft.EntityFrameworkCore.SqlServer 8.0.12 - SQL Server provider
-  - Microsoft.Extensions.DependencyInjection 10.0.2 - IoC container
-  - Microsoft.Extensions.DependencyInjection.Abstractions 10.0.2 - DI abstractions
-  - Microsoft.Extensions.Hosting 10.0.2 - Host builder for DI setup
-  - Microsoft.Xaml.Behaviors.Wpf 1.1.135 - Attached behaviors
+  - CommunityToolkit.Mvvm 8.4.0 - For MVVM infrastructure (Core, Presentation)
+  - Microsoft.EntityFrameworkCore 8.0.12 - ORM for database access (Infrastructure, Core)
+  - Microsoft.EntityFrameworkCore.SqlServer 8.0.12 - SQL Server provider (Infrastructure, WPF)
+  - Microsoft.Extensions.DependencyInjection 10.0.2 - IoC container (WPF)
+  - Microsoft.Extensions.DependencyInjection.Abstractions 10.0.2 - DI abstractions (WPF, Presentation)
+  - Microsoft.Extensions.Hosting 10.0.2 - Host builder for DI setup (WPF)
+  - Microsoft.Xaml.Behaviors.Wpf 1.1.135 - Attached behaviors (Controls)
   - System.Text.Json - For JSON serialization
   - xUnit 2.7.0 - For unit testing
   - xunit.runner.visualstudio 2.5.7 - Test runner for Visual Studio
@@ -64,88 +64,130 @@ This project is a home exercise created as part of an interview for the Software
 
 ## Solution Structure
 
-The solution is organized into multiple projects to separate concerns and promote reusability:
-
-### TelAvivMuni-Exercise.Core.Contracts
-Shared contracts, interfaces, and models used across all projects:
-- **Interfaces:**
-  - `IEntity` - Base entity interface with Id property
-  - `IRepository<T>` - Generic repository interface
-  - `IUnitOfWork` - Unit of Work interface
-  - `IDialogService` - Dialog service interface
-  - `IColumnConfiguration` - Column configuration interface
-- **Models:**
-  - `Product` - Product data model implementing IEntity
-  - `BrowserColumn` - Column configuration for data browser
-  - `OperationResult` - Operation result with success/failure states
+The solution is organized into 7 projects to separate concerns and promote reusability:
 
 ### TelAvivMuni-Exercise.Infrastructure
-Data persistence layer with Entity Framework Core support:
+Low-level data persistence abstractions and implementations:
 - **Data:**
-  - `AppDbContext` - Entity Framework Core DbContext for SQL Server
   - `IDataStore<T>` - Data persistence abstraction
   - `FileDataStore<T>` - File-based data store with thread-safe async operations
   - `DbDataStore<TEntity, TContext>` - SQL Server database data store using Entity Framework Core
+- **Models:**
+  - `IEntity` - Base entity interface with Id property
 - **Patterns:**
   - `IDeferredInitialization` - View-First initialization interface
 - **Serializers:**
   - `ISerializer<T>` - Serialization abstraction
   - `JsonSerializer<T>` - JSON serialization using System.Text.Json
 
+### TelAvivMuni-Exercise.Domain
+Domain models shared across all projects:
+- **Models:**
+  - `Product` - Product data model implementing IEntity
+  - `BrowserColumn` - Column configuration for data browser
+  - `OperationResult` - Operation result with success/failure states
+
+### TelAvivMuni-Exercise.Core.Contracts
+Shared contracts and interfaces:
+- **Config:**
+  - `IColumnConfiguration` - Column configuration interface
+- **Patterns:**
+  - `IRepository<T>` - Generic repository interface
+  - `IUnitOfWork` - Unit of Work interface
+- **Services:**
+  - `IDialogService` - Dialog service interface
+
 ### TelAvivMuni-Exercise.Core
-Application-specific business logic (no EF Core dependency):
-- **Repositories:**
+Application-specific business logic:
+- **Data:**
+  - `AppDbContext` - Entity Framework Core DbContext for SQL Server
+- **Patterns:**
   - `ProductRepository` - Product-specific repository implementation
   - `UnitOfWork` - Unit of Work coordination pattern
 
-### TelAvivMuni-Exercise (Main WPF Application)
-WPF-specific UI code:
+### TelAvivMuni-Exercise.Controls
+Reusable WPF controls and attached behaviors:
 - **Controls:**
   - `DataBrowserBox` - Custom reusable control for item selection
   - `DataBrowserDialog` - Browse dialog UI
-- **ViewModels:**
-  - `MainWindowViewModel` - Main window view model
-  - `DataBrowserDialogViewModel` - Dialog view model
-- **Services:**
-  - `DialogService` - Dialog service implementation (WPF-dependent)
-- **Infrastructure/Behaviors:** - WPF Attached Behaviors (MVVM pattern)
+- **Behaviors:**
   - `AutoFocusSearchBehavior` - Auto-focus on typing
   - `DataGridEnterBehavior` - Handle Enter key in DataGrid
   - `DataGridScrollIntoViewBehavior` - Scroll to selected item
   - `DialogCloseBehavior` - MVVM-friendly dialog closing
   - `EscapeClearBehavior` - Clear text on Escape key
+
+### TelAvivMuni-Exercise.Presentation
+ViewModels, services, and presentation infrastructure:
+- **ViewModels:**
+  - `MainWindowViewModel` - Main window view model
+  - `DataBrowserDialogViewModel` - Dialog view model
+- **Services:**
+  - `DialogService` - Dialog service implementation (WPF-dependent)
 - **Infrastructure:**
   - `ViewModelLocator` - DI-based ViewModel resolution for XAML
   - `ICommand.Extension` - Command extension methods (WPF/MVVM-dependent)
-- **Themes:** - Control templates and styles
-- **Data:** - Sample product data (Products.json)
+
+### TelAvivMuni-Exercise (Main WPF Application)
+WPF application host and configuration:
+- **Themes:** - Control templates and styles (Generic.xaml, Theme1.xaml, Theme2.xaml)
+- **Data:** - Sample product data (Products.json), SQL scripts
+- **Configuration:** - appsettings.json, appsettings.Development.json
+- `App.xaml(.cs)` - Application entry point with DI registration
+- `MainWindow.xaml(.cs)` - Main application window
 
 ### TelAvivMuni-Exercise.Tests
 Unit tests for all projects
 
 ### Project Dependencies
 ```
-TelAvivMuni-Exercise.Core.Contracts (no dependencies)
-    └── Shared interfaces, models (IEntity, Product, IRepository<T>, etc.)
+TelAvivMuni-Exercise.Infrastructure (no project dependencies)
+    └── Contains: IEntity, IDataStore, FileDataStore, DbDataStore, Serializers
 
-TelAvivMuni-Exercise.Infrastructure
-    └── → TelAvivMuni-Exercise.Core.Contracts
-    └── Contains: AppDbContext, DbDataStore, FileDataStore, IDataStore
+TelAvivMuni-Exercise.Domain
+    └── → TelAvivMuni-Exercise.Infrastructure
+    └── Contains: Product, BrowserColumn, OperationResult
+
+TelAvivMuni-Exercise.Core.Contracts
+    ├── → TelAvivMuni-Exercise.Domain
+    └── → TelAvivMuni-Exercise.Infrastructure
+    └── Contains: IRepository<T>, IUnitOfWork, IDialogService, IColumnConfiguration
 
 TelAvivMuni-Exercise.Core
     ├── → TelAvivMuni-Exercise.Core.Contracts
-    └── → TelAvivMuni-Exercise.Infrastructure
-    └── Contains: ProductRepository, UnitOfWork (no EF Core packages)
+    ├── → TelAvivMuni-Exercise.Infrastructure
+    └── → TelAvivMuni-Exercise.Domain
+    └── Contains: AppDbContext, ProductRepository, UnitOfWork
+
+TelAvivMuni-Exercise.Controls
+    ├── → TelAvivMuni-Exercise.Core.Contracts
+    ├── → TelAvivMuni-Exercise.Infrastructure
+    └── → TelAvivMuni-Exercise.Domain
+    └── Contains: DataBrowserBox, DataBrowserDialog, Behaviors
+
+TelAvivMuni-Exercise.Presentation
+    ├── → TelAvivMuni-Exercise.Core.Contracts
+    ├── → TelAvivMuni-Exercise.Infrastructure
+    ├── → TelAvivMuni-Exercise.Controls
+    └── → TelAvivMuni-Exercise.Domain
+    └── Contains: ViewModels, DialogService, ViewModelLocator
 
 TelAvivMuni-Exercise (WPF)
+    ├── → TelAvivMuni-Exercise.Presentation
+    ├── → TelAvivMuni-Exercise.Controls
     ├── → TelAvivMuni-Exercise.Core
     ├── → TelAvivMuni-Exercise.Core.Contracts
-    └── → TelAvivMuni-Exercise.Infrastructure
+    ├── → TelAvivMuni-Exercise.Infrastructure
+    └── → TelAvivMuni-Exercise.Domain
 
 TelAvivMuni-Exercise.Tests
     ├── → TelAvivMuni-Exercise (WPF)
+    ├── → TelAvivMuni-Exercise.Presentation
+    ├── → TelAvivMuni-Exercise.Controls
     ├── → TelAvivMuni-Exercise.Core
-    └── → TelAvivMuni-Exercise.Infrastructure
+    ├── → TelAvivMuni-Exercise.Core.Contracts
+    ├── → TelAvivMuni-Exercise.Infrastructure
+    └── → TelAvivMuni-Exercise.Domain
 ```
 
 ## Project Structure
@@ -153,77 +195,89 @@ TelAvivMuni-Exercise.Tests
 ```
 TelAvivMuni-Exercise.sln
 │
-├── TelAvivMuni-Exercise.Core.Contracts/     # Shared contracts and models (no dependencies)
-│   ├── Config/
-│   │   └── IColumnConfiguration.cs          # Column configuration interface
-│   ├── Models/
-│   │   ├── BrowserColumn.cs                 # Column configuration model
-│   │   ├── IEntity.cs                       # Base entity interface
-│   │   ├── OperationResult.cs               # Operation result with error messages
-│   │   └── Product.cs                       # Product data model
-│   ├── Patterns/
-│   │   ├── IRepositoryT.cs                  # Generic repository interface
-│   │   └── IUnitOfWork.cs                   # Unit of Work interface
-│   └── Services/
-│       └── IDialogService.cs                # Dialog service interface
-│
-├── TelAvivMuni-Exercise.Infrastructure/     # Data persistence layer (EF Core)
+├── TelAvivMuni-Exercise.Infrastructure/     # Data persistence layer (no project dependencies)
 │   ├── Data/
-│   │   ├── AppDbContext.cs                  # EF Core DbContext for SQL Server
 │   │   ├── DbDataStore.cs                   # Database data store (EF Core)
 │   │   ├── FileDataStore.cs                 # File-based data store
 │   │   └── IDataStore.cs                    # Data persistence abstraction
+│   ├── Models/
+│   │   └── IEntity.cs                       # Base entity interface
 │   ├── Patterns/
 │   │   └── IDeferredInitialization.cs       # View-First initialization interface
 │   └── Serializers/
 │       ├── ISerializer.cs                   # Serialization abstraction
 │       └── JsonSerializer.cs                # JSON serialization implementation
 │
-├── TelAvivMuni-Exercise.Core/               # Business logic (no EF Core dependency)
+├── TelAvivMuni-Exercise.Domain/             # Domain models
+│   └── Models/
+│       ├── BrowserColumn.cs                 # Column configuration model
+│       ├── OperationResult.cs               # Operation result with error messages
+│       └── Product.cs                       # Product data model
+│
+├── TelAvivMuni-Exercise.Core.Contracts/     # Shared contracts and interfaces
+│   ├── Config/
+│   │   └── IColumnConfiguration.cs          # Column configuration interface
+│   ├── Patterns/
+│   │   ├── IRepositoryT.cs                  # Generic repository interface
+│   │   └── IUnitOfWork.cs                   # Unit of Work interface
+│   └── Services/
+│       └── IDialogService.cs                # Dialog service interface
+│
+├── TelAvivMuni-Exercise.Core/               # Business logic
+│   ├── Data/
+│   │   └── AppDbContext.cs                  # EF Core DbContext for SQL Server
 │   └── Patterns/
 │       ├── ProductRepository.cs             # Product-specific repository
 │       └── UnitOfWork.cs                    # Unit of Work implementation
 │
-├── TelAvivMuni-Exercise/                    # WPF Application
-│   ├── Controls/
-│   │   ├── DataBrowserBox.cs                # Custom reusable control
-│   │   └── DataBrowserDialog.xaml(.cs)      # Browse dialog UI
-│   ├── Infrastructure/
-│   │   ├── Behaviors/                       # WPF Attached Behaviors (MVVM)
-│   │   │   ├── AutoFocusSearchBehavior.cs
-│   │   │   ├── DataGridEnterBehavior.cs
-│   │   │   ├── DataGridScrollIntoViewBehavior.cs
-│   │   │   ├── DialogCloseBehavior.cs
-│   │   │   └── EscapeClearBehavior.cs
-│   │   ├── ICommand.Extension.cs            # ICommand extension methods
-│   │   └── ViewModelLocator.cs              # DI-based ViewModel resolution
+├── TelAvivMuni-Exercise.Controls/           # Reusable WPF controls & behaviors
+│   ├── Behaviors/
+│   │   ├── AutoFocusSearchBehavior.cs       # Auto-focus on typing
+│   │   ├── DataGridEnterBehavior.cs         # Handle Enter key in DataGrid
+│   │   ├── DataGridScrollIntoViewBehavior.cs # Scroll to selected item
+│   │   ├── DialogCloseBehavior.cs           # MVVM-friendly dialog closing
+│   │   └── EscapeClearBehavior.cs           # Clear text on Escape key
+│   ├── DataBrowserBox.cs                    # Custom reusable control
+│   └── DataBrowserDialog.xaml(.cs)          # Browse dialog UI
+│
+├── TelAvivMuni-Exercise.Presentation/       # ViewModels & presentation services
 │   ├── Services/
 │   │   └── DialogService.cs                 # Dialog service implementation
+│   ├── ViewModels/
+│   │   ├── DataBrowserDialogViewModel.cs    # Dialog view model
+│   │   └── MainWindowViewModel.cs           # Main window view model
+│   ├── ICommand.Extension.cs                # ICommand extension methods
+│   └── ViewModelLocator.cs                  # DI-based ViewModel resolution
+│
+├── TelAvivMuni-Exercise/                    # WPF Application host
+│   ├── Data/
+│   │   ├── CreateProductsDatabase.sql       # SQL Server database setup script
+│   │   ├── GenerateSqlScript.ps1            # PowerShell script to generate SQL
+│   │   └── Products.json                    # Sample product data
 │   ├── Themes/
 │   │   ├── Generic.xaml                     # Control templates and styles
 │   │   ├── Theme1.xaml
 │   │   └── Theme2.xaml
-│   ├── ViewModels/
-│   │   ├── DataBrowserDialogViewModel.cs    # Dialog view model
-│   │   └── MainWindowViewModel.cs           # Main window view model
-│   ├── Data/
-│   │   └── Products.json                    # Sample product data
 │   ├── App.xaml(.cs)                        # Application entry point with DI
-│   └── MainWindow.xaml(.cs)                 # Main application window
+│   ├── MainWindow.xaml(.cs)                 # Main application window
+│   ├── AssemblyInfo.cs
+│   ├── appsettings.json                     # Default configuration
+│   └── appsettings.Development.json         # Development configuration
 │
 ├── TelAvivMuni-Exercise.Tests/              # Unit test project
+│   ├── Core/
+│   │   └── AppDbContextTests.cs
+│   ├── Domain/
+│   │   ├── BrowserColumnTests.cs
+│   │   ├── IEntityTests.cs
+│   │   └── OperationResultTests.cs
 │   ├── Infrastructure/
-│   │   ├── AppDbContextTests.cs
 │   │   ├── DbDataStoreTests.cs
 │   │   ├── FileDataStoreTests.cs
-│   │   ├── IEntityTests.cs
 │   │   ├── JsonSerializerTests.cs
-│   │   ├── OperationResultTests.cs
 │   │   ├── ProductRepositoryTests.cs
 │   │   └── UnitOfWorkTests.cs
-│   ├── Models/
-│   │   └── BrowserColumnTests.cs
-│   └── ViewModels/
+│   └── Presentation/
 │       ├── DataBrowserDialogViewModelTests.cs
 │       └── MainWindowViewModelTests.cs
 │
@@ -383,14 +437,14 @@ if (!result.Success)
 The persistence layer uses Strategy pattern for flexibility:
 
 ```
-ProductRepository
-    └── IDataStore<Product>
+ProductRepository (Core)
+    └── IDataStore<Product> (Infrastructure)
             ├── FileDataStore<Product>           # File-based (JSON)
             │       └── ISerializer<Product>
             │               └── JsonSerializer<Product>
             │
             └── DbDataStore<Product, AppDbContext>  # Database (SQL Server)
-                    └── IDbContextFactory<AppDbContext>
+                    └── IDbContextFactory<AppDbContext> (Core)
 ```
 
 This allows:
@@ -451,12 +505,12 @@ The control supports two modes for column display:
 
 ### Build
 ```bash
-dotnet build TelAvivMuni-Exercise.csproj
+dotnet build TelAvivMuni-Exercise.sln
 ```
 
 ### Run
 ```bash
-dotnet run --project TelAvivMuni-Exercise.csproj
+dotnet run --project TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj
 ```
 
 Or simply press F5 in Visual Studio.
@@ -476,7 +530,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **158 unit tests** with comprehensive coverage on all testable code:
+The test suite includes **160 unit tests** with **93.6% line coverage** and **79.6% branch coverage** on all testable code:
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -543,19 +597,26 @@ The test suite includes **158 unit tests** with comprehensive coverage on all te
 
 ## Recent Improvements
 
+### Project Decomposition Refactor (v7.0)
+- **Extracted `TelAvivMuni-Exercise.Domain`** - Domain models (Product, BrowserColumn, OperationResult) now in a dedicated project
+- **Extracted `TelAvivMuni-Exercise.Controls`** - WPF controls and attached behaviors separated from the main WPF project
+- **Extracted `TelAvivMuni-Exercise.Presentation`** - ViewModels, DialogService, and ViewModelLocator in their own project
+- **Moved `IEntity` to Infrastructure** - Base entity interface lives with persistence abstractions
+- **Moved `AppDbContext` to Core** - DbContext consolidated with business logic patterns
+- **7 clean projects** - Infrastructure → Domain → Core.Contracts → Core → Controls/Presentation → WPF
+- **160 unit tests** - Test project references all projects for comprehensive coverage
+
 ### Architectural Layering Refactor (v6.0)
-- **Moved `IEntity` to Core.Contracts** - Base entity interface now in the contracts layer where it belongs
-- **Moved `AppDbContext` to Infrastructure** - EF Core DbContext consolidated with other persistence code
 - **Core project no longer depends on EF Core** - Clean separation of business logic from infrastructure
-- **Eliminated circular dependencies** - Core.Contracts has no project dependencies
-- **Better layering** - Infrastructure owns all persistence, Core owns business logic patterns
+- **Eliminated circular dependencies** - Clear dependency direction
+- **Better layering** - Infrastructure owns persistence, Core owns business logic patterns
 
 ### Database Support (v5.0)
 - **Entity Framework Core 8.0** - Added SQL Server database support
 - **DbDataStore<TEntity, TContext>** - Generic database data store implementing `IDataStore<T>`
 - **AppDbContext** - EF Core DbContext with Product entity configuration
 - **Pluggable persistence** - Switch between file and database storage via DI configuration
-- **158 unit tests** - Expanded test coverage including database operations
+- **160 unit tests** - Expanded test coverage including database operations
 - **InMemory testing** - Database tests use EF Core InMemory provider
 
 ### Local Database Setup
@@ -597,7 +658,9 @@ Follow these steps to run the SQL Server–backed version of the application loc
    - Navigate to the part of the UI that loads products. If the database is configured correctly, product data should load from SQL Server without errors.
    - Optionally, add or edit a product in the application and confirm that the changes appear in the `Products` table when queried from your SQL client.
 ### Test Coverage (v4.0)
-- **158 unit tests** - Comprehensive test coverage for all business logic
+- **160 unit tests** - Comprehensive test coverage for all business logic
+- **93.6% line coverage** - Measured via coverlet with Cobertura reporting
+- **79.6% branch coverage** - Covers conditional logic paths
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 

@@ -1,5 +1,6 @@
 using TelAvivMuni_Exercise.Core.Contracts;
 using TelAvivMuni_Exercise.Core.Contracts.Patterns;
+using TelAvivMuni_Exercise.Domain;
 
 namespace TelAvivMuni_Exercise.Core;
 

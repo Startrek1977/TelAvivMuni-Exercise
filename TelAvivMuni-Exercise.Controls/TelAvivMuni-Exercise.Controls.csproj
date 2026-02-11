@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>TelAvivMuni_Exercise.Controls</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Core.Contracts\TelAvivMuni-Exercise.Core.Contracts.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Infrastructure\TelAvivMuni-Exercise.Infrastructure.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Domain\TelAvivMuni-Exercise.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

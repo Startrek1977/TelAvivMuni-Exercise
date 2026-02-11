@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:TelAvivMuni_Exercise.Controls">
+                    xmlns:controls="clr-namespace:TelAvivMuni_Exercise.Controls;assembly=TelAvivMuni-Exercise.Controls">
 
   <!--  DataBrowserBox Control Style  -->
   <Style TargetType="{x:Type controls:DataBrowserBox}">

@@ -7,8 +7,10 @@ using Microsoft.Extensions.Hosting;
 using TelAvivMuni_Exercise.Core;
 using TelAvivMuni_Exercise.Core.Contracts;
 using TelAvivMuni_Exercise.Core.Contracts.Patterns;
+using TelAvivMuni_Exercise.Domain;
 using TelAvivMuni_Exercise.Infrastructure;
-using TelAvivMuni_Exercise.ViewModels;
+using TelAvivMuni_Exercise.Presentation;
+using TelAvivMuni_Exercise.Presentation.ViewModels;
 
 namespace TelAvivMuni_Exercise;
 
