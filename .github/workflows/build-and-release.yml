@@ -57,16 +57,6 @@ jobs:
             --self-contained false
         shell: pwsh
 
-      - name: Publish application (Self-contained)
-        run: |
-          dotnet publish TelAvivMuni-Exercise/TelAvivMuni-Exercise.csproj `
-            --configuration Release `
-            --output ./publish/self-contained `
-            --runtime win-x64 `
-            --self-contained true `
-            -p:PublishSingleFile=false
-        shell: pwsh
-
       - name: Create zip archives
         run: |
           # Determine version tag
@@ -80,9 +70,6 @@ jobs:
           
           # Create framework-dependent zip (requires .NET 8 Runtime installed)
           Compress-Archive -Path ./publish/framework-dependent/* -DestinationPath "TelAvivMuni-Exercise-${version}-framework-dependent.zip"
-          
-          # Create self-contained zip (includes .NET runtime, larger but no dependencies)
-          Compress-Archive -Path ./publish/self-contained/* -DestinationPath "TelAvivMuni-Exercise-${version}-win-x64.zip"
         shell: pwsh
 
       - name: Upload release assets
