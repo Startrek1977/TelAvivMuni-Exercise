@@ -2,70 +2,74 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:TelAvivMuni_Exercise.Controls">
 
-  <!-- ============================================ -->
-  <!-- Theme2 - Teal/Green Theme Color Palette -->
+  <!--  ============================================  -->
+  <!--  Theme2 - Teal/Green Theme Color Palette  -->
   <!--
     To use this theme, update App.xaml line 10:
     <ResourceDictionary Source="/Themes/Theme2.xaml" />
   -->
-  <!-- ============================================ -->
+  <!--  ============================================  -->
 
-  <!-- Primary Colors (Teal/Green Theme) -->
+  <!--  Primary Colors (Teal/Green Theme)  -->
   <SolidColorBrush x:Key="PrimaryBrush" Color="#009688" />
   <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#00796B" />
   <SolidColorBrush x:Key="PrimaryDarkerBrush" Color="#00695C" />
   <SolidColorBrush x:Key="PrimaryLightBrush" Color="#B2DFDB" />
   <SolidColorBrush x:Key="PrimaryExtraLightBrush" Color="#E0F2F1" />
 
-  <!-- Secondary Colors (Dark Gray) -->
+  <!--  Secondary Colors (Dark Gray)  -->
   <SolidColorBrush x:Key="SecondaryBrush" Color="#455A64" />
   <SolidColorBrush x:Key="SecondaryDarkBrush" Color="#37474F" />
   <SolidColorBrush x:Key="SecondaryDarkerBrush" Color="#263238" />
 
-  <!-- Neutral/Gray Colors -->
+  <!--  Neutral/Gray Colors  -->
   <SolidColorBrush x:Key="NeutralLightBrush" Color="#B0BEC5" />
   <SolidColorBrush x:Key="NeutralMediumBrush" Color="#78909C" />
   <SolidColorBrush x:Key="NeutralDarkBrush" Color="#607D8B" />
   <SolidColorBrush x:Key="NeutralExtraLightBrush" Color="#ECEFF1" />
   <SolidColorBrush x:Key="NeutralHoverBrush" Color="#E0F2F1" />
 
-  <!-- Border Colors -->
+  <!--  Border Colors  -->
   <SolidColorBrush x:Key="BorderBrush" Color="#00796B" />
   <SolidColorBrush x:Key="BorderLightBrush" Color="#B2DFDB" />
 
-  <!-- Text Colors -->
+  <!--  Text Colors  -->
   <SolidColorBrush x:Key="TextPrimaryBrush" Color="#263238" />
   <SolidColorBrush x:Key="TextSecondaryBrush" Color="#37474F" />
   <SolidColorBrush x:Key="TextTertiaryBrush" Color="#607D8B" />
   <SolidColorBrush x:Key="TextDisabledBrush" Color="#78909C" />
 
-  <!-- Disabled State -->
+  <!--  Disabled State  -->
   <SolidColorBrush x:Key="DisabledBrush" Color="#B0BEC5" />
 
-  <!-- White -->
+  <!--  White  -->
   <SolidColorBrush x:Key="WhiteBrush" Color="White" />
 
-  <!-- ============================================ -->
-  <!-- Theme Resources and Styles -->
-  <!-- ============================================ -->
+  <!--  ============================================  -->
+  <!--  Theme Resources and Styles  -->
+  <!--  ============================================  -->
 
-  <!-- Browse Dialog Icon (same as browse button content) -->
+  <!--  Browse Dialog Icon (same as browse button content)  -->
   <DrawingImage x:Key="BrowseDialogIcon">
     <DrawingImage.Drawing>
       <DrawingGroup>
         <GeometryDrawing Brush="Transparent">
           <GeometryDrawing.Pen>
-            <Pen Brush="White" Thickness="1.5"/>
+            <Pen Brush="White" Thickness="1.5" />
           </GeometryDrawing.Pen>
           <GeometryDrawing.Geometry>
-            <PathGeometry Figures="M 2,1 H 14 A 1,1 0 0 1 15,2 V 5 A 1,1 0 0 1 14,6 H 2 A 1,1 0 0 1 1,5 V 2 A 1,1 0 0 1 2,1 Z M 2,10 H 14 A 1,1 0 0 1 15,11 V 14 A 1,1 0 0 1 14,15 H 2 A 1,1 0 0 1 1,14 V 11 A 1,1 0 0 1 2,10 Z"/>
+            <PathGeometry Figures="M 2,1 H 14 A 1,1 0 0 1 15,2 V 5 A 1,1 0 0 1 14,6 H 2 A 1,1 0 0 1 1,5 V 2 A 1,1 0 0 1 2,1 Z M 2,10 H 14 A 1,1 0 0 1 15,11 V 14 A 1,1 0 0 1 14,15 H 2 A 1,1 0 0 1 1,14 V 11 A 1,1 0 0 1 2,10 Z" />
           </GeometryDrawing.Geometry>
         </GeometryDrawing>
         <GeometryDrawing Brush="White">
           <GeometryDrawing.Geometry>
             <GeometryGroup>
-              <EllipseGeometry Center="4,3.5" RadiusX="1" RadiusY="1"/>
-              <EllipseGeometry Center="4,12.5" RadiusX="1" RadiusY="1"/>
+              <EllipseGeometry Center="4,3.5"
+                               RadiusX="1"
+                               RadiusY="1" />
+              <EllipseGeometry Center="4,12.5"
+                               RadiusX="1"
+                               RadiusY="1" />
             </GeometryGroup>
           </GeometryDrawing.Geometry>
         </GeometryDrawing>
@@ -73,7 +77,7 @@
     </DrawingImage.Drawing>
   </DrawingImage>
 
-  <!-- Base Button Style -->
+  <!--  Base Button Style  -->
   <Style x:Key="BaseButtonStyle" TargetType="Button">
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="FontWeight" Value="SemiBold" />
@@ -81,9 +85,9 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Border Background="{TemplateBinding Background}"
-                  CornerRadius="8"
-                  Padding="20,8">
+          <Border Padding="20,8"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="8">
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Border>
         </ControlTemplate>
@@ -91,8 +95,10 @@
     </Setter>
   </Style>
 
-  <!-- Blue Button Style (Primary actions) - Using Teal/Green -->
-  <Style x:Key="BlueButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+  <!--  Blue Button Style (Primary actions) - Using Teal/Green  -->
+  <Style x:Key="BlueButtonStyle"
+         BasedOn="{StaticResource BaseButtonStyle}"
+         TargetType="Button">
     <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
     <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
     <Style.Triggers>
@@ -109,8 +115,10 @@
     </Style.Triggers>
   </Style>
 
-  <!-- Gray Button Style (Secondary actions) - Using Dark Gray -->
-  <Style x:Key="GrayButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+  <!--  Gray Button Style (Secondary actions) - Using Dark Gray  -->
+  <Style x:Key="GrayButtonStyle"
+         BasedOn="{StaticResource BaseButtonStyle}"
+         TargetType="Button">
     <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
     <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
     <Style.Triggers>
@@ -123,7 +131,7 @@
     </Style.Triggers>
   </Style>
 
-  <!-- Clear Button Style (Small circular button with X) -->
+  <!--  Clear Button Style (Small circular button with X)  -->
   <Style x:Key="ClearButtonStyle" TargetType="Button">
     <Setter Property="Width" Value="20" />
     <Setter Property="Height" Value="20" />
@@ -136,10 +144,8 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Border Background="{TemplateBinding Background}"
-                  CornerRadius="10">
-            <ContentPresenter HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
+          <Border Background="{TemplateBinding Background}" CornerRadius="10">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -152,7 +158,7 @@
     </Setter>
   </Style>
 
-  <!-- Browse Button Style (... button for DataBrowserBox) -->
+  <!--  Browse Button Style (... button for DataBrowserBox)  -->
   <Style x:Key="BrowseButtonStyle" TargetType="Button">
     <Setter Property="Width" Value="35" />
     <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
@@ -164,19 +170,19 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Border Background="{TemplateBinding Background}"
+          <Border Padding="4"
+                  Background="{TemplateBinding Background}"
                   BorderBrush="{StaticResource BorderBrush}"
                   BorderThickness="2,0,0,0"
-                  CornerRadius="0,4,4,0"
-                  Padding="4">
+                  CornerRadius="0,4,4,0">
             <Viewbox Width="20" Height="20">
-              <Path Data="M 4,2 H 20 A 2,2 0 0 1 22,4 V 8 A 2,2 0 0 1 20,10 H 4 A 2,2 0 0 1 2,8 V 4 A 2,2 0 0 1 4,2 Z M 4,14 H 20 A 2,2 0 0 1 22,16 V 20 A 2,2 0 0 1 20,22 H 4 A 2,2 0 0 1 2,20 V 16 A 2,2 0 0 1 4,14 Z M 6,6 L 6.01,6 M 6,18 L 6.01,18"
-                    Stroke="{TemplateBinding Foreground}"
-                    StrokeThickness="2"
-                    Fill="Transparent"
-                    Width="24"
+              <Path Width="24"
                     Height="24"
-                    Stretch="Uniform"/>
+                    Data="M 4,2 H 20 A 2,2 0 0 1 22,4 V 8 A 2,2 0 0 1 20,10 H 4 A 2,2 0 0 1 2,8 V 4 A 2,2 0 0 1 4,2 Z M 4,14 H 20 A 2,2 0 0 1 22,16 V 20 A 2,2 0 0 1 20,22 H 4 A 2,2 0 0 1 2,20 V 16 A 2,2 0 0 1 4,14 Z M 6,6 L 6.01,6 M 6,18 L 6.01,18"
+                    Fill="Transparent"
+                    Stretch="Uniform"
+                    Stroke="{TemplateBinding Foreground}"
+                    StrokeThickness="2" />
             </Viewbox>
           </Border>
           <ControlTemplate.Triggers>
@@ -192,7 +198,7 @@
     </Setter>
   </Style>
 
-  <!-- TextBox Style for DataBrowserBox display -->
+  <!--  TextBox Style for DataBrowserBox display  -->
   <Style x:Key="DataBrowserTextBoxStyle" TargetType="TextBox">
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="Background" Value="Transparent" />
@@ -214,7 +220,7 @@
     </Style.Triggers>
   </Style>
 
-  <!-- DataGrid Column Header Style -->
+  <!--  DataGrid Column Header Style  -->
   <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
     <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
     <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
@@ -226,7 +232,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Left" />
   </Style>
 
-  <!-- DataGrid Cell Style -->
+  <!--  DataGrid Cell Style  -->
   <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Padding" Value="12,8" />
@@ -235,10 +241,10 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="DataGridCell">
-          <Border Background="{TemplateBinding Background}"
+          <Border Padding="{TemplateBinding Padding}"
+                  Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}"
-                  Padding="{TemplateBinding Padding}">
+                  BorderThickness="{TemplateBinding BorderThickness}">
             <ContentPresenter VerticalAlignment="Center" />
           </Border>
         </ControlTemplate>
@@ -253,7 +259,7 @@
     </Style.Triggers>
   </Style>
 
-  <!-- DataGrid Row Style -->
+  <!--  DataGrid Row Style  -->
   <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
     <Setter Property="Background" Value="{StaticResource WhiteBrush}" />
     <Style.Triggers>
