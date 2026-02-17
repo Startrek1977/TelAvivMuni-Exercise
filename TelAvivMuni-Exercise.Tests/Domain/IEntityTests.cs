@@ -1,5 +1,5 @@
 using TelAvivMuni_Exercise.Domain;
-using TelAvivMuni_Exercise.Infrastructure;
+using TelAvivMuni_Exercise.Persistence;
 using Xunit;
 
 namespace TelAvivMuni_Exercise.Tests.Domain;

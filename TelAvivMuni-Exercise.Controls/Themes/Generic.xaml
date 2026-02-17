@@ -1,15 +1,15 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:TelAvivMuni_Exercise.Controls;assembly=TelAvivMuni-Exercise.Controls">
+                    xmlns:local="clr-namespace:TelAvivMuni_Exercise.Controls">
 
   <!--  DataBrowserBox Control Style  -->
-  <Style TargetType="{x:Type controls:DataBrowserBox}">
-    <Setter Property="Background" Value="{StaticResource WhiteBrush}" />
-    <Setter Property="BorderBrush" Value="{StaticResource BorderLightBrush}" />
+  <Style TargetType="{x:Type local:DataBrowserBox}">
+    <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderLightBrush}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type controls:DataBrowserBox}">
+        <ControlTemplate TargetType="{x:Type local:DataBrowserBox}">
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
@@ -28,7 +28,7 @@
                 <Path Data="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z M3.29 7 L12 12 L20.71 7 M12 22 L12 12"
                       Fill="Transparent"
                       Stretch="Uniform"
-                      Stroke="{StaticResource PrimaryDarkBrush}"
+                      Stroke="{DynamicResource PrimaryDarkBrush}"
                       StrokeEndLineCap="Round"
                       StrokeLineJoin="Round"
                       StrokeStartLineCap="Round"
@@ -38,7 +38,7 @@
               <Grid Grid.Column="1">
                 <TextBox x:Name="PART_TextBox"
                          Opacity="0.5"
-                         Style="{StaticResource DataBrowserTextBoxStyle}"
+                         Style="{DynamicResource DataBrowserTextBoxStyle}"
                          Text="Click to select..." />
 
                 <Button x:Name="PART_ClearButton"
@@ -52,7 +52,7 @@
                         Content="&#x2715;"
                         Cursor="Hand"
                         FontSize="12"
-                        Foreground="{StaticResource TextDisabledBrush}">
+                        Foreground="{DynamicResource TextDisabledBrush}">
                   <Button.Style>
                     <Style TargetType="Button">
                       <Setter Property="Visibility" Value="Visible" />
@@ -66,7 +66,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                               <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource NeutralHoverBrush}" />
+                                <Setter Property="Background" Value="{DynamicResource NeutralHoverBrush}" />
                               </Trigger>
                             </ControlTemplate.Triggers>
                           </ControlTemplate>
@@ -84,7 +84,7 @@
               </Grid>
               <Button x:Name="PART_BrowseButton"
                       Grid.Column="2"
-                      Style="{StaticResource BrowseButtonStyle}" />
+                      Style="{DynamicResource BrowseButtonStyle}" />
             </Grid>
           </Border>
         </ControlTemplate>

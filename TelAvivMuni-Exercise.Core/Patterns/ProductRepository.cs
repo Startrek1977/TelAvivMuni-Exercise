@@ -1,6 +1,6 @@
 using TelAvivMuni_Exercise.Core.Contracts;
 using TelAvivMuni_Exercise.Domain;
-using TelAvivMuni_Exercise.Infrastructure;
+using TelAvivMuni_Exercise.Persistence;
 
 namespace TelAvivMuni_Exercise.Core;
 
@@ -17,9 +17,6 @@ namespace TelAvivMuni_Exercise.Core;
 /// <exception cref="ArgumentNullException">Thrown when dataStore is null.</exception>
 public class ProductRepository(IDataStore<Product> dataStore) : IRepository<Product>
 {
-	private static readonly string DefaultDataPath =
-		Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Products.json");
-
 	private readonly IDataStore<Product> _dataStore = dataStore ?? throw new ArgumentNullException(nameof(dataStore));
 	private List<Product> _entities = [];
 	private bool _isLoaded;

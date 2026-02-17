@@ -43,14 +43,19 @@ public partial class MainWindowViewModel : ObservableObject
 		set => SetProperty(ref _selectedProduct2, value);
 	}
 
+	[ObservableProperty]
+	private string dataSourceInfo = string.Empty;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
 	/// </summary>
 	/// <param name="unitOfWork">The unit of work for data persistence operations.</param>
+	/// <param name="dataSourceInfo">Human-readable description of the active data source for display in the status bar.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="unitOfWork"/> is null.</exception>
-	public MainWindowViewModel(IUnitOfWork unitOfWork)
+	public MainWindowViewModel(IUnitOfWork unitOfWork, string dataSourceInfo = "")
 	{
 		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		DataSourceInfo = dataSourceInfo;
 		_ = LoadProductsAsync();
 	}
 

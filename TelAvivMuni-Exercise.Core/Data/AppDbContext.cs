@@ -7,20 +7,16 @@ namespace TelAvivMuni_Exercise.Core;
 /// Entity Framework Core database context for the application.
 /// Provides access to database entities and configures entity mappings.
 /// </summary>
-public class AppDbContext : DbContext
+/// <remarks>
+/// Initializes a new instance of the AppDbContext.
+/// </remarks>
+/// <param name="options">The options to be used by the DbContext.</param>
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-	/// <summary>
-	/// Initializes a new instance of the AppDbContext.
-	/// </summary>
-	/// <param name="options">The options to be used by the DbContext.</param>
-	public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-	{
-	}
-
-	/// <summary>
-	/// Gets the Products DbSet.
-	/// </summary>
-	public DbSet<Product> Products => Set<Product>();
+    /// <summary>
+    /// Gets the Products DbSet.
+    /// </summary>
+    public DbSet<Product> Products => Set<Product>();
 
 	/// <inheritdoc />
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

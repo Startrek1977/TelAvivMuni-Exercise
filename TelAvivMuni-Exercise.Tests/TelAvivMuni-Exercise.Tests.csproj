@@ -32,6 +32,10 @@
     <ProjectReference Include="..\TelAvivMuni-Exercise.Core\TelAvivMuni-Exercise.Core.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Core.Contracts\TelAvivMuni-Exercise.Core.Contracts.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Domain\TelAvivMuni-Exercise.Domain.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence\TelAvivMuni-Exercise.Persistence.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.Database\TelAvivMuni-Exercise.Persistence.Database.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase\TelAvivMuni-Exercise.Persistence.FileBase.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase.Json\TelAvivMuni-Exercise.Persistence.FileBase.Json.csproj" />
   </ItemGroup>
 
 </Project>

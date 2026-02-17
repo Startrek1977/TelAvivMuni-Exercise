@@ -9,7 +9,6 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/Theme1.xaml" />
-        <ResourceDictionary Source="/Themes/Generic.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <services:DialogService x:Key="DialogService" />
       <localInfra:ViewModelLocator x:Key="Locator" />

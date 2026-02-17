@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TelAvivMuni_Exercise.Domain;
-using TelAvivMuni_Exercise.Infrastructure;
+using TelAvivMuni_Exercise.Persistence;
+using TelAvivMuni_Exercise.Persistence.Database;
 using Xunit;
 
 namespace TelAvivMuni_Exercise.Tests.Infrastructure;
@@ -8,8 +9,8 @@ namespace TelAvivMuni_Exercise.Tests.Infrastructure;
 public class DbDataStoreTests : IDisposable
 {
 	private readonly TestDbContext _context;
-	private readonly TestDbContextFactory _contextFactory;
-	private readonly DbDataStore<Product, TestDbContext> _dataStore;
+	private readonly TestAppDbContextFactory _contextFactory;
+	private readonly DbDataStore<Product> _dataStore;
 
 	public DbDataStoreTests()
 	{
@@ -18,8 +19,8 @@ public class DbDataStoreTests : IDisposable
 			.Options;
 
 		_context = new TestDbContext(options);
-		_contextFactory = new TestDbContextFactory(options);
-		_dataStore = new DbDataStore<Product, TestDbContext>(_contextFactory);
+		_contextFactory = new TestAppDbContextFactory(new TestDbContextFactory(options));
+		_dataStore = new DbDataStore<Product>(_contextFactory);
 	}
 
 	public void Dispose()
@@ -32,7 +33,7 @@ public class DbDataStoreTests : IDisposable
 	public void Constructor_ThrowsArgumentNullException_WhenContextFactoryIsNull()
 	{
 		// Act & Assert
-		Assert.Throws<ArgumentNullException>(() => new DbDataStore<Product, TestDbContext>(null!));
+		Assert.Throws<ArgumentNullException>(() => new DbDataStore<Product>(null!));
 	}
 
 	[Fact]
@@ -187,8 +188,8 @@ public class DbDataStoreTests : IDisposable
 	public async Task LoadAsync_ThrowsInvalidOperationException_WithMeaningfulMessage_OnDatabaseError()
 	{
 		// Arrange - Create a factory that will throw an exception
-		var faultyFactory = new FaultyDbContextFactory<TestDbContext>(new Exception("Simulated database error"));
-		var dataStore = new DbDataStore<Product, TestDbContext>(faultyFactory);
+		var faultyFactory = new FaultyAppDbContextFactory(new Exception("Simulated database error"));
+		var dataStore = new DbDataStore<Product>(faultyFactory);
 
 		// Act & Assert
 		var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => dataStore.LoadAsync());
@@ -201,8 +202,8 @@ public class DbDataStoreTests : IDisposable
 	public async Task SaveAsync_ThrowsInvalidOperationException_WithMeaningfulMessage_OnDatabaseError()
 	{
 		// Arrange
-		var faultyFactory = new FaultyDbContextFactory<TestDbContext>(new Exception("Simulated save error"));
-		var dataStore = new DbDataStore<Product, TestDbContext>(faultyFactory);
+		var faultyFactory = new FaultyAppDbContextFactory(new Exception("Simulated save error"));
+		var dataStore = new DbDataStore<Product>(faultyFactory);
 		var products = new List<Product>
 		{
 			new() { Id = 1, Name = "Test", Code = "T001", Category = "Cat", Price = 10.00m, Stock = 100 }
@@ -240,7 +241,7 @@ public class TestDbContext : DbContext
 }
 
 /// <summary>
-/// Test DbContext factory for creating test contexts.
+/// EF Core factory for creating test DbContext instances (used internally by the adapter).
 /// </summary>
 public class TestDbContextFactory : IDbContextFactory<TestDbContext>
 {
@@ -251,27 +252,24 @@ public class TestDbContextFactory : IDbContextFactory<TestDbContext>
 		_options = options;
 	}
 
-	public TestDbContext CreateDbContext()
-	{
-		return new TestDbContext(_options);
-	}
+	public TestDbContext CreateDbContext() => new(_options);
 }
 
 /// <summary>
-/// Faulty DbContext factory for testing error handling.
+/// Adapts <see cref="TestDbContextFactory"/> to <see cref="IAppDbContextFactory"/>
+/// so it can be used with the single-param <see cref="DbDataStore{TEntity}"/>.
 /// </summary>
-public class FaultyDbContextFactory<TContext> : IDbContextFactory<TContext>
-	where TContext : DbContext
+public class TestAppDbContextFactory(TestDbContextFactory inner) : IAppDbContextFactory
 {
-	private readonly Exception _exceptionToThrow;
+	public Task<DbContext> CreateDbContextAsync(CancellationToken cancellationToken = default)
+		=> Task.FromResult<DbContext>(inner.CreateDbContext());
+}
 
-	public FaultyDbContextFactory(Exception exceptionToThrow)
-	{
-		_exceptionToThrow = exceptionToThrow;
-	}
-
-	public TContext CreateDbContext()
-	{
-		throw _exceptionToThrow;
-	}
+/// <summary>
+/// Faulty IAppDbContextFactory for testing error-handling paths in DbDataStore.
+/// </summary>
+public class FaultyAppDbContextFactory(Exception exceptionToThrow) : IAppDbContextFactory
+{
+	public Task<DbContext> CreateDbContextAsync(CancellationToken cancellationToken = default)
+		=> throw exceptionToThrow;
 }

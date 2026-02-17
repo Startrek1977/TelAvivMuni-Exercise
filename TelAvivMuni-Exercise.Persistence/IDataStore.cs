@@ -1,4 +1,4 @@
-namespace TelAvivMuni_Exercise.Infrastructure;
+namespace TelAvivMuni_Exercise.Persistence;
 
 /// <summary>
 /// Defines a contract for data persistence operations.
