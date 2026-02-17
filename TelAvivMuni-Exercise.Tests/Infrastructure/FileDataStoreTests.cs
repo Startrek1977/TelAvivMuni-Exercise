@@ -1,7 +1,9 @@
 using System.IO;
 using System.Text.Json;
 using TelAvivMuni_Exercise.Domain;
-using TelAvivMuni_Exercise.Infrastructure;
+using TelAvivMuni_Exercise.Persistence;
+using TelAvivMuni_Exercise.Persistence.FileBase;
+using TelAvivMuni_Exercise.Persistence.FileBase.Json;
 using Xunit;
 
 namespace TelAvivMuni_Exercise.Tests.Infrastructure;
@@ -24,6 +26,7 @@ public class FileDataStoreTests : IDisposable
 		{
 			Directory.Delete(_testDirectory, recursive: true);
 		}
+		GC.SuppressFinalize(this);
 	}
 
 	[Fact]

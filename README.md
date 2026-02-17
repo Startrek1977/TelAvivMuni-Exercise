@@ -104,6 +104,8 @@ Application-specific business logic:
 - **Patterns:**
   - `ProductRepository` - Product-specific repository implementation
   - `UnitOfWork` - Unit of Work coordination pattern
+- `AppDbContextRegistrar` - Registers `AppDbContext` into DI; discovered at runtime via assembly scanning
+- `CoreAssembly` - Provides a reference to the Core assembly for runtime discovery without hardcoding its name
 
 ### TelAvivMuni-Exercise.Controls
 Reusable WPF controls and attached behaviors:
@@ -226,9 +228,11 @@ TelAvivMuni-Exercise.sln
 ├── TelAvivMuni-Exercise.Core/               # Business logic
 │   ├── Data/
 │   │   └── AppDbContext.cs                  # EF Core DbContext for SQL Server
-│   └── Patterns/
-│       ├── ProductRepository.cs             # Product-specific repository
-│       └── UnitOfWork.cs                    # Unit of Work implementation
+│   ├── Patterns/
+│   │   ├── ProductRepository.cs             # Product-specific repository
+│   │   └── UnitOfWork.cs                    # Unit of Work implementation
+│   ├── AppDbContextRegistrar.cs             # Registers AppDbContext into DI (runtime-discovered)
+│   └── CoreAssembly.cs                      # Assembly reference helper for runtime discovery
 │
 ├── TelAvivMuni-Exercise.Controls/           # Reusable WPF controls & behaviors
 │   ├── Behaviors/
@@ -266,7 +270,8 @@ TelAvivMuni-Exercise.sln
 │
 ├── TelAvivMuni-Exercise.Tests/              # Unit test project
 │   ├── Core/
-│   │   └── AppDbContextTests.cs
+│   │   ├── AppDbContextTests.cs
+│   │   └── CoreAssemblyTests.cs
 │   ├── Domain/
 │   │   ├── BrowserColumnTests.cs
 │   │   ├── IEntityTests.cs
@@ -530,7 +535,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **160 unit tests** with **93.6% line coverage** and **79.6% branch coverage** on all testable code:
+The test suite includes **163 unit tests** with **93.6% line coverage** and **79.6% branch coverage** on all testable code:
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -597,6 +602,12 @@ The test suite includes **160 unit tests** with **93.6% line coverage** and **79
 
 ## Recent Improvements
 
+### Assembly Discovery Refactor (v7.1)
+- **Removed hardcoded assembly name** - `StorageRegistrationExtensions` no longer references the literal string `"TelAvivMuni-Exercise.Core.dll"` for `IDbContextRegistrar` discovery
+- **Added `CoreAssembly`** - A lightweight static helper in the Core project that exposes `Assembly.GetExecutingAssembly()`, ensuring the correct assembly is always resolved at runtime regardless of what calls it
+- **Shared `ScanAssembly` helper** - The type-scanning loop is now extracted and reused by both the glob-based and assembly-based overloads of `DiscoverRegistrars`
+- **163 unit tests** - Added `CoreAssemblyTests` to verify the assembly name and identity
+
 ### Project Decomposition Refactor (v7.0)
 - **Extracted `TelAvivMuni-Exercise.Domain`** - Domain models (Product, BrowserColumn, OperationResult) now in a dedicated project
 - **Extracted `TelAvivMuni-Exercise.Controls`** - WPF controls and attached behaviors separated from the main WPF project
@@ -604,7 +615,7 @@ The test suite includes **160 unit tests** with **93.6% line coverage** and **79
 - **Moved `IEntity` to Infrastructure** - Base entity interface lives with persistence abstractions
 - **Moved `AppDbContext` to Core** - DbContext consolidated with business logic patterns
 - **7 clean projects** - Infrastructure → Domain → Core.Contracts → Core → Controls/Presentation → WPF
-- **160 unit tests** - Test project references all projects for comprehensive coverage
+- **163 unit tests** - Test project references all projects for comprehensive coverage
 
 ### Architectural Layering Refactor (v6.0)
 - **Core project no longer depends on EF Core** - Clean separation of business logic from infrastructure
@@ -616,7 +627,7 @@ The test suite includes **160 unit tests** with **93.6% line coverage** and **79
 - **DbDataStore<TEntity, TContext>** - Generic database data store implementing `IDataStore<T>`
 - **AppDbContext** - EF Core DbContext with Product entity configuration
 - **Pluggable persistence** - Switch between file and database storage via DI configuration
-- **160 unit tests** - Expanded test coverage including database operations
+- **163 unit tests** - Expanded test coverage including database operations
 - **InMemory testing** - Database tests use EF Core InMemory provider
 
 ### Local Database Setup
@@ -658,7 +669,7 @@ Follow these steps to run the SQL Server–backed version of the application loc
    - Navigate to the part of the UI that loads products. If the database is configured correctly, product data should load from SQL Server without errors.
    - Optionally, add or edit a product in the application and confirm that the changes appear in the `Products` table when queried from your SQL client.
 ### Test Coverage (v4.0)
-- **160 unit tests** - Comprehensive test coverage for all business logic
+- **163 unit tests** - Comprehensive test coverage for all business logic
 - **93.6% line coverage** - Measured via coverlet with Cobertura reporting
 - **79.6% branch coverage** - Covers conditional logic paths
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute

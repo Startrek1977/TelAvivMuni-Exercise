@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>TelAvivMuni_Exercise.Persistence.FileBase</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence\TelAvivMuni-Exercise.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

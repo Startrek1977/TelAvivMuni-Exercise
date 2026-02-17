@@ -1,12 +1,14 @@
-namespace TelAvivMuni_Exercise.Infrastructure;
+using TelAvivMuni_Exercise.Persistence;
+
+namespace TelAvivMuni_Exercise.Persistence.FileBase;
 
 /// <summary>
 /// File-based implementation of IDataStore.
-/// Uses an ISerializer for format flexibility (JSON, XML, etc.).
+/// Uses an ISerializer for format flexibility (JSON, XML, CSV, etc.).
 /// Thread-safe for async operations.
 /// </summary>
 /// <typeparam name="T">The type of entity to store.</typeparam>
-public class FileDataStore<T> : IDataStore<T> where T : class, IEntity
+public class FileDataStore<T> : IDataStore<T>, ILocatableDataStore where T : class, IEntity
 {
 	private readonly string _filePath;
 	private readonly ISerializer<T> _serializer;
@@ -28,6 +30,9 @@ public class FileDataStore<T> : IDataStore<T> where T : class, IEntity
 	/// Gets the file path being used by this data store.
 	/// </summary>
 	public string FilePath => _filePath;
+
+	/// <inheritdoc />
+	string ILocatableDataStore.Location => _filePath;
 
 	/// <inheritdoc />
 	public async Task<T[]> LoadAsync()

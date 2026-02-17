@@ -13,12 +13,17 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\Products.json">
+    <!-- Data files live at solution level; copy all formats to output Data\ folder -->
+    <None Include="$(SolutionDir)Data\Product.json" Link="Data\Product.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(SolutionDir)Data\Product.xml" Link="Data\Product.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(SolutionDir)Data\Product.csv" Link="Data\Product.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.json">
@@ -36,6 +41,21 @@
     <ProjectReference Include="..\TelAvivMuni-Exercise.Core.Contracts\TelAvivMuni-Exercise.Core.Contracts.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Infrastructure\TelAvivMuni-Exercise.Infrastructure.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Domain\TelAvivMuni-Exercise.Domain.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence\TelAvivMuni-Exercise.Persistence.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.Database\TelAvivMuni-Exercise.Persistence.Database.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase\TelAvivMuni-Exercise.Persistence.FileBase.csproj" />
+    <!-- Plugin projects: built and deployed to bin directory at build time.
+         The app discovers these DLLs at runtime via Assembly.LoadFrom — no compile-time
+         type coupling exists. A new provider (e.g. Persistence.Database.MySql.dll) can
+         be dropped into the bin directory; changing appsettings.json is all that is needed,
+         no recompilation required. -->
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.Database.SqlServer\TelAvivMuni-Exercise.Persistence.Database.SqlServer.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.Database.Sqlite\TelAvivMuni-Exercise.Persistence.Database.Sqlite.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.Database.PostgreSQL\TelAvivMuni-Exercise.Persistence.Database.PostgreSQL.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.Database.MySql\TelAvivMuni-Exercise.Persistence.Database.MySql.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase.Json\TelAvivMuni-Exercise.Persistence.FileBase.Json.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase.Xml\TelAvivMuni-Exercise.Persistence.FileBase.Xml.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase.Csv\TelAvivMuni-Exercise.Persistence.FileBase.Csv.csproj" />
   </ItemGroup>
 
 </Project>
