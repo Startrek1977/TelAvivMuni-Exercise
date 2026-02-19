@@ -11,6 +11,7 @@ using TelAvivMuni_Exercise.Infrastructure;
 using TelAvivMuni_Exercise.Persistence;
 using TelAvivMuni_Exercise.Presentation;
 using TelAvivMuni_Exercise.Presentation.ViewModels;
+using TelAvivMuni_Exercise.Presentation.Views;
 
 namespace TelAvivMuni_Exercise;
 
@@ -67,7 +68,7 @@ public partial class App : Application
 	{
 		await _host.StartAsync();
 		base.OnStartup(e);
-		// StartupUri in App.xaml handles MainWindow creation
+		new MainWindow().Show();
 	}
 
 	protected override async void OnExit(ExitEventArgs e)

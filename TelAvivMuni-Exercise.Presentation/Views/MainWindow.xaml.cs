@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
-namespace TelAvivMuni_Exercise;
+namespace TelAvivMuni_Exercise.Presentation.Views;
 
 [ExcludeFromCodeCoverage]
 public partial class MainWindow : Window
