@@ -619,6 +619,7 @@ The test suite includes **163 unit tests** with **93.6% line coverage** and **79
 - **`[assembly: XmlnsDefinition]`** added to `TelAvivMuni-Exercise.Controls/AssemblyInfo.cs`, mapping `http://telaviv-muni-exe/controls` to both `TelAvivMuni_Exercise.Controls` and `TelAvivMuni_Exercise.Controls.Behaviors` — mirrors the same convention already established in the Presentation assembly
 - **Consumer XAML simplified** — `MainWindow.xaml` replaces the verbose `clr-namespace:TelAvivMuni_Exercise.Controls;assembly=TelAvivMuni-Exercise.Controls` with `xmlns:controls="http://telaviv-muni-exe/controls"`; `Theme1.xaml` and `Theme2.xaml` updated to match
 - **Intra-assembly references unchanged** — `DataBrowserDialog.xaml` and `Generic.xaml` continue to use bare `clr-namespace:` (no `assembly=`), which is correct for references within the same assembly
+- **MC3074 fix** — `MainWindow.xaml` `xmlns:local` restored to `clr-namespace:TelAvivMuni_Exercise.Domain;assembly=TelAvivMuni-Exercise.Domain`; Domain stays `net8.0` (platform-neutral) so `XmlnsDefinitionAttribute` (WPF-only) cannot be applied to it — the full `clr-namespace:...;assembly=...` form is required here
 - **163 unit tests** — all pass unchanged
 
 ### MainWindow Moved to Presentation (v7.2)

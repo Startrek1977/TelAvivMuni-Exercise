@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:pres="http://telaviv-muni-exe/presentation"
         xmlns:controls="http://telaviv-muni-exe/controls"
-        xmlns:local="clr-namespace:TelAvivMuni_Exercise.Domain"
+        xmlns:local="clr-namespace:TelAvivMuni_Exercise.Domain;assembly=TelAvivMuni-Exercise.Domain"
         Title="Tel-Aviv Muni - Exercise"
         Width="520"
         Height="455"
