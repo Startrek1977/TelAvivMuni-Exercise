@@ -121,6 +121,8 @@ Reusable WPF controls and attached behaviors:
 
 ### TelAvivMuni-Exercise.Presentation
 ViewModels, services, and presentation infrastructure:
+- **Views:**
+  - `MainWindow.xaml(.cs)` - Main application window
 - **ViewModels:**
   - `MainWindowViewModel` - Main window view model
   - `DataBrowserDialogViewModel` - Dialog view model
@@ -129,14 +131,14 @@ ViewModels, services, and presentation infrastructure:
 - **Infrastructure:**
   - `ViewModelLocator` - DI-based ViewModel resolution for XAML
   - `ICommand.Extension` - Command extension methods (WPF/MVVM-dependent)
+  - `AssemblyInfo.cs` - `[XmlnsDefinition]` mapping `http://telaviv-muni-exe/presentation` to all Presentation namespaces
 
 ### TelAvivMuni-Exercise (Main WPF Application)
-WPF application host and configuration:
-- **Themes:** - Control templates and styles (Generic.xaml, Theme1.xaml, Theme2.xaml)
-- **Data:** - Sample product data (Products.json), SQL scripts
+Pure composition root — DI wiring and application entry point:
+- **Themes:** - Control templates and styles (Theme1.xaml, Theme2.xaml)
+- **Data:** - Sample product data (Products.json, Product.xml, Product.csv), SQL scripts
 - **Configuration:** - appsettings.json, appsettings.Development.json
 - `App.xaml(.cs)` - Application entry point with DI registration
-- `MainWindow.xaml(.cs)` - Main application window
 
 ### TelAvivMuni-Exercise.Tests
 Unit tests for all projects
@@ -244,26 +246,29 @@ TelAvivMuni-Exercise.sln
 │   ├── DataBrowserBox.cs                    # Custom reusable control
 │   └── DataBrowserDialog.xaml(.cs)          # Browse dialog UI
 │
-├── TelAvivMuni-Exercise.Presentation/       # ViewModels & presentation services
+├── TelAvivMuni-Exercise.Presentation/       # ViewModels, views & presentation services
 │   ├── Services/
 │   │   └── DialogService.cs                 # Dialog service implementation
 │   ├── ViewModels/
 │   │   ├── DataBrowserDialogViewModel.cs    # Dialog view model
 │   │   └── MainWindowViewModel.cs           # Main window view model
+│   ├── Views/
+│   │   └── MainWindow.xaml(.cs)             # Main application window
+│   ├── AssemblyInfo.cs                      # XmlnsDefinition for XAML namespace alias
 │   ├── ICommand.Extension.cs                # ICommand extension methods
 │   └── ViewModelLocator.cs                  # DI-based ViewModel resolution
 │
-├── TelAvivMuni-Exercise/                    # WPF Application host
+├── TelAvivMuni-Exercise/                    # Composition root (entry point & DI wiring)
 │   ├── Data/
 │   │   ├── CreateProductsDatabase.sql       # SQL Server database setup script
 │   │   ├── GenerateSqlScript.ps1            # PowerShell script to generate SQL
-│   │   └── Products.json                    # Sample product data
+│   │   ├── Products.json                    # Sample product data (JSON)
+│   │   ├── Product.xml                      # Sample product data (XML)
+│   │   └── Product.csv                      # Sample product data (CSV)
 │   ├── Themes/
-│   │   ├── Generic.xaml                     # Control templates and styles
 │   │   ├── Theme1.xaml
 │   │   └── Theme2.xaml
 │   ├── App.xaml(.cs)                        # Application entry point with DI
-│   ├── MainWindow.xaml(.cs)                 # Main application window
 │   ├── AssemblyInfo.cs
 │   ├── appsettings.json                     # Default configuration
 │   └── appsettings.Development.json         # Development configuration
@@ -374,9 +379,12 @@ Remote SQL Server: Server=myserver.example.com;Database=TelAvivMuni;User Id=myus
 
 In `App.xaml`:
 ```xaml
-<Application.Resources>
-    <services:DialogService x:Key="DialogService" />
-</Application.Resources>
+<Application xmlns:pres="http://telaviv-muni-exe/presentation">
+  <Application.Resources>
+    <pres:DialogService x:Key="DialogService" />
+    <pres:ViewModelLocator x:Key="Locator" />
+  </Application.Resources>
+</Application>
 ```
 
 ### 3. Data Format
@@ -601,6 +609,13 @@ The test suite includes **163 unit tests** with **93.6% line coverage** and **79
 - **No Code-Behind** - All keyboard handling implemented via reusable attached behaviors
 
 ## Recent Improvements
+
+### MainWindow Moved to Presentation (v7.2)
+- **`MainWindow.xaml(.cs)` relocated** to `TelAvivMuni-Exercise.Presentation/Views/` — the Presentation project now owns all view-layer files
+- **WinExe project is a pure composition root** — `TelAvivMuni-Exercise` contains only `App`, DI wiring, themes, and configuration; no Window types remain there
+- **`[assembly: XmlnsDefinition]`** added to `TelAvivMuni-Exercise.Presentation/AssemblyInfo.cs`, mapping the URI `http://telaviv-muni-exe/presentation` to all Presentation namespaces; `App.xaml` now uses a single `xmlns:pres` alias instead of separate `xmlns:services`/`xmlns:localInfra` declarations
+- **Programmatic startup** — `StartupUri` replaced by `new MainWindow().Show()` in `OnStartup`, the idiomatic WPF approach when the startup window lives in a referenced assembly
+- **163 unit tests** — all pass unchanged; `MainWindow` was already `[ExcludeFromCodeCoverage]`
 
 ### Assembly Discovery Refactor (v7.1)
 - **Removed hardcoded assembly name** - `StorageRegistrationExtensions` no longer references the literal string `"TelAvivMuni-Exercise.Core.dll"` for `IDbContextRegistrar` discovery
