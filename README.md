@@ -118,6 +118,8 @@ Reusable WPF controls and attached behaviors:
   - `DataGridScrollIntoViewBehavior` - Scroll to selected item
   - `DialogCloseBehavior` - MVVM-friendly dialog closing
   - `EscapeClearBehavior` - Clear text on Escape key
+- **Infrastructure:**
+  - `AssemblyInfo.cs` - `[XmlnsDefinition]` mapping `http://telaviv-muni-exe/controls` to Controls and Controls.Behaviors namespaces
 
 ### TelAvivMuni-Exercise.Presentation
 ViewModels, services, and presentation infrastructure:
@@ -243,6 +245,9 @@ TelAvivMuni-Exercise.sln
 │   │   ├── DataGridScrollIntoViewBehavior.cs # Scroll to selected item
 │   │   ├── DialogCloseBehavior.cs           # MVVM-friendly dialog closing
 │   │   └── EscapeClearBehavior.cs           # Clear text on Escape key
+│   ├── Themes/
+│   │   └── Generic.xaml                     # Control templates (intra-assembly styles)
+│   ├── AssemblyInfo.cs                      # XmlnsDefinition for XAML namespace alias
 │   ├── DataBrowserBox.cs                    # Custom reusable control
 │   └── DataBrowserDialog.xaml(.cs)          # Browse dialog UI
 │
@@ -609,6 +614,12 @@ The test suite includes **163 unit tests** with **93.6% line coverage** and **79
 - **No Code-Behind** - All keyboard handling implemented via reusable attached behaviors
 
 ## Recent Improvements
+
+### Controls XmlnsDefinition (v7.3)
+- **`[assembly: XmlnsDefinition]`** added to `TelAvivMuni-Exercise.Controls/AssemblyInfo.cs`, mapping `http://telaviv-muni-exe/controls` to both `TelAvivMuni_Exercise.Controls` and `TelAvivMuni_Exercise.Controls.Behaviors` — mirrors the same convention already established in the Presentation assembly
+- **Consumer XAML simplified** — `MainWindow.xaml` replaces the verbose `clr-namespace:TelAvivMuni_Exercise.Controls;assembly=TelAvivMuni-Exercise.Controls` with `xmlns:controls="http://telaviv-muni-exe/controls"`; `Theme1.xaml` and `Theme2.xaml` updated to match
+- **Intra-assembly references unchanged** — `DataBrowserDialog.xaml` and `Generic.xaml` continue to use bare `clr-namespace:` (no `assembly=`), which is correct for references within the same assembly
+- **163 unit tests** — all pass unchanged
 
 ### MainWindow Moved to Presentation (v7.2)
 - **`MainWindow.xaml(.cs)` relocated** to `TelAvivMuni-Exercise.Presentation/Views/` — the Presentation project now owns all view-layer files
