@@ -142,11 +142,11 @@
     <!--  Data source info line  -->
     <Border Grid.Row="1"
             Padding="10,5"
-            Background="{DynamicResource NeutralMediumBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
+            Background="{StaticResource NeutralMediumBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
             BorderThickness="0,1,0,0">
       <TextBlock FontSize="11"
-                 Foreground="{DynamicResource TextTertiaryBrush}"
+                 Foreground="{StaticResource TextTertiaryBrush}"
                  Text="{Binding DataSourceInfo}" />
     </Border>
   </Grid>

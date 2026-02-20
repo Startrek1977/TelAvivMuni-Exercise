@@ -5,7 +5,7 @@
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Themes/Theme1.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Blue;component/Themes/Blue.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <pres:DialogService x:Key="DialogService" />
       <pres:ViewModelLocator x:Key="Locator" />
