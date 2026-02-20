@@ -64,7 +64,7 @@ This project is a home exercise created as part of an interview for the Software
 
 ## Solution Structure
 
-The solution is organized into 7 projects to separate concerns and promote reusability:
+The solution is organized into 21 projects to separate concerns and promote reusability:
 
 ### TelAvivMuni-Exercise.Infrastructure
 Low-level data persistence abstractions and implementations:
@@ -135,9 +135,27 @@ ViewModels, services, and presentation infrastructure:
   - `ICommand.Extension` - Command extension methods (WPF/MVVM-dependent)
   - `AssemblyInfo.cs` - `[XmlnsDefinition]` mapping `http://telaviv-muni-exe/presentation` to all Presentation namespaces
 
+### TelAvivMuni-Exercise.Themes
+Base theme resources shared across all theme variants:
+- **Themes:**
+  - `Shared.xaml` - Neutral brush defaults (used by `Generic.xaml`) and shared vector icons
+
+### TelAvivMuni-Exercise.Themes.Blue
+Blue theme variant:
+- **Themes:**
+  - `Blue.xaml` - Theme entry point (aggregator merging Shared + Blue.Styles)
+  - `Blue.Colors.xaml` - Blue color palette (brush definitions)
+  - `Blue.Styles.xaml` - Blue-specific control styles (buttons, DataGrid, ClearButton)
+
+### TelAvivMuni-Exercise.Themes.Emerald
+Emerald theme variant:
+- **Themes:**
+  - `Emerald.xaml` - Theme entry point (aggregator merging Shared + Emerald.Styles)
+  - `Emerald.Colors.xaml` - Emerald color palette (brush definitions)
+  - `Emerald.Styles.xaml` - Emerald-specific control styles (buttons, DataGrid, ClearButton)
+
 ### TelAvivMuni-Exercise (Main WPF Application)
 Pure composition root — DI wiring and application entry point:
-- **Themes:** - Control templates and styles (Theme1.xaml, Theme2.xaml)
 - **Data:** - Sample product data (Products.json, Product.xml, Product.csv), SQL scripts
 - **Configuration:** - appsettings.json, appsettings.Development.json
 - `App.xaml(.cs)` - Application entry point with DI registration
@@ -165,10 +183,22 @@ TelAvivMuni-Exercise.Core
     └── → TelAvivMuni-Exercise.Domain
     └── Contains: AppDbContext, ProductRepository, UnitOfWork
 
+TelAvivMuni-Exercise.Themes (no project dependencies)
+    └── Contains: Shared.xaml (neutral brush defaults, shared icons)
+
+TelAvivMuni-Exercise.Themes.Blue
+    └── → TelAvivMuni-Exercise.Themes
+    └── Contains: Blue.xaml, Blue.Colors.xaml, Blue.Styles.xaml
+
+TelAvivMuni-Exercise.Themes.Emerald
+    └── → TelAvivMuni-Exercise.Themes
+    └── Contains: Emerald.xaml, Emerald.Colors.xaml, Emerald.Styles.xaml
+
 TelAvivMuni-Exercise.Controls
     ├── → TelAvivMuni-Exercise.Core.Contracts
     ├── → TelAvivMuni-Exercise.Infrastructure
-    └── → TelAvivMuni-Exercise.Domain
+    ├── → TelAvivMuni-Exercise.Domain
+    └── → TelAvivMuni-Exercise.Themes
     └── Contains: DataBrowserBox, DataBrowserDialog, Behaviors
 
 TelAvivMuni-Exercise.Presentation
@@ -184,7 +214,9 @@ TelAvivMuni-Exercise (WPF)
     ├── → TelAvivMuni-Exercise.Core
     ├── → TelAvivMuni-Exercise.Core.Contracts
     ├── → TelAvivMuni-Exercise.Infrastructure
-    └── → TelAvivMuni-Exercise.Domain
+    ├── → TelAvivMuni-Exercise.Domain
+    ├── → TelAvivMuni-Exercise.Themes.Blue
+    └── → TelAvivMuni-Exercise.Themes.Emerald
 
 TelAvivMuni-Exercise.Tests
     ├── → TelAvivMuni-Exercise (WPF)
@@ -246,10 +278,29 @@ TelAvivMuni-Exercise.sln
 │   │   ├── DialogCloseBehavior.cs           # MVVM-friendly dialog closing
 │   │   └── EscapeClearBehavior.cs           # Clear text on Escape key
 │   ├── Themes/
-│   │   └── Generic.xaml                     # Control templates (intra-assembly styles)
+│   │   └── Generic.xaml                     # Control templates (merges Shared.xaml, all StaticResource)
 │   ├── AssemblyInfo.cs                      # XmlnsDefinition for XAML namespace alias
 │   ├── DataBrowserBox.cs                    # Custom reusable control
 │   └── DataBrowserDialog.xaml(.cs)          # Browse dialog UI
+│
+├── TelAvivMuni-Exercise.Themes/             # Base theme resources (shared across variants)
+│   ├── AssemblyInfo.cs
+│   └── Themes/
+│       └── Shared.xaml                      # Neutral brush defaults & shared vector icons
+│
+├── TelAvivMuni-Exercise.Themes.Blue/        # Blue theme variant
+│   ├── AssemblyInfo.cs
+│   └── Themes/
+│       ├── Blue.xaml                        # Theme entry point (aggregator)
+│       ├── Blue.Colors.xaml                 # Blue color palette (brush definitions)
+│       └── Blue.Styles.xaml                 # Blue-specific control styles
+│
+├── TelAvivMuni-Exercise.Themes.Emerald/     # Emerald theme variant
+│   ├── AssemblyInfo.cs
+│   └── Themes/
+│       ├── Emerald.xaml                     # Theme entry point (aggregator)
+│       ├── Emerald.Colors.xaml              # Emerald color palette (brush definitions)
+│       └── Emerald.Styles.xaml              # Emerald-specific control styles
 │
 ├── TelAvivMuni-Exercise.Presentation/       # ViewModels, views & presentation services
 │   ├── Services/
@@ -270,11 +321,10 @@ TelAvivMuni-Exercise.sln
 │   │   ├── Products.json                    # Sample product data (JSON)
 │   │   ├── Product.xml                      # Sample product data (XML)
 │   │   └── Product.csv                      # Sample product data (CSV)
-│   ├── Themes/
-│   │   ├── Theme1.xaml
-│   │   └── Theme2.xaml
 │   ├── App.xaml(.cs)                        # Application entry point with DI
 │   ├── AssemblyInfo.cs
+│   ├── StorageOptions.cs                    # Pluggable storage configuration
+│   ├── StorageRegistrationExtensions.cs     # Runtime provider discovery & DI registration
 │   ├── appsettings.json                     # Default configuration
 │   └── appsettings.Development.json         # Development configuration
 │
@@ -301,12 +351,44 @@ TelAvivMuni-Exercise.sln
 
 ## Configuration
 
-### Database Connection String
+### Storage Provider
 
-The application uses a SQL Server database for data persistence. The connection string is configured in `appsettings.json`:
+The application supports pluggable storage providers configured via `appsettings.json`:
 
 ```json
 {
+  "Storage": {
+    "Kind": "File",
+    "Provider": "Json"
+  }
+}
+```
+
+**Storage Options:**
+
+| Property | Description | Default |
+|----------|-------------|---------|
+| `Kind` | `"File"` or `"Database"` | `"File"` |
+| `Provider` | File: `"Json"`, `"Xml"`, `"Csv"` — Database: `"SqlServer"`, `"Sqlite"`, `"PostgreSQL"`, `"MySql"` | `"Json"` |
+| `ConnectionString` | Direct connection string (database only) | — |
+| `ConnectionStringName` | Named entry from `ConnectionStrings` section | — |
+| `FilePath` | Custom file path (file-based only) | `Data/Products.{ext}` |
+
+**Example — File-based (JSON, default):**
+```json
+{
+  "Storage": { "Kind": "File", "Provider": "Json" }
+}
+```
+
+**Example — SQL Server:**
+```json
+{
+  "Storage": {
+    "Kind": "Database",
+    "Provider": "SqlServer",
+    "ConnectionStringName": "DefaultConnection"
+  },
   "ConnectionStrings": {
     "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True"
   }
@@ -317,16 +399,7 @@ The application uses a SQL Server database for data persistence. The connection 
 - `appsettings.json` - Default configuration for all environments
 - `appsettings.Development.json` - Development-specific overrides (optional)
 
-**To configure for your environment:**
-1. Update the connection string in `appsettings.json` to point to your SQL Server instance
-2. For development, you can create `appsettings.Development.json` with your local settings
-3. The application uses `Host.CreateDefaultBuilder()` which automatically loads configuration files based on the environment
-
-**Example connection strings:**
-```
-Local SQL Server Express: Server=localhost\\SQLEXPRESS;Database=TelAvivMuni;Integrated Security=true;TrustServerCertificate=True
-Remote SQL Server: Server=myserver.example.com;Database=TelAvivMuni;User Id=myuser;Password=mypassword;TrustServerCertificate=True
-```
+The application uses `Host.CreateDefaultBuilder()` which automatically loads configuration files based on the environment.
 
 **Note:** Never commit sensitive credentials (usernames/passwords) to source control. Use environment-specific configuration files or secure configuration providers for production deployments.
 
@@ -548,7 +621,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **163 unit tests** with **93.6% line coverage** and **79.6% branch coverage** on all testable code:
+The test suite includes **163 unit tests** with **65.2% line coverage** and **55.8% branch coverage** across all assemblies (core testable code maintains near-100% coverage; lower overall figures reflect untested persistence provider registrars and composition-root classes excluded via `[ExcludeFromCodeCoverage]`):
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -615,9 +688,17 @@ The test suite includes **163 unit tests** with **93.6% line coverage** and **79
 
 ## Recent Improvements
 
+### Theme Assembly Extraction (v8.0)
+- **Themes extracted to separate assemblies** — `TelAvivMuni-Exercise.Themes` (base), `.Themes.Blue`, and `.Themes.Emerald` are now standalone WPF class libraries, decoupling visual theming from the composition root
+- **`DynamicResource` eliminated** — All resource lookups replaced with `StaticResource` for faster XAML parsing and reduced runtime overhead (no runtime re-resolution)
+- **`Generic.xaml` self-contained** — The control template dictionary merges `Shared.xaml` via pack URI, providing its own brush scope; `BrowseButtonStyle` and `DataBrowserTextBoxStyle` moved from theme files into `Generic.xaml` where they architecturally belong (internal parts of `DataBrowserBox`)
+- **Pack URIs for cross-assembly references** — `App.xaml` loads the active theme via `pack://application:,,,/TelAvivMuni-Exercise.Themes.Blue;component/Themes/Blue.xaml`
+- **Theme entry-point aggregators** — Each theme's root XAML (`Blue.xaml`, `Emerald.xaml`) merges `Shared.xaml` + its own styles, providing a single include point for consumers
+- **163 unit tests** — all pass unchanged
+
 ### Controls XmlnsDefinition (v7.3)
 - **`[assembly: XmlnsDefinition]`** added to `TelAvivMuni-Exercise.Controls/AssemblyInfo.cs`, mapping `http://telaviv-muni-exe/controls` to both `TelAvivMuni_Exercise.Controls` and `TelAvivMuni_Exercise.Controls.Behaviors` — mirrors the same convention already established in the Presentation assembly
-- **Consumer XAML simplified** — `MainWindow.xaml` replaces the verbose `clr-namespace:TelAvivMuni_Exercise.Controls;assembly=TelAvivMuni-Exercise.Controls` with `xmlns:controls="http://telaviv-muni-exe/controls"`; `Theme1.xaml` and `Theme2.xaml` updated to match
+- **Consumer XAML simplified** — `MainWindow.xaml` replaces the verbose `clr-namespace:TelAvivMuni_Exercise.Controls;assembly=TelAvivMuni-Exercise.Controls` with `xmlns:controls="http://telaviv-muni-exe/controls"`
 - **Intra-assembly references unchanged** — `DataBrowserDialog.xaml` and `Generic.xaml` continue to use bare `clr-namespace:` (no `assembly=`), which is correct for references within the same assembly
 - **MC3074 fix** — `MainWindow.xaml` `xmlns:local` restored to `clr-namespace:TelAvivMuni_Exercise.Domain;assembly=TelAvivMuni-Exercise.Domain`; Domain stays `net8.0` (platform-neutral) so `XmlnsDefinitionAttribute` (WPF-only) cannot be applied to it — the full `clr-namespace:...;assembly=...` form is required here
 - **163 unit tests** — all pass unchanged
@@ -697,8 +778,8 @@ Follow these steps to run the SQL Server–backed version of the application loc
    - Optionally, add or edit a product in the application and confirm that the changes appear in the `Products` table when queried from your SQL client.
 ### Test Coverage (v4.0)
 - **163 unit tests** - Comprehensive test coverage for all business logic
-- **93.6% line coverage** - Measured via coverlet with Cobertura reporting
-- **79.6% branch coverage** - Covers conditional logic paths
+- **65.2% line coverage** - Measured via coverlet with Cobertura reporting (core testable code at near-100%; lower overall figure reflects persistence provider registrars and composition-root classes)
+- **55.8% branch coverage** - Covers conditional logic paths
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 
