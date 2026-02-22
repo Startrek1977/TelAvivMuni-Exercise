@@ -11,7 +11,7 @@
               GruvboxDark: pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.xaml
               AyuDark:     pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.AyuDark;component/Themes/AyuDark.xaml
         -->
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Emerald;component/Themes/Emerald.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <pres:DialogService x:Key="DialogService" />
       <pres:ViewModelLocator x:Key="Locator" />
