@@ -59,6 +59,7 @@
     <ProjectReference Include="..\TelAvivMuni-Exercise.Themes.Blue\TelAvivMuni-Exercise.Themes.Blue.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Themes.Emerald\TelAvivMuni-Exercise.Themes.Emerald.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Themes.Zed.GruvboxDark\TelAvivMuni-Exercise.Themes.Zed.GruvboxDark.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Themes.Zed.AyuDark\TelAvivMuni-Exercise.Themes.Zed.AyuDark.csproj" />
   </ItemGroup>
 
 </Project>
