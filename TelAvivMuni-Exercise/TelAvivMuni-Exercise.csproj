@@ -56,6 +56,8 @@
     <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase.Json\TelAvivMuni-Exercise.Persistence.FileBase.Json.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase.Xml\TelAvivMuni-Exercise.Persistence.FileBase.Xml.csproj" />
     <ProjectReference Include="..\TelAvivMuni-Exercise.Persistence.FileBase.Csv\TelAvivMuni-Exercise.Persistence.FileBase.Csv.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Themes.Blue\TelAvivMuni-Exercise.Themes.Blue.csproj" />
+    <ProjectReference Include="..\TelAvivMuni-Exercise.Themes.Emerald\TelAvivMuni-Exercise.Themes.Emerald.csproj" />
   </ItemGroup>
 
 </Project>
