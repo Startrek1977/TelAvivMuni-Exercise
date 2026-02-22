@@ -67,7 +67,7 @@ This project is a home exercise created as part of an interview for the Software
 
 ## Solution Structure
 
-The solution is organized into 22 projects to separate concerns and promote reusability:
+The solution is organized into 23 projects to separate concerns and promote reusability:
 
 ### TelAvivMuni-Exercise.Infrastructure
 Low-level data persistence abstractions and implementations:
@@ -164,6 +164,13 @@ Gruvbox Dark theme variant:
   - `GruvboxDark.Colors.xaml` - Gruvbox Dark color palette (brush definitions)
   - `GruvboxDark.Styles.xaml` - GruvboxDark-specific control styles (buttons, DataGrid, DataBrowserBox override)
 
+### TelAvivMuni-Exercise.Themes.Zed.AyuDark
+Ayu Dark theme variant (Zed editor built-in palette):
+- **Themes:**
+  - `AyuDark.xaml` - Theme entry point (aggregator merging Shared + AyuDark.Styles)
+  - `AyuDark.Colors.xaml` - Ayu Dark color palette mapped from Zed's `ayu.json` (brush definitions)
+  - `AyuDark.Styles.xaml` - AyuDark-specific control styles (buttons, DataGrid, DataBrowserBox override)
+
 ### TelAvivMuni-Exercise (Main WPF Application)
 Pure composition root — DI wiring and application entry point:
 - **Data:** - Sample product data (Products.json, Product.xml, Product.csv), SQL scripts
@@ -209,6 +216,11 @@ TelAvivMuni-Exercise.Themes.Zed.GruvboxDark
     └── → TelAvivMuni-Exercise.Controls
     └── Contains: GruvboxDark.xaml, GruvboxDark.Colors.xaml, GruvboxDark.Styles.xaml
 
+TelAvivMuni-Exercise.Themes.Zed.AyuDark
+    ├── → TelAvivMuni-Exercise.Themes
+    └── → TelAvivMuni-Exercise.Controls
+    └── Contains: AyuDark.xaml, AyuDark.Colors.xaml, AyuDark.Styles.xaml
+
 TelAvivMuni-Exercise.Controls
     ├── → TelAvivMuni-Exercise.Core.Contracts
     ├── → TelAvivMuni-Exercise.Infrastructure
@@ -232,7 +244,8 @@ TelAvivMuni-Exercise (WPF)
     ├── → TelAvivMuni-Exercise.Domain
     ├── → TelAvivMuni-Exercise.Themes.Blue
     ├── → TelAvivMuni-Exercise.Themes.Emerald
-    └── → TelAvivMuni-Exercise.Themes.Zed.GruvboxDark
+    ├── → TelAvivMuni-Exercise.Themes.Zed.GruvboxDark
+    └── → TelAvivMuni-Exercise.Themes.Zed.AyuDark
 
 TelAvivMuni-Exercise.Tests
     ├── → TelAvivMuni-Exercise (WPF)
@@ -323,6 +336,12 @@ TelAvivMuni-Exercise.sln
 │       ├── GruvboxDark.xaml                 # Theme entry point (aggregator)
 │       ├── GruvboxDark.Colors.xaml          # Gruvbox Dark color palette (brush definitions)
 │       └── GruvboxDark.Styles.xaml          # GruvboxDark-specific control styles + DataBrowserBox override
+│
+├── TelAvivMuni-Exercise.Themes.Zed.AyuDark/      # Ayu Dark theme variant (Zed editor palette)
+│   └── Themes/
+│       ├── AyuDark.xaml                     # Theme entry point (aggregator)
+│       ├── AyuDark.Colors.xaml              # Ayu Dark color palette from Zed ayu.json (brush definitions)
+│       └── AyuDark.Styles.xaml              # AyuDark-specific control styles + DataBrowserBox override
 │
 ├── TelAvivMuni-Exercise.Presentation/       # ViewModels, views & presentation services
 │   ├── Services/
@@ -709,6 +728,14 @@ The test suite includes **163 unit tests** with **41.4% line coverage** and **34
 - **No Code-Behind** - All keyboard handling implemented via reusable attached behaviors
 
 ## Recent Improvements
+
+### Ayu Dark Theme (v8.2)
+- **`TelAvivMuni-Exercise.Themes.Zed.AyuDark` added** — New standalone theme assembly implementing the Zed editor built-in [Ayu Dark](https://github.com/zed-industries/zed/blob/main/assets/themes/ayu/ayu.json) palette, following the exact same three-file structure as `TelAvivMuni-Exercise.Themes.Zed.GruvboxDark`
+- **Exact Zed palette** — All 21 brush keys (`PrimaryBrush #5ac1fe`, `NeutralDarkBrush #313337`, `TextPrimaryBrush #bfbdb6`, `WhiteBrush #0d1016`, etc.) sourced directly from Zed's `assets/themes/ayu/ayu.json`
+- **DataBrowserBox dark theme override** — `AyuDark.Styles.xaml` provides an implicit `Style TargetType="controls:DataBrowserBox"` using `AyuDarkBrowseButtonStyle` and `AyuDarkDataBrowserTextBoxStyle` (internal keyed styles), consistent with the GruvboxDark approach
+- **Project reference to Controls** — `Themes.Zed.AyuDark` references `TelAvivMuni-Exercise.Controls` and `TelAvivMuni-Exercise.Themes` (no circular dependencies)
+- **App.xaml updated** — Comment block lists all four available theme URIs (Blue, Emerald, GruvboxDark, AyuDark) for easy theme switching
+- **All 163 unit tests** pass unchanged (pure XAML assembly, no C# logic to test)
 
 ### GruvboxDark Theme + Full Dark UI Theming (v8.1)
 - **`TelAvivMuni-Exercise.Themes.Zed.GruvboxDark` added** — New standalone theme assembly implementing the [morhetz/gruvbox](https://github.com/morhetz/gruvbox) dark palette (`bg0 #282828`, `fg1 #ebdbb2`, green accent `#689d6a`)
