@@ -7,6 +7,7 @@
         Title="Tel-Aviv Muni - Exercise"
         Width="520"
         Height="455"
+        Background="{StaticResource NeutralDarkBrush}"
         DataContext="{Binding MainWindow, Source={StaticResource Locator}}">
   <Grid>
     <Grid.RowDefinitions>
@@ -19,25 +20,29 @@
       <TextBlock Margin="0,0,0,5"
                  FontSize="24"
                  FontWeight="Bold"
+                 Foreground="{StaticResource TextPrimaryBrush}"
                  Text="DataBrowserBox Control" />
       <TextBlock Margin="0,0,0,20"
                  FontSize="12"
-                 Foreground="Gray"
+                 Foreground="{StaticResource TextTertiaryBrush}"
                  Text="A reusable WPF control for browsing and selecting items from a collection" />
 
       <!--  Example 1  -->
       <Border Margin="0,0,0,15"
               Padding="15"
-              Background="White"
+              Background="{StaticResource WhiteBrush}"
+              BorderBrush="{StaticResource BorderLightBrush}"
+              BorderThickness="1"
               CornerRadius="5">
         <StackPanel>
           <TextBlock Margin="0,0,0,5"
                      FontSize="14"
                      FontWeight="SemiBold"
+                     Foreground="{StaticResource TextPrimaryBrush}"
                      Text="Example 1: Auto-generated Columns" />
           <TextBlock Margin="0,0,0,10"
                      FontSize="11"
-                     Foreground="Gray"
+                     Foreground="{StaticResource TextTertiaryBrush}"
                      Text="Columns are automatically generated from the object properties." />
 
           <Grid>
@@ -46,6 +51,7 @@
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Center"
+                       Foreground="{StaticResource TextSecondaryBrush}"
                        Text="Product:" />
             <controls:DataBrowserBox Grid.Column="1"
                                      Height="30"
@@ -58,7 +64,7 @@
 
           <TextBlock Margin="60,5,0,0"
                      FontSize="11"
-                     Foreground="Gray"
+                     Foreground="{StaticResource TextTertiaryBrush}"
                      Text="No selection">
             <TextBlock.Style>
               <Style TargetType="TextBlock">
@@ -77,16 +83,19 @@
 
       <!--  Example 2  -->
       <Border Padding="15"
-              Background="White"
+              Background="{StaticResource WhiteBrush}"
+              BorderBrush="{StaticResource BorderLightBrush}"
+              BorderThickness="1"
               CornerRadius="5">
         <StackPanel>
           <TextBlock Margin="0,0,0,5"
                      FontSize="14"
                      FontWeight="SemiBold"
+                     Foreground="{StaticResource TextPrimaryBrush}"
                      Text="Example 2: Custom Column Configuration" />
           <TextBlock Margin="0,0,0,10"
                      FontSize="11"
-                     Foreground="Gray"
+                     Foreground="{StaticResource TextTertiaryBrush}"
                      Text="Columns are explicitly defined with custom headers, widths, and formats." />
 
           <Grid>
@@ -95,6 +104,7 @@
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Center"
+                       Foreground="{StaticResource TextSecondaryBrush}"
                        Text="Product:" />
             <controls:DataBrowserBox Grid.Column="1"
                                      Height="30"
@@ -121,7 +131,7 @@
 
           <TextBlock Margin="60,5,0,0"
                      FontSize="11"
-                     Foreground="Gray"
+                     Foreground="{StaticResource TextTertiaryBrush}"
                      Text="No selection">
             <TextBlock.Style>
               <Style TargetType="TextBlock">

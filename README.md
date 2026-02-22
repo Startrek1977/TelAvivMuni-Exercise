@@ -49,7 +49,10 @@ This project is a home exercise created as part of an interview for the Software
 - **Libraries:**
   - CommunityToolkit.Mvvm 8.4.0 - For MVVM infrastructure (Core, Presentation)
   - Microsoft.EntityFrameworkCore 8.0.12 - ORM for database access (Infrastructure, Core)
-  - Microsoft.EntityFrameworkCore.SqlServer 8.0.12 - SQL Server provider (Infrastructure, WPF)
+  - Microsoft.EntityFrameworkCore.SqlServer 8.0.12 - SQL Server provider
+  - Microsoft.EntityFrameworkCore.Sqlite 8.0.12 - SQLite provider
+  - Npgsql.EntityFrameworkCore.PostgreSQL 8.0.11 - PostgreSQL provider
+  - Pomelo.EntityFrameworkCore.MySql 8.0.2 - MySQL provider
   - Microsoft.Extensions.DependencyInjection 10.0.2 - IoC container (WPF)
   - Microsoft.Extensions.DependencyInjection.Abstractions 10.0.2 - DI abstractions (WPF, Presentation)
   - Microsoft.Extensions.Hosting 10.0.2 - Host builder for DI setup (WPF)
@@ -64,7 +67,7 @@ This project is a home exercise created as part of an interview for the Software
 
 ## Solution Structure
 
-The solution is organized into 21 projects to separate concerns and promote reusability:
+The solution is organized into 22 projects to separate concerns and promote reusability:
 
 ### TelAvivMuni-Exercise.Infrastructure
 Low-level data persistence abstractions and implementations:
@@ -138,7 +141,7 @@ ViewModels, services, and presentation infrastructure:
 ### TelAvivMuni-Exercise.Themes
 Base theme resources shared across all theme variants:
 - **Themes:**
-  - `Shared.xaml` - Neutral brush defaults (used by `Generic.xaml`) and shared vector icons
+  - `Shared.xaml` - Neutral brush defaults, `LoadingOverlayBrush` fallback (used by `Generic.xaml`) and shared vector icons
 
 ### TelAvivMuni-Exercise.Themes.Blue
 Blue theme variant:
@@ -153,6 +156,13 @@ Emerald theme variant:
   - `Emerald.xaml` - Theme entry point (aggregator merging Shared + Emerald.Styles)
   - `Emerald.Colors.xaml` - Emerald color palette (brush definitions)
   - `Emerald.Styles.xaml` - Emerald-specific control styles (buttons, DataGrid, ClearButton)
+
+### TelAvivMuni-Exercise.Themes.Zed.GruvboxDark
+Gruvbox Dark theme variant:
+- **Themes:**
+  - `GruvboxDark.xaml` - Theme entry point (aggregator merging Shared + GruvboxDark.Styles)
+  - `GruvboxDark.Colors.xaml` - Gruvbox Dark color palette (brush definitions)
+  - `GruvboxDark.Styles.xaml` - GruvboxDark-specific control styles (buttons, DataGrid, DataBrowserBox override)
 
 ### TelAvivMuni-Exercise (Main WPF Application)
 Pure composition root — DI wiring and application entry point:
@@ -194,6 +204,11 @@ TelAvivMuni-Exercise.Themes.Emerald
     └── → TelAvivMuni-Exercise.Themes
     └── Contains: Emerald.xaml, Emerald.Colors.xaml, Emerald.Styles.xaml
 
+TelAvivMuni-Exercise.Themes.Zed.GruvboxDark
+    ├── → TelAvivMuni-Exercise.Themes
+    └── → TelAvivMuni-Exercise.Controls
+    └── Contains: GruvboxDark.xaml, GruvboxDark.Colors.xaml, GruvboxDark.Styles.xaml
+
 TelAvivMuni-Exercise.Controls
     ├── → TelAvivMuni-Exercise.Core.Contracts
     ├── → TelAvivMuni-Exercise.Infrastructure
@@ -216,7 +231,8 @@ TelAvivMuni-Exercise (WPF)
     ├── → TelAvivMuni-Exercise.Infrastructure
     ├── → TelAvivMuni-Exercise.Domain
     ├── → TelAvivMuni-Exercise.Themes.Blue
-    └── → TelAvivMuni-Exercise.Themes.Emerald
+    ├── → TelAvivMuni-Exercise.Themes.Emerald
+    └── → TelAvivMuni-Exercise.Themes.Zed.GruvboxDark
 
 TelAvivMuni-Exercise.Tests
     ├── → TelAvivMuni-Exercise (WPF)
@@ -301,6 +317,12 @@ TelAvivMuni-Exercise.sln
 │       ├── Emerald.xaml                     # Theme entry point (aggregator)
 │       ├── Emerald.Colors.xaml              # Emerald color palette (brush definitions)
 │       └── Emerald.Styles.xaml              # Emerald-specific control styles
+│
+├── TelAvivMuni-Exercise.Themes.Zed.GruvboxDark/  # Gruvbox Dark theme variant
+│   └── Themes/
+│       ├── GruvboxDark.xaml                 # Theme entry point (aggregator)
+│       ├── GruvboxDark.Colors.xaml          # Gruvbox Dark color palette (brush definitions)
+│       └── GruvboxDark.Styles.xaml          # GruvboxDark-specific control styles + DataBrowserBox override
 │
 ├── TelAvivMuni-Exercise.Presentation/       # ViewModels, views & presentation services
 │   ├── Services/
@@ -621,7 +643,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **163 unit tests** with **65.2% line coverage** and **55.8% branch coverage** across all assemblies (core testable code maintains near-100% coverage; lower overall figures reflect untested persistence provider registrars and composition-root classes excluded via `[ExcludeFromCodeCoverage]`):
+The test suite includes **163 unit tests** with **41.4% line coverage** and **34.0% branch coverage** across all assemblies (core testable code maintains near-100% coverage; lower overall figures reflect untested persistence provider registrars — CSV, XML, MySQL, PostgreSQL, SQLite, SqlServer — and the composition-root `StorageRegistrationExtensions` class):
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -687,6 +709,15 @@ The test suite includes **163 unit tests** with **65.2% line coverage** and **55
 - **No Code-Behind** - All keyboard handling implemented via reusable attached behaviors
 
 ## Recent Improvements
+
+### GruvboxDark Theme + Full Dark UI Theming (v8.1)
+- **`TelAvivMuni-Exercise.Themes.Zed.GruvboxDark` added** — New standalone theme assembly implementing the [morhetz/gruvbox](https://github.com/morhetz/gruvbox) dark palette (`bg0 #282828`, `fg1 #ebdbb2`, green accent `#689d6a`)
+- **DataBrowserBox dark theme override** — `GruvboxDark.Styles.xaml` provides an implicit `Style TargetType="controls:DataBrowserBox"` that overrides `Generic.xaml`'s light defaults at app level, using only `StaticResource` (no `DynamicResource`)
+- **Project reference to Controls** — `Themes.Zed.GruvboxDark` references `TelAvivMuni-Exercise.Controls` (no circular dependency) to allow the `xmlns:controls` namespace in `GruvboxDark.Styles.xaml`
+- **`MainWindow.xaml` fully themed** — Background, all `TextBlock` foregrounds, and card `Border` brushes replaced with theme-aware `StaticResource` keys (`NeutralDarkBrush`, `TextPrimaryBrush`, `TextTertiaryBrush`, `WhiteBrush`, `BorderLightBrush`)
+- **`DataBrowserDialog.xaml` fully themed** — Background, search-box border, `TextBox` foreground/caret, and loading overlay replaced with `StaticResource` keys; hard-coded `"White"` and `"#80FFFFFF"` removed
+- **`LoadingOverlayBrush` added to all themes** — `Shared.xaml` defines the fallback (`#80FFFFFF`); `Blue.Colors.xaml` and `Emerald.Colors.xaml` override with the same light value; `GruvboxDark.Colors.xaml` overrides with semi-transparent dark (`#C0282828`)
+- **All 163 unit tests** pass unchanged
 
 ### Theme Assembly Extraction (v8.0)
 - **Themes extracted to separate assemblies** — `TelAvivMuni-Exercise.Themes` (base), `.Themes.Blue`, and `.Themes.Emerald` are now standalone WPF class libraries, decoupling visual theming from the composition root
@@ -778,8 +809,8 @@ Follow these steps to run the SQL Server–backed version of the application loc
    - Optionally, add or edit a product in the application and confirm that the changes appear in the `Products` table when queried from your SQL client.
 ### Test Coverage (v4.0)
 - **163 unit tests** - Comprehensive test coverage for all business logic
-- **65.2% line coverage** - Measured via coverlet with Cobertura reporting (core testable code at near-100%; lower overall figure reflects persistence provider registrars and composition-root classes)
-- **55.8% branch coverage** - Covers conditional logic paths
+- **41.4% line coverage** - Measured via coverlet with Cobertura reporting (core testable code at near-100%; lower overall figure reflects untested persistence provider registrars — CSV, XML, MySQL, PostgreSQL, SQLite, SqlServer — and composition-root classes)
+- **34.0% branch coverage** - Covers conditional logic paths
 - **Coverage exclusions** - WPF UI components (behaviors, controls, dialogs) are excluded using `[ExcludeFromCodeCoverage]` attribute
 - **Coverlet configuration** - `coverlet.runsettings` file for consistent coverage measurement
 

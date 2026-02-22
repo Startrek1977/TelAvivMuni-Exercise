@@ -1,0 +1,51 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!--  ============================================  -->
+  <!--  GruvboxDark Theme — Gruvbox Dark Color Palette  -->
+  <!--  Based on morhetz/gruvbox official colors:  -->
+  <!--    bg0 #282828   fg0 #fbf1c7  -->
+  <!--    bg1 #3c3836   fg1 #ebdbb2  -->
+  <!--    bg2 #504945   fg2 #d5c4a1  -->
+  <!--    bg3 #665c54   fg3 #bdae93  -->
+  <!--    bg4 #7c6f64   fg4 #a89984  -->
+  <!--  ============================================  -->
+
+  <!--  Primary Colors (Gruvbox aqua — accent for primary actions)  -->
+  <SolidColorBrush x:Key="PrimaryBrush" Color="#689d6a" />
+  <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#598B5B" />
+  <SolidColorBrush x:Key="PrimaryDarkerBrush" Color="#4A7A4D" />
+  <SolidColorBrush x:Key="PrimaryLightBrush" Color="#3c3836" />
+
+  <!--  Secondary Colors (bg1/bg2 range for secondary actions)  -->
+  <SolidColorBrush x:Key="SecondaryBrush" Color="#504945" />
+  <SolidColorBrush x:Key="SecondaryDarkBrush" Color="#3c3836" />
+  <SolidColorBrush x:Key="SecondaryDarkerBrush" Color="#32302f" />
+
+  <!--  Neutral/Background Colors  -->
+  <SolidColorBrush x:Key="NeutralLightBrush" Color="#504945" />
+  <SolidColorBrush x:Key="NeutralMediumBrush" Color="#3c3836" />
+  <SolidColorBrush x:Key="NeutralDarkBrush" Color="#32302f" />
+  <SolidColorBrush x:Key="NeutralExtraLightBrush" Color="#282828" />
+  <SolidColorBrush x:Key="NeutralHoverBrush" Color="#3c3836" />
+
+  <!--  Border Colors  -->
+  <SolidColorBrush x:Key="BorderBrush" Color="#504945" />
+  <SolidColorBrush x:Key="BorderLightBrush" Color="#3c3836" />
+
+  <!--  Text Colors (Gruvbox fg range)  -->
+  <SolidColorBrush x:Key="TextPrimaryBrush" Color="#ebdbb2" />
+  <SolidColorBrush x:Key="TextSecondaryBrush" Color="#d5c4a1" />
+  <SolidColorBrush x:Key="TextTertiaryBrush" Color="#a89984" />
+  <SolidColorBrush x:Key="TextDisabledBrush" Color="#665c54" />
+
+  <!--  Disabled State  -->
+  <SolidColorBrush x:Key="DisabledBrush" Color="#504945" />
+
+  <!--  "White" = Gruvbox bg0 (dark surface for content areas)  -->
+  <SolidColorBrush x:Key="WhiteBrush" Color="#282828" />
+
+  <!--  Loading overlay (semi-transparent dark for dark theme)  -->
+  <SolidColorBrush x:Key="LoadingOverlayBrush" Color="#C0282828" />
+
+</ResourceDictionary>
