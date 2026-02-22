@@ -1,11 +1,16 @@
-﻿<Application x:Class="TelAvivMuni_Exercise.App"
+<Application x:Class="TelAvivMuni_Exercise.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pres="http://telaviv-muni-exe/presentation">
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Blue;component/Themes/Blue.xaml" />
+        <!--  Active theme: GruvboxDark (dark). To switch themes, replace the Source below:
+              Blue:        pack://application:,,,/TelAvivMuni-Exercise.Themes.Blue;component/Themes/Blue.xaml
+              Emerald:     pack://application:,,,/TelAvivMuni-Exercise.Themes.Emerald;component/Themes/Emerald.xaml
+              GruvboxDark: pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.xaml
+        -->
+        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <pres:DialogService x:Key="DialogService" />
       <pres:ViewModelLocator x:Key="Locator" />

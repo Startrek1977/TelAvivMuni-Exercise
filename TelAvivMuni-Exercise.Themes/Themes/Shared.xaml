@@ -20,6 +20,9 @@
   <SolidColorBrush x:Key="NeutralDarkBrush"   Color="#E0E0E0" />
   <SolidColorBrush x:Key="NeutralHoverBrush"  Color="#F0F0F0" />
 
+  <!--  Loading overlay (semi-transparent). Light themes: translucent white, dark themes: translucent dark.  -->
+  <SolidColorBrush x:Key="LoadingOverlayBrush" Color="#80FFFFFF" />
+
   <!--  Browse Dialog Icon (same as browse button content)  -->
   <DrawingImage x:Key="BrowseDialogIcon">
     <DrawingImage.Drawing>

@@ -9,7 +9,7 @@
         behaviors:AutoFocusSearchBehavior.EscapeCommand="{Binding CancelCommand}"
         behaviors:AutoFocusSearchBehavior.TargetTextBox="{Binding ElementName=SearchTextBox}"
         behaviors:DialogCloseBehavior.DialogResult="{Binding DialogResult}"
-        Background="White"
+        Background="{StaticResource NeutralDarkBrush}"
         Icon="{StaticResource BrowseDialogIcon}"
         ResizeMode="CanResize"
         ShowInTaskbar="False"
@@ -34,6 +34,7 @@
     <!--  Search Box  -->
     <Border Grid.Row="0"
             Margin="12,12,12,8"
+            Background="{StaticResource WhiteBrush}"
             BorderBrush="{StaticResource BorderBrush}"
             BorderThickness="1"
             CornerRadius="2">
@@ -59,7 +60,9 @@
                  behaviors:EscapeClearBehavior.IsEnabled="True"
                  Background="Transparent"
                  BorderThickness="0"
+                 CaretBrush="{StaticResource TextPrimaryBrush}"
                  FontSize="13"
+                 Foreground="{StaticResource TextPrimaryBrush}"
                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
         <Button Grid.Column="2"
                 Width="20"
@@ -133,7 +136,7 @@
     <!--  Loading Overlay  -->
     <Border Grid.Row="1"
             Margin="12,0,12,8"
-            Background="#80FFFFFF"
+            Background="{StaticResource LoadingOverlayBrush}"
             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
       <TextBlock HorizontalAlignment="Center"
                  VerticalAlignment="Center"
