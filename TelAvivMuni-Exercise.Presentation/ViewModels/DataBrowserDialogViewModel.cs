@@ -6,6 +6,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TelAvivMuni_Exercise.Core.Contracts;
+using TelAvivMuni_Exercise.Core.Contracts.ViewModels;
 using TelAvivMuni_Exercise.Domain;
 using TelAvivMuni_Exercise.Infrastructure;
 using TelAvivMuni_Exercise.Persistence;
@@ -18,15 +19,17 @@ namespace TelAvivMuni_Exercise.Presentation.ViewModels;
 /// Uses View-First initialization pattern: the View is created first, then data is loaded
 /// after the View is fully rendered via InitializeAsync().
 /// </summary>
-public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitialization, IColumnConfiguration
+public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitialization, IColumnConfiguration, IMultiSelectViewModel
 {
 	private readonly ObservableCollection<object> _items;
 	private readonly ICollectionView _filteredItems;
 	private readonly ObservableCollection<BrowserColumn>? _columns;
+	private readonly bool _allowMultipleSelection;
 
 	// Deferred initialization data
 	private IEnumerable? _pendingItems;
 	private object? _pendingSelection;
+	private IEnumerable? _pendingMultiSelection;
 
 	private bool _isLoading = true;
 	public bool IsLoading
@@ -34,6 +37,11 @@ public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitializat
 		get => _isLoading;
 		private set => SetProperty(ref _isLoading, value);
 	}
+
+	/// <summary>
+	/// Gets whether this dialog allows selecting multiple items.
+	/// </summary>
+	public bool AllowMultipleSelection => _allowMultipleSelection;
 
 	/// <summary>
 	/// Gets or sets the search text used to filter the items collection.
@@ -96,6 +104,12 @@ public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitializat
 		}
 	}
 
+	/// <summary>
+	/// Gets the collection of selected items for multi-select mode.
+	/// In single-select mode this collection remains empty.
+	/// </summary>
+	public ObservableCollection<object> SelectedItems { get; } = [];
+
 	public ICollectionView FilteredItems => _filteredItems;
 
 	public int ItemsCount => _filteredItems.Cast<object>().Count();
@@ -117,18 +131,39 @@ public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitializat
 	public ICommand ClearSearchCommand => _clearSearchCommand ??= new RelayCommand(OnClearSearch);
 
 	/// <summary>
-	/// Creates a ViewModel with deferred data loading.
-	/// Call InitializeAsync() after the View is fully rendered to load the data.
+	/// Creates a ViewModel with deferred data loading (single-select mode).
+	/// Call Initialize() after the View is fully rendered to load the data.
 	/// </summary>
 	public DataBrowserDialogViewModel(IEnumerable? items, object? currentSelection, ObservableCollection<BrowserColumn>? columns = null)
+		: this(items, currentSelection, columns, allowMultipleSelection: false)
+	{
+	}
+
+	/// <summary>
+	/// Creates a ViewModel with deferred data loading and configurable selection mode.
+	/// Call Initialize() after the View is fully rendered to load the data.
+	/// </summary>
+	public DataBrowserDialogViewModel(IEnumerable? items, object? currentSelection, ObservableCollection<BrowserColumn>? columns, bool allowMultipleSelection)
 	{
 		_items = [];
 		_columns = columns;
+		_allowMultipleSelection = allowMultipleSelection;
 		_pendingItems = items;
-		_pendingSelection = currentSelection;
+
+		if (allowMultipleSelection)
+		{
+			_pendingMultiSelection = currentSelection as IEnumerable;
+		}
+		else
+		{
+			_pendingSelection = currentSelection;
+		}
 
 		_filteredItems = CollectionViewSource.GetDefaultView(_items);
 		_filteredItems.Filter = FilterItems;
+
+		// Keep OkCommand in sync when multi-selection changes
+		SelectedItems.CollectionChanged += (_, _) => OkCommand.NotifyCanExecuteChanged();
 	}
 
 	/// <summary>
@@ -149,8 +184,22 @@ public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitializat
 		_filteredItems.Refresh();
 		OnPropertyChanged(nameof(ItemsCount));
 
-		SelectedItem = FindMatchingItem(_pendingSelection);
-		_pendingSelection = null;
+		if (_allowMultipleSelection && _pendingMultiSelection != null)
+		{
+			SelectedItems.Clear();
+			foreach (var selection in _pendingMultiSelection)
+			{
+				var match = FindMatchingItem(selection);
+				if (match != null)
+					SelectedItems.Add(match);
+			}
+			_pendingMultiSelection = null;
+		}
+		else
+		{
+			SelectedItem = FindMatchingItem(_pendingSelection);
+			_pendingSelection = null;
+		}
 
 		IsLoading = false;
 	}
@@ -188,16 +237,22 @@ public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitializat
 
 	/// <summary>
 	/// Determines whether the OK button should be enabled.
-	/// The button is enabled only if an item is selected AND it's visible in the filtered collection.
+	/// In single-select mode: enabled only if an item is selected and visible in the filtered collection.
+	/// In multi-select mode: enabled if at least one selected item is visible in the filtered collection.
 	/// </summary>
 	private bool CanOk()
 	{
-		// Check if an item is selected
+		if (_allowMultipleSelection)
+		{
+			if (SelectedItems.Count == 0)
+				return false;
+			var filteredSet = _filteredItems.Cast<object>().ToHashSet();
+			return SelectedItems.Any(item => filteredSet.Contains(item));
+		}
+
+		// Single-select: item must be selected and visible
 		if (SelectedItem == null)
 			return false;
-
-		// Check if the selected item is visible in the filtered collection
-		// (not filtered out by search text)
 		return _filteredItems.Cast<object>().Contains(SelectedItem);
 	}
 

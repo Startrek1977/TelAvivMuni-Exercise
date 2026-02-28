@@ -67,7 +67,11 @@ public partial class App : Application
 	protected override async void OnStartup(StartupEventArgs e)
 	{
 		await _host.StartAsync();
+		
+		// Call base.OnStartup first to ensure all Application.Resources are fully loaded
 		base.OnStartup(e);
+		
+		// Only create MainWindow after all application resources are available
 		new MainWindow().Show();
 	}
 

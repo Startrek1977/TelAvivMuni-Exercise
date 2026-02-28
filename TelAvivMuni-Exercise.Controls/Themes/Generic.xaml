@@ -2,10 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:TelAvivMuni_Exercise.Controls">
 
-  <!--  Shared.xaml provides the neutral brush defaults this dictionary needs.
-        Window-hosted elements get live theme brushes from Application.Current.Resources;
-        this dictionary (a ResourceDictionary root) cannot reach app resources with
-        StaticResource, so it keeps its own copy here.  -->
+  <!--
+    Shared.xaml provides the neutral brush defaults this dictionary needs.
+    Window-hosted elements get live theme brushes from Application.Current.Resources;
+    this dictionary (a ResourceDictionary root) cannot reach app resources with
+    StaticResource, so it keeps its own copy here.
+  -->
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Shared.xaml" />
   </ResourceDictionary.MergedDictionaries>
@@ -62,7 +64,7 @@
         <Setter Property="FontStyle" Value="Italic" />
       </Trigger>
       <Trigger Property="Opacity" Value="1">
-        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontStyle" Value="Normal" />
       </Trigger>
     </Style.Triggers>
@@ -121,7 +123,6 @@
                         Foreground="{StaticResource TextDisabledBrush}">
                   <Button.Style>
                     <Style TargetType="Button">
-                      <Setter Property="Visibility" Value="Visible" />
                       <Setter Property="Template">
                         <Setter.Value>
                           <ControlTemplate TargetType="Button">
@@ -136,11 +137,6 @@
                           </ControlTemplate>
                         </Setter.Value>
                       </Setter>
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}}" Value="{x:Null}">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                      </Style.Triggers>
                     </Style>
                   </Button.Style>
                 </Button>
@@ -150,6 +146,18 @@
                       Style="{StaticResource BrowseButtonStyle}" />
             </Grid>
           </Border>
+          <ControlTemplate.Triggers>
+            <!--
+              Hide the clear button when nothing is selected.
+              A ControlTemplate Trigger reads the DP directly via the property engine,
+              which guarantees change-notification tracking — unlike a DataTrigger binding
+              inside an inline Button.Style, which can silently miss updates to a
+              read-only DP after the initial template application.
+            -->
+            <Trigger Property="HasSelection" Value="False">
+              <Setter TargetName="PART_ClearButton" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

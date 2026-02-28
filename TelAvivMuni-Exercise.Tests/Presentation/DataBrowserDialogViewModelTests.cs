@@ -883,4 +883,180 @@ public class DataBrowserDialogViewModelTests
 		}
 
 		#endregion
+
+	#region MultiSelect Tests
+
+	[Fact]
+	public void Constructor_WithAllowMultipleSelection_ExposesProperty()
+	{
+		// Arrange & Act
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+
+		// Assert
+		Assert.True(viewModel.AllowMultipleSelection);
+	}
+
+	[Fact]
+	public void Constructor_WithoutAllowMultipleSelection_DefaultsFalse()
+	{
+		// Arrange & Act
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null);
+
+		// Assert
+		Assert.False(viewModel.AllowMultipleSelection);
+	}
+
+	[Fact]
+	public void Initialize_MultiSelect_WithNoPreselection_SelectedItemsEmpty()
+	{
+		// Arrange
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+
+		// Act
+		viewModel.Initialize();
+
+		// Assert
+		Assert.Empty(viewModel.SelectedItems);
+	}
+
+	[Fact]
+	public void Initialize_MultiSelect_WithMultiplePreselectedItems_SelectsAll()
+	{
+		// Arrange
+		var products = CreateTestProducts();
+		var preselection = new List<Product> { products[0], products[2] }; // Laptop and Desk
+
+		var viewModel = new DataBrowserDialogViewModel(products, preselection, null, allowMultipleSelection: true);
+
+		// Act
+		viewModel.Initialize();
+
+		// Assert
+		Assert.Equal(2, viewModel.SelectedItems.Count);
+		Assert.Contains(viewModel.SelectedItems, item => ((Product)item).Id == products[0].Id);
+		Assert.Contains(viewModel.SelectedItems, item => ((Product)item).Id == products[2].Id);
+	}
+
+	[Fact]
+	public void Initialize_MultiSelect_WithSinglePreselectedItem_SelectsOne()
+	{
+		// Arrange
+		var products = CreateTestProducts();
+		var preselection = new List<Product> { products[1] }; // Mouse
+
+		var viewModel = new DataBrowserDialogViewModel(products, preselection, null, allowMultipleSelection: true);
+
+		// Act
+		viewModel.Initialize();
+
+		// Assert
+		Assert.Single(viewModel.SelectedItems);
+		Assert.Equal(products[1].Id, ((Product)viewModel.SelectedItems[0]).Id);
+	}
+
+	[Fact]
+	public void OkCommand_MultiSelect_CanExecute_TrueWhenItemsSelected()
+	{
+		// Arrange
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+		viewModel.Initialize();
+		viewModel.SelectedItems.Add(viewModel.FilteredItems.Cast<object>().First());
+
+		// Assert
+		Assert.True(viewModel.OkCommand.CanExecute(null));
+	}
+
+	[Fact]
+	public void OkCommand_MultiSelect_CanExecute_FalseWhenNoItemsSelected()
+	{
+		// Arrange
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+		viewModel.Initialize();
+
+		// Assert
+		Assert.False(viewModel.OkCommand.CanExecute(null));
+	}
+
+	[Fact]
+	public void OkCommand_MultiSelect_CanExecute_FalseWhenAllSelectedItemsFilteredOut()
+	{
+		// Arrange
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+		viewModel.Initialize();
+		var laptop = viewModel.FilteredItems.Cast<Product>().First(p => p.Name == "Laptop");
+		viewModel.SelectedItems.Add(laptop);
+
+		// Act - Filter to Furniture only (Laptop is Electronics)
+		viewModel.SearchText = "Furniture";
+
+		// Assert - Laptop is filtered out; OK should be disabled
+		Assert.False(viewModel.OkCommand.CanExecute(null));
+	}
+
+	[Fact]
+	public void OkCommand_MultiSelect_CanExecute_TrueWhenAtLeastOneSelectedItemVisible()
+	{
+		// Arrange
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+		viewModel.Initialize();
+		var laptop = viewModel.FilteredItems.Cast<Product>().First(p => p.Name == "Laptop");
+		var desk = viewModel.FilteredItems.Cast<Product>().First(p => p.Name == "Desk");
+		viewModel.SelectedItems.Add(laptop);
+		viewModel.SelectedItems.Add(desk);
+
+		// Act - Filter to Electronics (Laptop visible, Desk filtered out)
+		viewModel.SearchText = "Electronics";
+
+		// Assert - At least one selected item (Laptop) is still visible
+		Assert.True(viewModel.OkCommand.CanExecute(null));
+	}
+
+	[Fact]
+	public void SelectedItems_RaisesCollectionChanged()
+	{
+		// Arrange
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+		viewModel.Initialize();
+		var collectionChangedRaised = false;
+		viewModel.SelectedItems.CollectionChanged += (_, _) => collectionChangedRaised = true;
+
+		// Act
+		viewModel.SelectedItems.Add(viewModel.FilteredItems.Cast<object>().First());
+
+		// Assert
+		Assert.True(collectionChangedRaised);
+	}
+
+	[Fact]
+	public void SelectedItems_ChangeTriggers_OkCommandCanExecuteChanged()
+	{
+		// Arrange
+		var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, null, allowMultipleSelection: true);
+		viewModel.Initialize();
+		Assert.False(viewModel.OkCommand.CanExecute(null)); // Nothing selected
+
+		// Act
+		viewModel.SelectedItems.Add(viewModel.FilteredItems.Cast<object>().First());
+
+		// Assert - Command should now be enabled
+		Assert.True(viewModel.OkCommand.CanExecute(null));
+	}
+
+	[Fact]
+	public void Initialize_MultiSelect_CalledTwice_DoesNotDuplicateSelectedItems()
+	{
+		// Arrange
+		var products = CreateTestProducts();
+		var preselection = new List<Product> { products[0] };
+		var viewModel = new DataBrowserDialogViewModel(products, preselection, null, allowMultipleSelection: true);
+
+		// Act
+		viewModel.Initialize();
+		viewModel.Initialize(); // Second call should be no-op
+
+		// Assert - Still only 1 selected (not duplicated to 2)
+		Assert.Single(viewModel.SelectedItems);
+	}
+
+	#endregion
 }

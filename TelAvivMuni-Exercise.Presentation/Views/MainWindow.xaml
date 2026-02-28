@@ -39,11 +39,11 @@
                      FontSize="14"
                      FontWeight="SemiBold"
                      Foreground="{StaticResource TextPrimaryBrush}"
-                     Text="Example 1: Auto-generated Columns" />
+                     Text="Example 1: Auto-generated Columns (Multi-Select)" />
           <TextBlock Margin="0,0,0,10"
                      FontSize="11"
                      Foreground="{StaticResource TextTertiaryBrush}"
-                     Text="Columns are automatically generated from the object properties." />
+                     Text="Columns are automatically generated. Ctrl+click or Shift+click to select multiple products." />
 
           <Grid>
             <Grid.ColumnDefinitions>
@@ -55,13 +55,16 @@
                        Text="Product:" />
             <controls:DataBrowserBox Grid.Column="1"
                                      Height="30"
+                                     AllowMultipleSelection="True"
                                      DialogService="{StaticResource DialogService}"
                                      DialogTitle="בחר מוצר"
                                      DisplayMemberPath="Name"
                                      ItemsSource="{Binding Products}"
-                                     SelectedItem="{Binding SelectedProduct1, Mode=TwoWay}" />
+                                     SelectedItem="{Binding SelectedProduct1, Mode=TwoWay}"
+                                     SelectedItems="{Binding SelectedProducts1, Mode=TwoWay}" />
           </Grid>
 
+          <!--  "No selection" hint — visible only when nothing is selected  -->
           <TextBlock Margin="60,5,0,0"
                      FontSize="11"
                      Foreground="{StaticResource TextTertiaryBrush}"
@@ -70,9 +73,26 @@
               <Style TargetType="TextBlock">
                 <Setter Property="Visibility" Value="Hidden" />
                 <Style.Triggers>
-                  <DataTrigger Binding="{Binding SelectedProduct1}"
-                               Value="{x:Null}">
+                  <DataTrigger Binding="{Binding SelectedProducts1.Count}"
+                               Value="0">
                     <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+          <!--  Selection count — visible only when more than one product is selected  -->
+          <TextBlock Margin="60,2,0,0"
+                     FontSize="11"
+                     Foreground="{StaticResource TextSecondaryBrush}"
+                     Text="{Binding SelectedProducts1.Count, StringFormat='{}{0} products selected'}">
+            <TextBlock.Style>
+              <Style TargetType="TextBlock">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding SelectedProducts1.Count}"
+                               Value="0">
+                    <Setter Property="Visibility" Value="Collapsed" />
                   </DataTrigger>
                 </Style.Triggers>
               </Style>

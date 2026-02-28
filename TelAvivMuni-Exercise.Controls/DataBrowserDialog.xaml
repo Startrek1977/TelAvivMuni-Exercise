@@ -131,7 +131,18 @@
               ScrollViewer.HorizontalScrollBarVisibility="Auto"
               ScrollViewer.VerticalScrollBarVisibility="Auto"
               SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-              SelectionMode="Single" />
+              SelectionChanged="DataGrid_SelectionChanged">
+      <DataGrid.Style>
+        <Style TargetType="DataGrid">
+          <Setter Property="SelectionMode" Value="Single" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding AllowMultipleSelection}" Value="True">
+              <Setter Property="SelectionMode" Value="Extended" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </DataGrid.Style>
+    </DataGrid>
 
     <!--  Loading Overlay  -->
     <Border Grid.Row="1"

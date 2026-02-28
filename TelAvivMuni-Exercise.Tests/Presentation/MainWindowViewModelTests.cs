@@ -176,6 +176,34 @@ public class MainWindowViewModelTests
 	}
 
 	[Fact]
+	public async Task SelectedProducts1_PropertyChangedNotification()
+	{
+		// Arrange
+		_mockProductRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(Array.Empty<Product>());
+		var viewModel = new MainWindowViewModel(_mockUnitOfWork.Object);
+		await Task.Delay(100);
+
+		var propertyChangedRaised = false;
+		viewModel.PropertyChanged += (_, e) =>
+		{
+			if (e.PropertyName == nameof(MainWindowViewModel.SelectedProducts1))
+				propertyChangedRaised = true;
+		};
+
+		var newCollection = new System.Collections.ObjectModel.ObservableCollection<Product>
+		{
+			new Product { Id = 1, Name = "Test", Code = "T001", Category = "Cat", Price = 10.00m, Stock = 100 }
+		};
+
+		// Act
+		viewModel.SelectedProducts1 = newCollection;
+
+		// Assert
+		Assert.True(propertyChangedRaised);
+		Assert.Same(newCollection, viewModel.SelectedProducts1);
+	}
+
+	[Fact]
 	public async Task SelectedProduct2_PropertyChangedNotification()
 	{
 		// Arrange

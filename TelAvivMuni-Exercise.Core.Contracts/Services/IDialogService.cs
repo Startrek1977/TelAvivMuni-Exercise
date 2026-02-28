@@ -6,7 +6,7 @@ namespace TelAvivMuni_Exercise.Core.Contracts;
 public interface IDialogService
 {
     /// <summary>
-    /// Shows a data browser dialog for selecting items from a collection.
+    /// Shows a data browser dialog for selecting a single item from a collection.
     /// </summary>
     /// <typeparam name="T">The type of items to browse.</typeparam>
     /// <param name="items">The collection of items to display.</param>
@@ -18,5 +18,20 @@ public interface IDialogService
         IEnumerable<T> items,
         string title,
         T? selectedItem = null,
+        IColumnConfiguration? columnConfiguration = null) where T : class;
+
+    /// <summary>
+    /// Shows a data browser dialog that allows selecting multiple items from a collection.
+    /// </summary>
+    /// <typeparam name="T">The type of items to browse.</typeparam>
+    /// <param name="items">The collection of items to display.</param>
+    /// <param name="title">The dialog title.</param>
+    /// <param name="selectedItems">The initially selected items.</param>
+    /// <param name="columnConfiguration">Optional column configuration.</param>
+    /// <returns>The list of selected items, or the original selection if cancelled.</returns>
+    IReadOnlyList<T> ShowDataBrowserMultiSelectAsync<T>(
+        IEnumerable<T> items,
+        string title,
+        IReadOnlyList<T>? selectedItems = null,
         IColumnConfiguration? columnConfiguration = null) where T : class;
 }

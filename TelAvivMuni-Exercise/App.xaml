@@ -5,7 +5,7 @@
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <!--  Active theme: Emerald. To switch themes, replace the Source below:
+        <!--  Active theme: GruvboxDark. To switch themes, replace the Source below:
               Blue:        pack://application:,,,/TelAvivMuni-Exercise.Themes.Blue;component/Themes/Blue.xaml
               Emerald:     pack://application:,,,/TelAvivMuni-Exercise.Themes.Emerald;component/Themes/Emerald.xaml
               GruvboxDark: pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.xaml
