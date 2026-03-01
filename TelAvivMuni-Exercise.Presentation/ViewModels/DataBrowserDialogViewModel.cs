@@ -17,7 +17,7 @@ namespace TelAvivMuni_Exercise.Presentation.ViewModels;
 /// ViewModel for the DataBrowserDialog which provides filtering and selection functionality
 /// for browsing a collection of items.
 /// Uses View-First initialization pattern: the View is created first, then data is loaded
-/// after the View is fully rendered via InitializeAsync().
+/// after the View is fully rendered via Initialize().
 /// </summary>
 public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitialization, IColumnConfiguration, IMultiSelectViewModel
 {
