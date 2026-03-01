@@ -23,9 +23,9 @@ Four theme files each define their own version of the same XAML styles, causing 
 
 ## Solution
 
-### 1. New file: `TelAvivMuni-Exercise.Themes/Themes/Dark.Styles.xaml`
+### 1. Canonical template: `TelAvivMuni-Exercise.Themes/Themes/Dark.Styles.xaml`
 
-Contains the 7 named styles shared by all dark themes. Both `GruvboxDark.Styles.xaml` and `AyuDark.Styles.xaml` merge this file and delete their local copies.
+Documents the 7 named styles shared by all dark themes. **Not loaded at runtime** — WPF `StaticResource` lookups cannot cross assembly boundaries in `MergedDictionaries`, so the 7 styles are inlined directly into each dark theme's own Styles.xaml file instead.
 
 Styles included:
 - `BaseButtonStyle`
@@ -51,8 +51,8 @@ The `DataBrowserBox` implicit style references are updated to match.
 Files affected:
 - `Blue.Styles.xaml`
 - `Emerald.Styles.xaml`
-- `AyuDark.Styles.xaml` (via Dark.Styles.xaml after refactor)
-- `GruvboxDark.Styles.xaml` (via Dark.Styles.xaml after refactor)
+- `AyuDark.Styles.xaml` (inlined)
+- `GruvboxDark.Styles.xaml` (inlined)
 - `DataBrowserDialog.xaml` (the one consumer of this style key)
 
 ### 4. Fix `DataBrowserBox` override template in dark themes (Approach C)
@@ -65,9 +65,8 @@ Replace the `DataTrigger`-based clear-button visibility with the same `HasSelect
 
 | File | Change |
 |---|---|
-| `TelAvivMuni-Exercise.Themes/Themes/Dark.Styles.xaml` | **New** — shared dark-theme named styles |
-| `TelAvivMuni-Exercise.Themes/TelAvivMuni-Exercise.Themes.csproj` | Add `Dark.Styles.xaml` as Page item |
-| `TelAvivMuni-Exercise.Themes.Zed.GruvboxDark/Themes/GruvboxDark.Styles.xaml` | Merge Dark.Styles.xaml, remove 7 duplicate styles, rename BrowseButtonStyle and DataBrowserTextBoxStyle, fix DataBrowserBox template |
+| `TelAvivMuni-Exercise.Themes/Themes/Dark.Styles.xaml` | Canonical template — documents the 7 shared named styles; never loaded at runtime |
+| `TelAvivMuni-Exercise.Themes.Zed.GruvboxDark/Themes/GruvboxDark.Styles.xaml` | Inline 7 shared named styles, rename BrowseButtonStyle and DataBrowserTextBoxStyle, fix DataBrowserBox template |
 | `TelAvivMuni-Exercise.Themes.Zed.AyuDark/Themes/AyuDark.Styles.xaml` | Same as above |
 | `TelAvivMuni-Exercise.Themes.Blue/Themes/Blue.Styles.xaml` | Rename `BlueButtonStyle` → `PrimaryButtonStyle` |
 | `TelAvivMuni-Exercise.Themes.Emerald/Themes/Emerald.Styles.xaml` | Rename `BlueButtonStyle` → `PrimaryButtonStyle` |
