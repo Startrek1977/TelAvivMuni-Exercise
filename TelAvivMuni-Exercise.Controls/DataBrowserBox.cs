@@ -325,7 +325,7 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			var currentSelection = SelectedItems?.Cast<object>().ToList()
 				?? (IReadOnlyList<object>)[];
 
-			var result = DialogService.ShowDataBrowserMultiSelectAsync(
+			var result = DialogService.ShowDataBrowserMultiSelect(
 				allItems, title, currentSelection, this);
 
 			// Update SelectedItems with the returned list
