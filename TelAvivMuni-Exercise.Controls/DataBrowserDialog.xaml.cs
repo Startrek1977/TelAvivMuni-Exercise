@@ -30,9 +30,16 @@ public partial class DataBrowserDialog : Window
 
 	private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 	{
-		if (e.NewValue is IMultiSelectViewModel vm && vm.AllowMultipleSelection)
+		// Detach from the previous DataContext, if it was an IMultiSelectViewModel
+		if (e.OldValue is IMultiSelectViewModel oldVm)
 		{
-			vm.SelectedItems.CollectionChanged += OnViewModelSelectedItemsChanged;
+			oldVm.SelectedItems.CollectionChanged -= OnViewModelSelectedItemsChanged;
+		}
+
+		// Attach to the new DataContext, when multi-selection is allowed
+		if (e.NewValue is IMultiSelectViewModel newVm && newVm.AllowMultipleSelection)
+		{
+			newVm.SelectedItems.CollectionChanged += OnViewModelSelectedItemsChanged;
 		}
 	}
 
