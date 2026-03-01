@@ -64,7 +64,7 @@
                 <Setter Property="FontStyle" Value="Italic" />
             </Trigger>
             <Trigger Property="Opacity" Value="1">
-                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontStyle" Value="Normal" />
             </Trigger>
         </Style.Triggers>
