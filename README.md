@@ -738,11 +738,11 @@ The test suite includes **176 unit tests** with **45.6% line coverage** and **39
 ## Recent Improvements
 
 ### Multi-Select Support + Clear Button Fix (v8.3)
-- **`AllowMultipleSelection` property added** � `DataBrowserBox` now supports multi-item selection mode; set `AllowMultipleSelection=True` and bind `SelectedItems` (an `IList`) to receive the selected collection
-- **`SelectedItems` dependency property** � Two-way bindable `IList` DP with `FrameworkPropertyMetadataOptions.BindsTwoWayByDefault`; subscribes to `INotifyCollectionChanged` when the collection reference changes
-- **Clear button (�) fixed in multi-select mode** � `OnBrowseButtonClick` now explicitly calls `UpdateHasSelection()` and `UpdateDisplayText()` after in-place `SelectedItems.Clear()` + `Add()` mutations, mirroring the pattern already used by `OnClearButtonClick`; `UpdateHasSelection()` also sets `_clearButton.Visibility` directly as a belt-and-suspenders bypass for the WPF `ControlTemplate.Trigger` pipeline
-- **`DataBrowserDialog` multi-select DataGrid** � `SelectionMode=Extended` now correctly applied via a Style `<Setter>` (not a local attribute) so `AllowMultipleSelection` can override it through the `DataTrigger` without being shadowed by local-value precedence
-- **13 new unit tests** in `DataBrowserDialogViewModelTests` covering multi-select constructor, preselection, `OkCommand.CanExecute` with selection states, and filter interactions � **176 unit tests** total
+- **`AllowMultipleSelection` property added** — `DataBrowserBox` now supports multi-item selection mode; set `AllowMultipleSelection=True` and bind `SelectedItems` (an `IList`) to receive the selected collection
+- **`SelectedItems` dependency property** — Two-way bindable `IList` DP with `FrameworkPropertyMetadataOptions.BindsTwoWayByDefault`; subscribes to `INotifyCollectionChanged` when the collection reference changes
+- **Clear button (×) fixed in multi-select mode** — `OnBrowseButtonClick` now explicitly calls `UpdateHasSelection()` and `UpdateDisplayText()` after in-place `SelectedItems.Clear()` + `Add()` mutations, mirroring the pattern already used by `OnClearButtonClick`; `UpdateHasSelection()` also sets `_clearButton.Visibility` directly as a belt-and-suspenders bypass for the WPF `ControlTemplate.Trigger` pipeline
+- **`DataBrowserDialog` multi-select DataGrid** — `SelectionMode=Extended` now correctly applied via a Style `<Setter>` (not a local attribute) so `AllowMultipleSelection` can override it through the `DataTrigger` without being shadowed by local-value precedence
+- **13 new unit tests** in `DataBrowserDialogViewModelTests` covering multi-select constructor, preselection, `OkCommand.CanExecute` with selection states, and filter interactions — **176 unit tests** total
 ### Ayu Dark Theme (v8.2)
 - **`TelAvivMuni-Exercise.Themes.Zed.AyuDark` added** — New standalone theme assembly implementing the Zed editor built-in [Ayu Dark](https://github.com/zed-industries/zed/blob/main/assets/themes/ayu/ayu.json) palette, following the exact same three-file structure as `TelAvivMuni-Exercise.Themes.Zed.GruvboxDark`
 - **Exact Zed palette** — All 21 brush keys (`PrimaryBrush #5ac1fe`, `NeutralDarkBrush #313337`, `TextPrimaryBrush #bfbdb6`, `WhiteBrush #0d1016`, etc.) sourced directly from Zed's `assets/themes/ayu/ayu.json`
