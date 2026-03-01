@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
+  id-token: write
   contents: read
   pull-requests: write
 
@@ -16,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history so Claude can diff against the base branch
+          fetch-depth: 0 # full history so Claude can diff against the base branch
 
       - name: Run Claude Code Review
         uses: anthropics/claude-code-action@v1
@@ -138,4 +139,5 @@ jobs:
 
             Post a concise structured review with these sections:
             **Summary**, **Issues** (if any), **Suggestions**, **Verdict**.
-          claude_args: "--max-turns 5"
+          claude_args: "--max-turns 20"
+          show_full_output: "true"
