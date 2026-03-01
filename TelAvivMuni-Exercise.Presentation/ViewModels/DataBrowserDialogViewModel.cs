@@ -246,14 +246,13 @@ public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitializat
 		{
 			if (SelectedItems.Count == 0)
 				return false;
-			var filteredSet = _filteredItems.Cast<object>().ToHashSet();
-			return SelectedItems.Any(item => filteredSet.Contains(item));
+			return SelectedItems.Any(item => _filteredItems.PassesFilter(item));
 		}
 
 		// Single-select: item must be selected and visible
 		if (SelectedItem == null)
 			return false;
-		return _filteredItems.Cast<object>().Contains(SelectedItem);
+		return _filteredItems.PassesFilter(SelectedItem);
 	}
 
 	/// <summary>
