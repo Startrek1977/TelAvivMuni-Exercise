@@ -11,6 +11,7 @@ namespace TelAvivMuni_Exercise.Controls;
 /// <summary>
 /// A custom WPF control that combines a read-only textbox with browse and clear buttons.
 /// Displays the selected item and allows browsing through a collection via a dialog.
+/// Supports both single-item and multi-item selection via <see cref="AllowMultipleSelection"/>.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public class DataBrowserBox : Control, IColumnConfiguration
@@ -23,12 +24,40 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			new PropertyMetadata(null));
 
 	/// <summary>
-	/// Dependency property for the currently selected item.
+	/// Dependency property for the currently selected item (single-select mode).
 	/// Supports two-way binding and triggers SelectionChanged event when modified.
 	/// </summary>
 	public static readonly DependencyProperty SelectedItemProperty =
 		DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(DataBrowserBox),
 			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedItemChanged));
+
+	/// <summary>
+	/// Dependency property for the currently selected items (multi-select mode).
+	/// Supports two-way binding and triggers display text update when modified.
+	/// </summary>
+	public static readonly DependencyProperty SelectedItemsProperty =
+		DependencyProperty.Register(nameof(SelectedItems), typeof(IList), typeof(DataBrowserBox),
+			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedItemsChanged));
+
+	/// <summary>
+	/// Dependency property for whether multiple items can be selected at once.
+	/// </summary>
+	public static readonly DependencyProperty AllowMultipleSelectionProperty =
+		DependencyProperty.Register(nameof(AllowMultipleSelection), typeof(bool), typeof(DataBrowserBox),
+			new PropertyMetadata(false));
+
+	/// <summary>
+	/// Read-only dependency property key indicating whether any item is currently selected.
+	/// Used by the control template to show/hide the clear button.
+	/// </summary>
+	private static readonly DependencyPropertyKey HasSelectionPropertyKey =
+		DependencyProperty.RegisterReadOnly(nameof(HasSelection), typeof(bool), typeof(DataBrowserBox),
+			new FrameworkPropertyMetadata(false));
+
+	/// <summary>
+	/// Read-only dependency property that is true when any item is selected (single or multi).
+	/// </summary>
+	public static readonly DependencyProperty HasSelectionProperty = HasSelectionPropertyKey.DependencyProperty;
 
 	/// <summary>
 	/// Dependency property for specifying which property of the selected item to display in the textbox.
@@ -82,13 +111,44 @@ public class DataBrowserBox : Control, IColumnConfiguration
 	private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
 		var control = (DataBrowserBox)d;
-		// Update the textbox display to reflect the new selection
+		control.UpdateHasSelection();
 		control.UpdateDisplayText();
 
 		// Raise the SelectionChanged event for consumers of this control
 		var removedItems = e.OldValue != null ? [e.OldValue] : Array.Empty<object>();
 		var addedItems = e.NewValue != null ? [e.NewValue] : Array.Empty<object>();
 		control.RaiseEvent(new SelectionChangedEventArgs(SelectionChangedEvent, removedItems, addedItems));
+	}
+
+	/// <summary>
+	/// Property change callback for SelectedItems.
+	/// Updates the display text and subscribes to CollectionChanged so mutations
+	/// (Add/Remove/Clear) also refresh the display.
+	/// </summary>
+	private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		var control = (DataBrowserBox)d;
+
+		// Unsubscribe from the old collection to avoid leaks / stale handlers
+		if (e.OldValue is System.Collections.Specialized.INotifyCollectionChanged oldCollection)
+			oldCollection.CollectionChanged -= control.OnSelectedItemsCollectionChanged;
+
+		// Subscribe to the new collection so in-place mutations update the display
+		if (e.NewValue is System.Collections.Specialized.INotifyCollectionChanged newCollection)
+			newCollection.CollectionChanged += control.OnSelectedItemsCollectionChanged;
+
+		control.UpdateHasSelection();
+		control.UpdateDisplayText();
+	}
+
+	/// <summary>
+	/// Handles in-place changes to the SelectedItems collection (Add / Remove / Clear).
+	/// Keeps HasSelection and the display text in sync without requiring a full DP reassignment.
+	/// </summary>
+	private void OnSelectedItemsCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		UpdateHasSelection();
+		UpdateDisplayText();
 	}
 
 	/// <summary>
@@ -101,12 +161,39 @@ public class DataBrowserBox : Control, IColumnConfiguration
 	}
 
 	/// <summary>
-	/// Gets or sets the currently selected item from the collection.
+	/// Gets or sets the currently selected item from the collection (single-select mode).
 	/// </summary>
 	public object? SelectedItem
 	{
 		get => GetValue(SelectedItemProperty);
 		set => SetValue(SelectedItemProperty, value);
+	}
+
+	/// <summary>
+	/// Gets or sets the currently selected items (multi-select mode).
+	/// </summary>
+	public IList? SelectedItems
+	{
+		get => (IList?)GetValue(SelectedItemsProperty);
+		set => SetValue(SelectedItemsProperty, value);
+	}
+
+	/// <summary>
+	/// Gets whether multiple selection is enabled for this control.
+	/// </summary>
+	public bool AllowMultipleSelection
+	{
+		get => (bool)GetValue(AllowMultipleSelectionProperty);
+		set => SetValue(AllowMultipleSelectionProperty, value);
+	}
+
+	/// <summary>
+	/// Gets whether any item is currently selected (single or multi).
+	/// </summary>
+	public bool HasSelection
+	{
+		get => (bool)GetValue(HasSelectionProperty);
+		private set => SetValue(HasSelectionPropertyKey, value);
 	}
 
 	/// <summary>
@@ -208,6 +295,7 @@ public class DataBrowserBox : Control, IColumnConfiguration
 		}
 
 		// Update the display to reflect the current SelectedItem
+		UpdateHasSelection();
 		UpdateDisplayText();
 	}
 
@@ -228,45 +316,131 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			return;
 		}
 
-		// Show the browse dialog with the current selection
 		var title = DialogTitle ?? "Select Item";
-		var result = DialogService.ShowDataBrowserAsync([.. ItemsSource.Cast<object>()], title, SelectedItem, this);
+		var allItems = ItemsSource.Cast<object>().ToList();
 
-		// Update SelectedItem if user confirmed the dialog
-		if (result != null)
+		if (AllowMultipleSelection)
 		{
-			SelectedItem = result;
+			// Multi-select: pass current selection as a list and receive a list back
+			var currentSelection = SelectedItems?.Cast<object>().ToList()
+				?? (IReadOnlyList<object>)[];
+
+			var result = DialogService.ShowDataBrowserMultiSelect(
+				allItems, title, currentSelection, this);
+
+			// Update SelectedItems with the returned list
+			if (SelectedItems != null)
+			{
+				SelectedItems.Clear();
+				foreach (var item in result)
+					SelectedItems.Add(item);
+			}
+			else
+			{
+				// Create a new list if none exists
+				var newList = new System.Collections.ObjectModel.ObservableCollection<object>(result);
+				SelectedItems = newList;
+			}
+
+			// Explicitly sync HasSelection and display text after any in-place mutation.
+			// In-place Clear/Add does not change the SelectedItems DP reference, so
+			// OnSelectedItemsChanged is never re-invoked; the CollectionChanged subscription
+			// may not fire synchronously in all scenarios.  Mirror the explicit-call pattern
+			// used by OnClearButtonClick to guarantee a reliable update.
+			UpdateHasSelection();
+			UpdateDisplayText();
+		}
+		else
+		{
+			// Single-select: existing behaviour
+			var result = DialogService.ShowDataBrowserAsync(allItems, title, SelectedItem, this);
+
+			if (result != null)
+			{
+				SelectedItem = result;
+			}
 		}
 	}
 
 	/// <summary>
 	/// Handles the Clear button click event.
-	/// Clears the currently selected item.
+	/// Clears the currently selected item(s).
 	/// </summary>
 	private void OnClearButtonClick(object sender, RoutedEventArgs e)
 	{
-		SelectedItem = null;
+		if (AllowMultipleSelection)
+		{
+			SelectedItems?.Clear();
+			UpdateHasSelection();
+			UpdateDisplayText();
+		}
+		else
+		{
+			SelectedItem = null;
+		}
 	}
 
 	/// <summary>
-	/// Updates the textbox display text based on the current SelectedItem.
-	/// Shows placeholder text when no item is selected, or the item's display value otherwise.
+	/// Updates the HasSelection property based on the current selection state.
+	/// Also directly sets the clear button's visibility as a safety net, so the
+	/// button responds even in scenarios where the ControlTemplate.Trigger does
+	/// not re-evaluate (e.g. in-place collection mutations that do not change the
+	/// DP reference and therefore do not always trigger a property-engine notification).
+	/// </summary>
+	private void UpdateHasSelection()
+	{
+		HasSelection = AllowMultipleSelection
+			? SelectedItems != null && SelectedItems.Count > 0
+			: SelectedItem != null;
+
+		if (_clearButton != null)
+			_clearButton.Visibility = HasSelection ? Visibility.Visible : Visibility.Collapsed;
+	}
+
+	/// <summary>
+	/// Updates the textbox display text based on the current selection.
+	/// Single-select: shows item display value or placeholder.
+	/// Multi-select (1 item): shows item display value.
+	/// Multi-select (2+ items): shows "&lt;first item&gt; (+N products)".
 	/// </summary>
 	private void UpdateDisplayText()
 	{
 		if (_textBox == null) return;
 
-		if (SelectedItem == null)
+		if (AllowMultipleSelection)
 		{
-			// Show placeholder text with reduced opacity when no item is selected
-			_textBox.Text = "Click to select...";
-			_textBox.Opacity = 0.5;
+			var count = SelectedItems?.Count ?? 0;
+			if (count == 0)
+			{
+				_textBox.Text = "Click to select...";
+				_textBox.Opacity = 0.5;
+			}
+			else if (count == 1)
+			{
+				_textBox.Text = GetDisplayValue(SelectedItems![0]!);
+				_textBox.Opacity = 1.0;
+			}
+			else
+			{
+				var firstName = GetDisplayValue(SelectedItems![0]!);
+				_textBox.Text = $"{firstName} (+{count - 1} products)";
+				_textBox.Opacity = 1.0;
+			}
 		}
 		else
 		{
-			// Show the selected item's display value with full opacity
-			_textBox.Text = GetDisplayValue(SelectedItem);
-			_textBox.Opacity = 1.0;
+			if (SelectedItem == null)
+			{
+				// Show placeholder text with reduced opacity when no item is selected
+				_textBox.Text = "Click to select...";
+				_textBox.Opacity = 0.5;
+			}
+			else
+			{
+				// Show the selected item's display value with full opacity
+				_textBox.Text = GetDisplayValue(SelectedItem);
+				_textBox.Opacity = 1.0;
+			}
 		}
 	}
 
