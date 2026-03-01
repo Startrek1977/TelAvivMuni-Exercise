@@ -54,11 +54,24 @@ No `.csproj` edit needed — `UseWPF=true` SDK projects auto-include all `.xaml`
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--  ============================================  -->
-    <!--  Shared Dark Theme Named Styles               -->
-    <!--  Consumed by GruvboxDark, AyuDark, and any   -->
-    <!--  future dark themes. Brushes are resolved     -->
-    <!--  from the theme's own Colors.xaml via         -->
-    <!--  Application.Current.Resources.               -->
+    <!--  CANONICAL TEMPLATE — NOT LOADED AT RUNTIME  -->
+    <!--                                              -->
+    <!--  This file is NOT referenced via             -->
+    <!--  MergedDictionaries by any theme. It exists  -->
+    <!--  as a single source-of-truth template for    -->
+    <!--  the 7 shared dark-theme named styles.       -->
+    <!--                                              -->
+    <!--  WHY NOT MERGED: WPF's StaticResource cannot -->
+    <!--  traverse up to sibling merged dictionaries  -->
+    <!--  when a ResourceDictionary is loaded via a   -->
+    <!--  cross-assembly pack URI. Styles must be     -->
+    <!--  inlined in each theme's own Styles.xaml so  -->
+    <!--  their brush keys resolve from the local     -->
+    <!--  Colors.xaml (e.g. GruvboxDark.Colors.xaml). -->
+    <!--                                              -->
+    <!--  To add a new dark theme: copy all 7 styles  -->
+    <!--  from this file into the new theme's         -->
+    <!--  Styles.xaml (after its Colors.xaml merge).  -->
     <!--  ============================================  -->
 
     <!--  Base Button Style  -->
@@ -222,11 +235,11 @@ git commit -m "style: add Dark.Styles.xaml with shared dark-theme named styles"
 **Step 1: Replace the entire file content**
 
 The new file:
-1. Merges `Dark.Styles.xaml` (adds the pack URI to `MergedDictionaries`)
+1. Inlines the 7 shared named styles from `Dark.Styles.xaml` directly after the `Colors.xaml` merge (no runtime merge — see Architecture)
 2. Keeps implicit `Window`, `TextBlock`, `TextBox`, `ScrollBar`-family styles unchanged
 3. Renames `GruvboxDarkBrowseButtonStyle` → `BrowseButtonStyle`
 4. Renames `GruvboxDarkDataBrowserTextBoxStyle` → `DataBrowserTextBoxStyle`
-5. Removes the 7 now-redundant named styles (`BaseButtonStyle`, `BlueButtonStyle`, `GrayButtonStyle`, `ClearButtonStyle`, `DataGridColumnHeaderStyle`, `DataGridCellStyle`, `DataGridRowStyle`)
+5. Replaces the 7 old theme-prefixed named styles with inlined unprefixed copies from `Dark.Styles.xaml`: `BaseButtonStyle`, `PrimaryButtonStyle`, `GrayButtonStyle`, `ClearButtonStyle`, `DataGridColumnHeaderStyle`, `DataGridCellStyle`, `DataGridRowStyle` (see Task 1 for full style content)
 6. Updates the `DataBrowserBox` implicit style: uses `ClearButtonStyle` on `PART_ClearButton` instead of an inline anonymous style, and uses `HasSelection` `ControlTemplate.Trigger` instead of a `DataTrigger` on `SelectedItem`
 
 ```xml
@@ -235,7 +248,9 @@ The new file:
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Dark.Styles.xaml" />
+        <!--  Dark.Styles.xaml is NOT merged here via pack URI — see Architecture.  -->
+        <!--  WPF StaticResource cannot traverse cross-assembly MergedDictionaries  -->
+        <!--  at parse time; the 7 shared styles are inlined below instead.         -->
     </ResourceDictionary.MergedDictionaries>
 
     <!--  ============================================  -->
@@ -357,6 +372,15 @@ The new file:
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!--  ============================================  -->
+    <!--  7 shared named styles inlined from           -->
+    <!--  Dark.Styles.xaml (see Task 1 for content):   -->
+    <!--  BaseButtonStyle, PrimaryButtonStyle,         -->
+    <!--  GrayButtonStyle, ClearButtonStyle,           -->
+    <!--  DataGridColumnHeaderStyle,                   -->
+    <!--  DataGridCellStyle, DataGridRowStyle          -->
+    <!--  ============================================  -->
 
     <!--  ============================================  -->
     <!--  DataBrowserBox dark theme override           -->
@@ -524,7 +548,9 @@ Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.AyuDark;component/Themes/AyuDark.Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Dark.Styles.xaml" />
+        <!--  Dark.Styles.xaml is NOT merged here via pack URI — see Architecture.  -->
+        <!--  WPF StaticResource cannot traverse cross-assembly MergedDictionaries  -->
+        <!--  at parse time; the 7 shared styles are inlined below instead.         -->
     </ResourceDictionary.MergedDictionaries>
 
     <!--  ============================================  -->
@@ -646,6 +672,15 @@ Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!--  ============================================  -->
+    <!--  7 shared named styles inlined from           -->
+    <!--  Dark.Styles.xaml (see Task 1 for content):   -->
+    <!--  BaseButtonStyle, PrimaryButtonStyle,         -->
+    <!--  GrayButtonStyle, ClearButtonStyle,           -->
+    <!--  DataGridColumnHeaderStyle,                   -->
+    <!--  DataGridCellStyle, DataGridRowStyle          -->
+    <!--  ============================================  -->
 
     <!--  ============================================  -->
     <!--  DataBrowserBox dark theme override           -->
