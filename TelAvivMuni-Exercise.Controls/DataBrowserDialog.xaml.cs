@@ -41,6 +41,11 @@ public partial class DataBrowserDialog : Window
 		// Subscribe to the new DataContext's SelectedItems, if applicable
 		if (e.NewValue is IMultiSelectViewModel vm && vm.AllowMultipleSelection)
 		{
+			// Force SelectionMode to Extended immediately so the guard in
+			// OnViewModelSelectedItemsChanged does not block the initial pre-selection
+			// sync that happens when Initialize() populates SelectedItems — before the
+			// DataTrigger has had a chance to apply.
+			ProductsDataGrid.SelectionMode = DataGridSelectionMode.Extended;
 			vm.SelectedItems.CollectionChanged += OnViewModelSelectedItemsChanged;
 		}
 	}
