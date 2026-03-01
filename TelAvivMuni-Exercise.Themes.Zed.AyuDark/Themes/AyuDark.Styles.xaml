@@ -19,7 +19,7 @@
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
     </Style>
 
-    <!--  TextBlock: inherit Gruvbox fg1  -->
+    <!--  TextBlock: inherit AyuDark primary text color  -->
     <Style TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
     </Style>
