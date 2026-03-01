@@ -32,17 +32,35 @@ public partial class DataBrowserDialog : Window
 	{
 		// Detach from the previous DataContext, if it was an IMultiSelectViewModel
 		if (e.OldValue is IMultiSelectViewModel oldVm)
+		DataContextChanged += OnDataContextChanged;
+
+		// Ensure we detach from the current ViewModel when the window is closed
+		Closed += OnClosed;
+	}
+
+	private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+	{
+		// Unsubscribe from the previous DataContext's SelectedItems, if applicable
+		if (e.OldValue is IMultiSelectViewModel oldVm && oldVm.AllowMultipleSelection)
 		{
 			oldVm.SelectedItems.CollectionChanged -= OnViewModelSelectedItemsChanged;
 		}
 
-		// Attach to the new DataContext, when multi-selection is allowed
-		if (e.NewValue is IMultiSelectViewModel newVm && newVm.AllowMultipleSelection)
+		// Subscribe to the new DataContext's SelectedItems, if applicable
+		if (e.NewValue is IMultiSelectViewModel vm && vm.AllowMultipleSelection)
 		{
-			newVm.SelectedItems.CollectionChanged += OnViewModelSelectedItemsChanged;
+			vm.SelectedItems.CollectionChanged += OnViewModelSelectedItemsChanged;
 		}
 	}
 
+	private void OnClosed(object? sender, System.EventArgs e)
+	{
+		// Detach from the current DataContext when the window is closed
+		if (DataContext is IMultiSelectViewModel vm && vm.AllowMultipleSelection)
+		{
+			vm.SelectedItems.CollectionChanged -= OnViewModelSelectedItemsChanged;
+		}
+	}
 	/// <summary>
 	/// Syncs the ViewModel's SelectedItems back into the DataGrid.
 	/// Handles Add actions (items appended by Initialize()) and Reset/Remove actions
