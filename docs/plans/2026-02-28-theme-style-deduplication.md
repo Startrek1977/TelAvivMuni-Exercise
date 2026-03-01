@@ -222,11 +222,11 @@ git commit -m "style: add Dark.Styles.xaml with shared dark-theme named styles"
 **Step 1: Replace the entire file content**
 
 The new file:
-1. Merges `Dark.Styles.xaml` (adds the pack URI to `MergedDictionaries`)
+1. Inlines the 7 shared named styles from `Dark.Styles.xaml` directly after the `MergedDictionaries` block — **no cross-assembly pack URI** is added because WPF `StaticResource` cannot traverse cross-assembly merged dictionaries at parse time; the brush keys must resolve from the local `Colors.xaml`
 2. Keeps implicit `Window`, `TextBlock`, `TextBox`, `ScrollBar`-family styles unchanged
 3. Renames `GruvboxDarkBrowseButtonStyle` → `BrowseButtonStyle`
 4. Renames `GruvboxDarkDataBrowserTextBoxStyle` → `DataBrowserTextBoxStyle`
-5. Removes the 7 now-redundant named styles (`BaseButtonStyle`, `BlueButtonStyle`, `GrayButtonStyle`, `ClearButtonStyle`, `DataGridColumnHeaderStyle`, `DataGridCellStyle`, `DataGridRowStyle`)
+5. Keeps the 7 shared named styles inline (`BaseButtonStyle`, `PrimaryButtonStyle`, `GrayButtonStyle`, `ClearButtonStyle`, `DataGridColumnHeaderStyle`, `DataGridCellStyle`, `DataGridRowStyle`), renaming the old `BlueButtonStyle` → `PrimaryButtonStyle` in the process
 6. Updates the `DataBrowserBox` implicit style: uses `ClearButtonStyle` on `PART_ClearButton` instead of an inline anonymous style, and uses `HasSelection` `ControlTemplate.Trigger` instead of a `DataTrigger` on `SelectedItem`
 
 ```xml
@@ -235,11 +235,10 @@ The new file:
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Dark.Styles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  ============================================  -->
-    <!--  GruvboxDark Theme Styles — Gruvbox Dark  -->
+    <!--  GruvboxDark Theme Styles — Gruvbox Dark      -->
     <!--  ============================================  -->
 
     <!--  ============================================  -->
@@ -354,6 +353,147 @@ The new file:
                 <Setter Property="Width" Value="Auto" />
                 <Setter Property="Height" Value="8" />
                 <Setter Property="Template" Value="{StaticResource HorizontalScrollBarTemplate}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  ============================================  -->
+    <!--  Shared Dark Theme Named Styles               -->
+    <!--  Inlined here so StaticResource brush keys    -->
+    <!--  resolve from GruvboxDark.Colors.xaml above.  -->
+    <!--  Must be declared before DataBrowserBox which -->
+    <!--  references ClearButtonStyle.                 -->
+    <!--  ============================================  -->
+
+    <!--  Base Button Style  -->
+    <Style x:Key="BaseButtonStyle" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Padding="16 6"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Primary Button Style (Primary actions)  -->
+    <Style x:Key="PrimaryButtonStyle"
+           BasedOn="{StaticResource BaseButtonStyle}"
+           TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryDarkerBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource DisabledBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Gray Button Style (Secondary actions)  -->
+    <Style x:Key="GrayButtonStyle"
+           BasedOn="{StaticResource BaseButtonStyle}"
+           TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource SecondaryDarkBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource SecondaryDarkerBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Clear Button Style (Small circular button with X)  -->
+    <Style x:Key="ClearButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Content" Value="&#x2715;" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource NeutralHoverBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  DataGrid Column Header Style  -->
+    <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource NeutralExtraLightBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="12 10" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="0 0 0 1" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
+
+    <!--  DataGrid Cell Style  -->
+    <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="12 8" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  DataGrid Row Style  -->
+    <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+        <Setter Property="Background" Value="{StaticResource WhiteBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource NeutralHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -504,7 +644,7 @@ Expected: `Build succeeded.`
 
 ```bash
 git add TelAvivMuni-Exercise.Themes.Zed.GruvboxDark/Themes/GruvboxDark.Styles.xaml
-git commit -m "style: refactor GruvboxDark — use shared Dark.Styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
+git commit -m "style: refactor GruvboxDark — inline shared Dark.Styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
 ```
 
 ---
@@ -516,7 +656,7 @@ git commit -m "style: refactor GruvboxDark — use shared Dark.Styles, rename Br
 
 **Step 1: Replace the entire file content**
 
-Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the AyuDark one, and updating the comment header. The result:
+Apply the identical changes as Task 2, replacing the `GruvboxDark` pack URI with the `AyuDark` one, and updating the comment header. The 7 shared named styles are inlined directly — **no `Dark.Styles.xaml` cross-assembly merge**. The result:
 
 ```xml
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -524,7 +664,6 @@ Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.AyuDark;component/Themes/AyuDark.Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Dark.Styles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  ============================================  -->
@@ -643,6 +782,147 @@ Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the
                 <Setter Property="Width" Value="Auto" />
                 <Setter Property="Height" Value="8" />
                 <Setter Property="Template" Value="{StaticResource HorizontalScrollBarTemplate}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  ============================================  -->
+    <!--  Shared Dark Theme Named Styles               -->
+    <!--  Inlined here so StaticResource brush keys    -->
+    <!--  resolve from AyuDark.Colors.xaml above.      -->
+    <!--  Must be declared before DataBrowserBox which -->
+    <!--  references ClearButtonStyle.                 -->
+    <!--  ============================================  -->
+
+    <!--  Base Button Style  -->
+    <Style x:Key="BaseButtonStyle" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Padding="16 6"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Primary Button Style (Primary actions)  -->
+    <Style x:Key="PrimaryButtonStyle"
+           BasedOn="{StaticResource BaseButtonStyle}"
+           TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryDarkerBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource DisabledBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Gray Button Style (Secondary actions)  -->
+    <Style x:Key="GrayButtonStyle"
+           BasedOn="{StaticResource BaseButtonStyle}"
+           TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource SecondaryDarkBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource SecondaryDarkerBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Clear Button Style (Small circular button with X)  -->
+    <Style x:Key="ClearButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Content" Value="&#x2715;" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource NeutralHoverBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  DataGrid Column Header Style  -->
+    <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource NeutralExtraLightBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="12 10" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="0 0 0 1" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
+
+    <!--  DataGrid Cell Style  -->
+    <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="12 8" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  DataGrid Row Style  -->
+    <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+        <Setter Property="Background" Value="{StaticResource WhiteBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource NeutralHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -793,7 +1073,7 @@ Expected: `Build succeeded.`
 
 ```bash
 git add TelAvivMuni-Exercise.Themes.Zed.AyuDark/Themes/AyuDark.Styles.xaml
-git commit -m "style: refactor AyuDark — use shared Dark.Styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
+git commit -m "style: refactor AyuDark — inline shared Dark.Styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
 ```
 
 ---
@@ -920,5 +1200,5 @@ git commit -m "style: update DataBrowserDialog to use PrimaryButtonStyle"
 - [ ] All unit tests pass after Task 6
 - [ ] No `BlueButtonStyle` references remain: `grep -r "BlueButtonStyle" --include="*.xaml"` → no output
 - [ ] No theme-prefixed browse/textbox style keys remain: `grep -r "GruvboxDarkBrowseButton\|AyuDarkBrowseButton\|GruvboxDarkDataBrowser\|AyuDarkDataBrowser" --include="*.xaml"` → no output
-- [ ] `Dark.Styles.xaml` is referenced by exactly both dark themes
+- [ ] `Dark.Styles.xaml` is **not** merged at runtime: `grep -r "Dark.Styles.xaml" --include="*.xaml"` → no output (it exists only as a template)
 - [ ] Visual smoke test: launch the app in each theme (Blue, Emerald, Gruvbox, Ayu); confirm `DataBrowserBox` clear button shows/hides correctly when selecting/clearing a product
