@@ -2,11 +2,24 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--  ============================================  -->
-    <!--  Shared Dark Theme Named Styles               -->
-    <!--  Consumed by GruvboxDark, AyuDark, and any   -->
-    <!--  future dark themes. Brushes are resolved     -->
-    <!--  from the theme's own Colors.xaml via         -->
-    <!--  Application.Current.Resources.               -->
+    <!--  CANONICAL TEMPLATE — NOT LOADED AT RUNTIME  -->
+    <!--                                              -->
+    <!--  This file is NOT referenced via             -->
+    <!--  MergedDictionaries by any theme. It exists  -->
+    <!--  as a single source-of-truth template for    -->
+    <!--  the 7 shared dark-theme named styles.       -->
+    <!--                                              -->
+    <!--  WHY NOT MERGED: WPF's StaticResource cannot -->
+    <!--  traverse up to sibling merged dictionaries  -->
+    <!--  when a ResourceDictionary is loaded via a   -->
+    <!--  cross-assembly pack URI. Styles must be     -->
+    <!--  inlined in each theme's own Styles.xaml so  -->
+    <!--  their brush keys resolve from the local     -->
+    <!--  Colors.xaml (e.g. GruvboxDark.Colors.xaml). -->
+    <!--                                              -->
+    <!--  To add a new dark theme: copy all 7 styles  -->
+    <!--  from this file into the new theme's         -->
+    <!--  Styles.xaml (after its Colors.xaml merge).  -->
     <!--  ============================================  -->
 
     <!--  Base Button Style  -->

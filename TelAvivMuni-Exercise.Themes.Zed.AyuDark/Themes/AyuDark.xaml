@@ -1,13 +1,12 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-  <!--  AyuDark Theme (entry point)
+    <!--  AyuDark Theme (entry point)
     App.xaml: <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.AyuDark;component/Themes/AyuDark.xaml" />
-  -->
+    -->
 
-  <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Shared.xaml" />
-    <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.AyuDark;component/Themes/AyuDark.Styles.xaml" />
-  </ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Shared.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.AyuDark;component/Themes/AyuDark.Styles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

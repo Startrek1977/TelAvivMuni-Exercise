@@ -322,8 +322,8 @@ public class DataBrowserBox : Control, IColumnConfiguration
 		if (AllowMultipleSelection)
 		{
 			// Multi-select: pass current selection as a list and receive a list back
-			var currentSelection = SelectedItems?.Cast<object>().ToList() as IReadOnlyList<object>
-				?? Array.Empty<object>();
+			var currentSelection = SelectedItems?.Cast<object>().ToList()
+				?? (IReadOnlyList<object>)[];
 
 			var result = DialogService.ShowDataBrowserMultiSelectAsync(
 				allItems, title, currentSelection, this);

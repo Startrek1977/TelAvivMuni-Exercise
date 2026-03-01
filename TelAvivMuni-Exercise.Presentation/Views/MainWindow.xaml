@@ -1,183 +1,180 @@
-<Window x:Class="TelAvivMuni_Exercise.Presentation.Views.MainWindow"
+﻿<Window x:Class="TelAvivMuni_Exercise.Presentation.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:pres="http://telaviv-muni-exe/presentation"
         xmlns:controls="http://telaviv-muni-exe/controls"
         xmlns:local="clr-namespace:TelAvivMuni_Exercise.Domain;assembly=TelAvivMuni-Exercise.Domain"
+        xmlns:pres="http://telaviv-muni-exe/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Tel-Aviv Muni - Exercise"
         Width="520"
         Height="455"
         Background="{StaticResource NeutralDarkBrush}"
         DataContext="{Binding MainWindow, Source={StaticResource Locator}}">
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*" />
-      <RowDefinition Height="Auto" />
-    </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-    <StackPanel Grid.Row="0" Margin="20">
-      <!--  Header  -->
-      <TextBlock Margin="0,0,0,5"
-                 FontSize="24"
-                 FontWeight="Bold"
-                 Foreground="{StaticResource TextPrimaryBrush}"
-                 Text="DataBrowserBox Control" />
-      <TextBlock Margin="0,0,0,20"
-                 FontSize="12"
-                 Foreground="{StaticResource TextTertiaryBrush}"
-                 Text="A reusable WPF control for browsing and selecting items from a collection" />
+        <StackPanel Grid.Row="0" Margin="20">
+            <!--  Header  -->
+            <TextBlock Margin="0 0 0 5"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       Text="DataBrowserBox Control" />
+            <TextBlock Margin="0 0 0 20"
+                       FontSize="12"
+                       Foreground="{StaticResource TextTertiaryBrush}"
+                       Text="A reusable WPF control for browsing and selecting items from a collection" />
 
-      <!--  Example 1  -->
-      <Border Margin="0,0,0,15"
-              Padding="15"
-              Background="{StaticResource WhiteBrush}"
-              BorderBrush="{StaticResource BorderLightBrush}"
-              BorderThickness="1"
-              CornerRadius="5">
-        <StackPanel>
-          <TextBlock Margin="0,0,0,5"
-                     FontSize="14"
-                     FontWeight="SemiBold"
-                     Foreground="{StaticResource TextPrimaryBrush}"
-                     Text="Example 1: Auto-generated Columns (Multi-Select)" />
-          <TextBlock Margin="0,0,0,10"
-                     FontSize="11"
-                     Foreground="{StaticResource TextTertiaryBrush}"
-                     Text="Columns are automatically generated. Ctrl+click or Shift+click to select multiple products." />
+            <!--  Example 1  -->
+            <Border Margin="0 0 0 15"
+                    Padding="15"
+                    Background="{StaticResource WhiteBrush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Margin="0 0 0 5"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Text="Example 1: Auto-generated Columns (Multi-Select)" />
+                    <TextBlock Margin="0 0 0 10"
+                               FontSize="11"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="Columns are automatically generated. Ctrl+click or Shift+click to select multiple products." />
 
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="60" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <TextBlock VerticalAlignment="Center"
-                       Foreground="{StaticResource TextSecondaryBrush}"
-                       Text="Product:" />
-            <controls:DataBrowserBox Grid.Column="1"
-                                     Height="30"
-                                     AllowMultipleSelection="True"
-                                     DialogService="{StaticResource DialogService}"
-                                     DialogTitle="בחר מוצר"
-                                     DisplayMemberPath="Name"
-                                     ItemsSource="{Binding Products}"
-                                     SelectedItem="{Binding SelectedProduct1, Mode=TwoWay}"
-                                     SelectedItems="{Binding SelectedProducts1, Mode=TwoWay}" />
-          </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="Product:" />
+                        <controls:DataBrowserBox Grid.Column="1"
+                                                 Height="30"
+                                                 AllowMultipleSelection="True"
+                                                 DialogService="{StaticResource DialogService}"
+                                                 DialogTitle="בחר מוצר"
+                                                 DisplayMemberPath="Name"
+                                                 ItemsSource="{Binding Products}"
+                                                 SelectedItem="{Binding SelectedProduct1, Mode=TwoWay}"
+                                                 SelectedItems="{Binding SelectedProducts1, Mode=TwoWay}" />
+                    </Grid>
 
-          <!--  "No selection" hint — visible only when nothing is selected  -->
-          <TextBlock Margin="60,5,0,0"
-                     FontSize="11"
-                     Foreground="{StaticResource TextTertiaryBrush}"
-                     Text="No selection">
-            <TextBlock.Style>
-              <Style TargetType="TextBlock">
-                <Setter Property="Visibility" Value="Hidden" />
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding SelectedProducts1.Count}"
-                               Value="0">
-                    <Setter Property="Visibility" Value="Visible" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </TextBlock.Style>
-          </TextBlock>
-          <!--  Selection count — visible only when more than one product is selected  -->
-          <TextBlock Margin="60,2,0,0"
-                     FontSize="11"
-                     Foreground="{StaticResource TextSecondaryBrush}"
-                     Text="{Binding SelectedProducts1.Count, StringFormat='{}{0} products selected'}">
-            <TextBlock.Style>
-              <Style TargetType="TextBlock">
-                <Setter Property="Visibility" Value="Visible" />
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding SelectedProducts1.Count}"
-                               Value="0">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </TextBlock.Style>
-          </TextBlock>
+                    <!--  "No selection" hint — visible only when nothing is selected  -->
+                    <TextBlock Margin="60 5 0 0"
+                               FontSize="11"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="No selection">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedProducts1.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <!--  Selection count — visible only when more than one product is selected  -->
+                    <TextBlock Margin="60 2 0 0"
+                               FontSize="11"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Text="{Binding SelectedProducts1.Count, StringFormat='{}{0} products selected'}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedProducts1.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  Example 2  -->
+            <Border Padding="15"
+                    Background="{StaticResource WhiteBrush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Margin="0 0 0 5"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Text="Example 2: Custom Column Configuration" />
+                    <TextBlock Margin="0 0 0 10"
+                               FontSize="11"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="Columns are explicitly defined with custom headers, widths, and formats." />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="Product:" />
+                        <controls:DataBrowserBox Grid.Column="1"
+                                                 Height="30"
+                                                 DialogService="{StaticResource DialogService}"
+                                                 DialogTitle="בחר מוצר"
+                                                 DisplayMemberPath="Name"
+                                                 ItemsSource="{Binding Products}"
+                                                 SelectedItem="{Binding SelectedProduct2, Mode=TwoWay}">
+                            <controls:DataBrowserBox.Columns>
+                                <local:BrowserColumn Width="200"
+                                                     DataField="Name"
+                                                     Header="שם מוצר" />
+                                <local:BrowserColumn Width="100"
+                                                     HorizontalAlignment="Right"
+                                                     DataField="Price"
+                                                     Format="C2"
+                                                     Header="מחיר" />
+                                <local:BrowserColumn Width="150"
+                                                     DataField="Category"
+                                                     Header="קטגוריה" />
+                            </controls:DataBrowserBox.Columns>
+                        </controls:DataBrowserBox>
+                    </Grid>
+
+                    <TextBlock Margin="60 5 0 0"
+                               FontSize="11"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="No selection">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedProduct2}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
         </StackPanel>
-      </Border>
 
-      <!--  Example 2  -->
-      <Border Padding="15"
-              Background="{StaticResource WhiteBrush}"
-              BorderBrush="{StaticResource BorderLightBrush}"
-              BorderThickness="1"
-              CornerRadius="5">
-        <StackPanel>
-          <TextBlock Margin="0,0,0,5"
-                     FontSize="14"
-                     FontWeight="SemiBold"
-                     Foreground="{StaticResource TextPrimaryBrush}"
-                     Text="Example 2: Custom Column Configuration" />
-          <TextBlock Margin="0,0,0,10"
-                     FontSize="11"
-                     Foreground="{StaticResource TextTertiaryBrush}"
-                     Text="Columns are explicitly defined with custom headers, widths, and formats." />
-
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="60" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <TextBlock VerticalAlignment="Center"
-                       Foreground="{StaticResource TextSecondaryBrush}"
-                       Text="Product:" />
-            <controls:DataBrowserBox Grid.Column="1"
-                                     Height="30"
-                                     DialogService="{StaticResource DialogService}"
-                                     DialogTitle="בחר מוצר"
-                                     DisplayMemberPath="Name"
-                                     ItemsSource="{Binding Products}"
-                                     SelectedItem="{Binding SelectedProduct2, Mode=TwoWay}">
-              <controls:DataBrowserBox.Columns>
-                <local:BrowserColumn Width="200"
-                                     DataField="Name"
-                                     Header="שם מוצר" />
-                <local:BrowserColumn Width="100"
-                                     HorizontalAlignment="Right"
-                                     DataField="Price"
-                                     Format="C2"
-                                     Header="מחיר" />
-                <local:BrowserColumn Width="150"
-                                     DataField="Category"
-                                     Header="קטגוריה" />
-              </controls:DataBrowserBox.Columns>
-            </controls:DataBrowserBox>
-          </Grid>
-
-          <TextBlock Margin="60,5,0,0"
-                     FontSize="11"
-                     Foreground="{StaticResource TextTertiaryBrush}"
-                     Text="No selection">
-            <TextBlock.Style>
-              <Style TargetType="TextBlock">
-                <Setter Property="Visibility" Value="Hidden" />
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding SelectedProduct2}"
-                               Value="{x:Null}">
-                    <Setter Property="Visibility" Value="Visible" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </TextBlock.Style>
-          </TextBlock>
-        </StackPanel>
-      </Border>
-    </StackPanel>
-
-    <!--  Data source info line  -->
-    <Border Grid.Row="1"
-            Padding="10,5"
-            Background="{StaticResource NeutralMediumBrush}"
-            BorderBrush="{StaticResource BorderBrush}"
-            BorderThickness="0,1,0,0">
-      <TextBlock FontSize="11"
-                 Foreground="{StaticResource TextTertiaryBrush}"
-                 Text="{Binding DataSourceInfo}" />
-    </Border>
-  </Grid>
+        <!--  Data source info line  -->
+        <Border Grid.Row="1"
+                Padding="10 5"
+                Background="{StaticResource NeutralMediumBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0 1 0 0">
+            <TextBlock FontSize="11"
+                       Foreground="{StaticResource TextTertiaryBrush}"
+                       Text="{Binding DataSourceInfo}" />
+        </Border>
+    </Grid>
 </Window>
