@@ -66,7 +66,7 @@ public partial class App : Application
 
 	protected override async void OnStartup(StartupEventArgs e)
 	{
-		// Call base.OnStartup first to ensure all Application.Resources are fully loaded
+		// Call base.OnStartup first to raise the Startup event and complete base startup logic before the host starts
 		base.OnStartup(e);
 
 		await _host.StartAsync();
