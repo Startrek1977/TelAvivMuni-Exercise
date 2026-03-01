@@ -423,7 +423,7 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			else
 			{
 				var firstName = GetDisplayValue(SelectedItems![0]!);
-				_textBox.Text = $"{firstName} (+{count - 1} products)";
+				_textBox.Text = $"{firstName} (+{count - 1} items)";
 				_textBox.Opacity = 1.0;
 			}
 		}
