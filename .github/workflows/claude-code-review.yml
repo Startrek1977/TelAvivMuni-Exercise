@@ -5,9 +5,9 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
+  id-token: write
   contents: read
   pull-requests: write
-  id-token: write
 
 jobs:
   code-review:
@@ -139,5 +139,4 @@ jobs:
 
             Post a concise structured review with these sections:
             **Summary**, **Issues** (if any), **Suggestions**, **Verdict**.
-          claude_args: "--max-turns 5"
-
+          claude_args: "--max-turns 20"
