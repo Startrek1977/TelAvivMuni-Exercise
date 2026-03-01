@@ -26,13 +26,6 @@ public partial class DataBrowserDialog : Window
 
 		// After Initialize() populates ViewModel.SelectedItems, sync back to the DataGrid
 		DataContextChanged += OnDataContextChanged;
-	}
-
-	private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-	{
-		// Detach from the previous DataContext, if it was an IMultiSelectViewModel
-		if (e.OldValue is IMultiSelectViewModel oldVm)
-		DataContextChanged += OnDataContextChanged;
 
 		// Ensure we detach from the current ViewModel when the window is closed
 		Closed += OnClosed;
