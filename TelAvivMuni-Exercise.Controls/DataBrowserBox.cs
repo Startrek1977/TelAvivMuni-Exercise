@@ -75,6 +75,14 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			new PropertyMetadata(null));
 
 	/// <summary>
+	/// Dependency property for the noun used in the multi-select summary label (e.g. "items", "products").
+	/// Defaults to "items".
+	/// </summary>
+	public static readonly DependencyProperty MultiSelectItemNounProperty =
+		DependencyProperty.Register(nameof(MultiSelectItemNoun), typeof(string), typeof(DataBrowserBox),
+			new PropertyMetadata("items"));
+
+	/// <summary>
 	/// Dependency property for the dialog service used to show the browse dialog.
 	/// </summary>
 	public static readonly DependencyProperty DialogServiceProperty =
@@ -212,6 +220,16 @@ public class DataBrowserBox : Control, IColumnConfiguration
 	{
 		get => (string)GetValue(DialogTitleProperty);
 		set => SetValue(DialogTitleProperty, value);
+	}
+
+	/// <summary>
+	/// Gets or sets the noun shown in the multi-select summary label when more than one item is
+	/// selected (e.g. "Item A (+2 items)").  Defaults to "items".
+	/// </summary>
+	public string MultiSelectItemNoun
+	{
+		get => (string)GetValue(MultiSelectItemNounProperty);
+		set => SetValue(MultiSelectItemNounProperty, value);
 	}
 
 	/// <summary>
@@ -423,7 +441,7 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			else
 			{
 				var firstName = GetDisplayValue(SelectedItems![0]!);
-				_textBox.Text = $"{firstName} (+{count - 1} products)";
+				_textBox.Text = $"{firstName} (+{count - 1} {MultiSelectItemNoun})";
 				_textBox.Opacity = 1.0;
 			}
 		}
