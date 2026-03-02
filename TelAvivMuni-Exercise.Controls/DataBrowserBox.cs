@@ -75,6 +75,14 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			new PropertyMetadata(null));
 
 	/// <summary>
+	/// Dependency property for the noun used in the multi-select summary label (e.g. "items", "products").
+	/// Defaults to "items".
+	/// </summary>
+	public static readonly DependencyProperty MultiSelectItemNounProperty =
+		DependencyProperty.Register(nameof(MultiSelectItemNoun), typeof(string), typeof(DataBrowserBox),
+			new PropertyMetadata("items"));
+
+	/// <summary>
 	/// Dependency property for the dialog service used to show the browse dialog.
 	/// </summary>
 	public static readonly DependencyProperty DialogServiceProperty =
@@ -124,18 +132,20 @@ public class DataBrowserBox : Control, IColumnConfiguration
 	/// Property change callback for SelectedItems.
 	/// Updates the display text and subscribes to CollectionChanged so mutations
 	/// (Add/Remove/Clear) also refresh the display.
+	/// Uses a weak event subscription via <see cref="System.Windows.Data.CollectionChangedEventManager"/>
+	/// so the VM-owned collection does not root this control longer than its visual lifetime.
 	/// </summary>
 	private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
 		var control = (DataBrowserBox)d;
 
-		// Unsubscribe from the old collection to avoid leaks / stale handlers
+		// Remove weak handler from the old collection to avoid stale callbacks
 		if (e.OldValue is System.Collections.Specialized.INotifyCollectionChanged oldCollection)
-			oldCollection.CollectionChanged -= control.OnSelectedItemsCollectionChanged;
+			System.Collections.Specialized.CollectionChangedEventManager.RemoveHandler(oldCollection, control.OnSelectedItemsCollectionChanged);
 
-		// Subscribe to the new collection so in-place mutations update the display
+		// Add a weak handler to the new collection so in-place mutations update the display
 		if (e.NewValue is System.Collections.Specialized.INotifyCollectionChanged newCollection)
-			newCollection.CollectionChanged += control.OnSelectedItemsCollectionChanged;
+			System.Collections.Specialized.CollectionChangedEventManager.AddHandler(newCollection, control.OnSelectedItemsCollectionChanged);
 
 		control.UpdateHasSelection();
 		control.UpdateDisplayText();
@@ -212,6 +222,16 @@ public class DataBrowserBox : Control, IColumnConfiguration
 	{
 		get => (string)GetValue(DialogTitleProperty);
 		set => SetValue(DialogTitleProperty, value);
+	}
+
+	/// <summary>
+	/// Gets or sets the noun shown in the multi-select summary label when more than one item is
+	/// selected (e.g. "Item A (+2 items)").  Defaults to "items".
+	/// </summary>
+	public string MultiSelectItemNoun
+	{
+		get => (string)GetValue(MultiSelectItemNounProperty);
+		set => SetValue(MultiSelectItemNounProperty, value);
 	}
 
 	/// <summary>
@@ -423,7 +443,7 @@ public class DataBrowserBox : Control, IColumnConfiguration
 			else
 			{
 				var firstName = GetDisplayValue(SelectedItems![0]!);
-				_textBox.Text = $"{firstName} (+{count - 1} products)";
+				_textBox.Text = $"{firstName} (+{count - 1} {MultiSelectItemNoun})";
 				_textBox.Opacity = 1.0;
 			}
 		}
