@@ -15,7 +15,7 @@ namespace TelAvivMuni_Exercise.Presentation.Services;
 public class DialogService : IDialogService
 {
 	/// <summary>
-	/// Displays a modal browse dialog for selecting an item from a collection.
+	/// Displays a modal browse dialog for selecting a single item from a collection.
 	/// </summary>
 	/// <param name="items">The collection of items to display in the dialog.</param>
 	/// <param name="title">The dialog window title.</param>
@@ -53,5 +53,44 @@ public class DialogService : IDialogService
 		}
 
 		return selectedItem;
+	}
+
+	/// <summary>
+	/// Displays a modal browse dialog for selecting multiple items from a collection.
+	/// </summary>
+	/// <param name="items">The collection of items to display in the dialog.</param>
+	/// <param name="title">The dialog window title.</param>
+	/// <param name="selectedItems">The currently selected items, if any.</param>
+	/// <param name="columnConfiguration">Optional column configuration for the data grid.</param>
+	/// <returns>The selected items if confirmed; otherwise, the original selection.</returns>
+	public IReadOnlyList<T> ShowDataBrowserMultiSelect<T>(IEnumerable<T> items, string title, IReadOnlyList<T>? selectedItems = null, IColumnConfiguration? columnConfiguration = null) where T : class
+	{
+		if (items == null)
+		{
+			MessageBox.Show("No items available to display.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+			return selectedItems ?? [];
+		}
+
+		var columns = columnConfiguration?.Columns != null
+			? new ObservableCollection<BrowserColumn>(columnConfiguration.Columns)
+			: null;
+		var mainWindow = Application.Current.MainWindow;
+
+		var viewModel = new DataBrowserDialogViewModel(items, selectedItems, columns, allowMultipleSelection: true);
+		var dialog = new DataBrowserDialog
+		{
+			DataContext = viewModel,
+			Title = title,
+			Owner = mainWindow,
+			Left = mainWindow.Left + mainWindow.ActualWidth,
+			Top = mainWindow.Top
+		};
+
+		if (dialog.ShowDialog() == true)
+		{
+			return viewModel.SelectedItems.Cast<T>().ToList();
+		}
+
+		return selectedItems ?? [];
 	}
 }

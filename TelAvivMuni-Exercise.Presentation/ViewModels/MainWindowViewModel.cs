@@ -36,6 +36,13 @@ public partial class MainWindowViewModel : ObservableObject
 		set => SetProperty(ref _selectedProduct1, value);
 	}
 
+	private ObservableCollection<Product> _selectedProducts1 = [];
+	public ObservableCollection<Product> SelectedProducts1
+	{
+		get => _selectedProducts1;
+		set => SetProperty(ref _selectedProducts1, value);
+	}
+
 	private Product? _selectedProduct2;
 	public Product? SelectedProduct2
 	{

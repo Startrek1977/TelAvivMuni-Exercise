@@ -1,40 +1,39 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-  <!--  ============================================  -->
-  <!--  Blue Theme Color Palette  -->
-  <!--  ============================================  -->
+    <!--  ============================================  -->
+    <!--  Blue Theme Color Palette  -->
+    <!--  ============================================  -->
 
-  <!--  Primary Colors (Blue Theme)  -->
-  <SolidColorBrush x:Key="PrimaryBrush" Color="#2196F3" />
-  <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#1976D2" />
-  <SolidColorBrush x:Key="PrimaryDarkerBrush" Color="#0D47A1" />
-  <SolidColorBrush x:Key="PrimaryLightBrush" Color="#E3F2FD" />
+    <!--  Primary Colors (Blue Theme)  -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#2196F3" />
+    <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#1976D2" />
+    <SolidColorBrush x:Key="PrimaryDarkerBrush" Color="#0D47A1" />
+    <SolidColorBrush x:Key="PrimaryLightBrush" Color="#E3F2FD" />
 
-  <!--  Neutral/Gray Colors  -->
-  <SolidColorBrush x:Key="NeutralLightBrush" Color="#F5F5F5" />
-  <SolidColorBrush x:Key="NeutralMediumBrush" Color="#EEEEEE" />
-  <SolidColorBrush x:Key="NeutralDarkBrush" Color="#E0E0E0" />
-  <SolidColorBrush x:Key="NeutralExtraLightBrush" Color="#FAFAFA" />
-  <SolidColorBrush x:Key="NeutralHoverBrush" Color="#F0F0F0" />
+    <!--  Neutral/Gray Colors  -->
+    <SolidColorBrush x:Key="NeutralLightBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="NeutralMediumBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="NeutralDarkBrush" Color="#E0E0E0" />
+    <SolidColorBrush x:Key="NeutralExtraLightBrush" Color="#FAFAFA" />
+    <SolidColorBrush x:Key="NeutralHoverBrush" Color="#F0F0F0" />
 
-  <!--  Border Colors  -->
-  <SolidColorBrush x:Key="BorderBrush" Color="#E0E0E0" />
-  <SolidColorBrush x:Key="BorderLightBrush" Color="#CCCCCC" />
+    <!--  Border Colors  -->
+    <SolidColorBrush x:Key="BorderBrush" Color="#E0E0E0" />
+    <SolidColorBrush x:Key="BorderLightBrush" Color="#CCCCCC" />
 
-  <!--  Text Colors  -->
-  <SolidColorBrush x:Key="TextPrimaryBrush" Color="#424242" />
-  <SolidColorBrush x:Key="TextSecondaryBrush" Color="#616161" />
-  <SolidColorBrush x:Key="TextTertiaryBrush" Color="#757575" />
-  <SolidColorBrush x:Key="TextDisabledBrush" Color="#9E9E9E" />
+    <!--  Text Colors  -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#424242" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#616161" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#757575" />
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="#9E9E9E" />
 
-  <!--  Disabled State  -->
-  <SolidColorBrush x:Key="DisabledBrush" Color="#BDBDBD" />
+    <!--  Disabled State  -->
+    <SolidColorBrush x:Key="DisabledBrush" Color="#BDBDBD" />
 
-  <!--  White  -->
-  <SolidColorBrush x:Key="WhiteBrush" Color="White" />
+    <!--  White  -->
+    <SolidColorBrush x:Key="WhiteBrush" Color="White" />
 
-  <!--  Loading Overlay  -->
-  <SolidColorBrush x:Key="LoadingOverlayBrush" Color="#80FFFFFF" />
+    <!--  Loading Overlay  -->
+    <SolidColorBrush x:Key="LoadingOverlayBrush" Color="#80FFFFFF" />
 
 </ResourceDictionary>

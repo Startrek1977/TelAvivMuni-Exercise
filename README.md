@@ -11,7 +11,8 @@ This project is a home exercise created as part of an interview for the Software
 ### Custom DataBrowserBox Control
 - **Reusable WPF Custom Control** - Can be used anywhere in the application with any data type
 - **Display Member Path** - Configure which property to display in the control
-- **Two-Way Data Binding** - Full support for MVVM pattern with `SelectedItem` binding
+- **Two-Way Data Binding** - Full MVVM support: `SelectedItem` (single) / `SelectedItems` (multi) bindings
+- **Multi-Select Mode** - `AllowMultipleSelection` enables multi-item selection with a ×-clear button
 - **Custom Column Configuration** - Define columns with custom headers, widths, formats, and alignment
 - **Auto-Generated Columns** - Automatically generates columns from data type (default behavior)
 - **Visual Feedback** - Watermark text in italic, selected items in bold
@@ -99,6 +100,8 @@ Shared contracts and interfaces:
   - `IUnitOfWork` - Unit of Work interface
 - **Services:**
   - `IDialogService` - Dialog service interface
+- **ViewModels:**
+  - `IMultiSelectViewModel` - Multi-select state contract (`AllowMultipleSelection` + `SelectedItems`) consumed by `DataBrowserDialog` code-behind without creating a circular project reference
 
 ### TelAvivMuni-Exercise.Core
 Application-specific business logic:
@@ -287,8 +290,10 @@ TelAvivMuni-Exercise.sln
 │   ├── Patterns/
 │   │   ├── IRepositoryT.cs                  # Generic repository interface
 │   │   └── IUnitOfWork.cs                   # Unit of Work interface
-│   └── Services/
-│       └── IDialogService.cs                # Dialog service interface
+│   ├── Services/
+│   │   └── IDialogService.cs                # Dialog service interface
+│   └── ViewModels/
+│       └── IMultiSelectViewModel.cs         # Multi-select state contract for dialog ViewModels
 │
 ├── TelAvivMuni-Exercise.Core/               # Business logic
 │   ├── Data/
@@ -387,7 +392,8 @@ TelAvivMuni-Exercise.sln
 │       ├── DataBrowserDialogViewModelTests.cs
 │       └── MainWindowViewModelTests.cs
 │
-└── coverlet.runsettings                     # Code coverage configuration
+├── coverlet.runsettings                     # Code coverage configuration
+└── Settings.XamlStyler                      # XAML Styler formatting rules (xstyler CLI config)
 ```
 
 ## Configuration
@@ -481,7 +487,9 @@ The application uses `Host.CreateDefaultBuilder()` which automatically loads con
 
 **Properties:**
 - `ItemsSource` - The collection of items to browse
-- `SelectedItem` - The currently selected item (two-way binding)
+- `SelectedItem` - The currently selected item (two-way binding, single-select mode)
+- `SelectedItems` - The currently selected items collection (two-way binding, multi-select mode)
+- `AllowMultipleSelection` - Enables multi-item selection mode; bind `SelectedItems` instead of `SelectedItem` (default: `false`)
 - `DisplayMemberPath` - Property name to display in the control
 - `DialogTitle` - Title for the browse dialog
 - `DialogService` - Service for showing the dialog
@@ -662,7 +670,7 @@ Generate coverage report:
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
-The test suite includes **163 unit tests** with **41.4% line coverage** and **34.0% branch coverage** across all assemblies (core testable code maintains near-100% coverage; lower overall figures reflect untested persistence provider registrars — CSV, XML, MySQL, PostgreSQL, SQLite, SqlServer — and the composition-root `StorageRegistrationExtensions` class):
+The test suite includes **176 unit tests** with **45.6% line coverage** and **39.2% branch coverage** across all assemblies (core testable code maintains near-100% coverage; lower overall figures reflect untested persistence provider registrars — CSV, XML, MySQL, PostgreSQL, SQLite, SqlServer — and the composition-root `StorageRegistrationExtensions` class):
 - Repository operations (CRUD, error handling)
 - Unit of Work coordination
 - ViewModel commands and state management
@@ -729,6 +737,12 @@ The test suite includes **163 unit tests** with **41.4% line coverage** and **34
 
 ## Recent Improvements
 
+### Multi-Select Support + Clear Button Fix (v8.3)
+- **`AllowMultipleSelection` property added** — `DataBrowserBox` now supports multi-item selection mode; set `AllowMultipleSelection=True` and bind `SelectedItems` (an `IList`) to receive the selected collection
+- **`SelectedItems` dependency property** — Two-way bindable `IList` DP with `FrameworkPropertyMetadataOptions.BindsTwoWayByDefault`; subscribes to `INotifyCollectionChanged` when the collection reference changes
+- **Clear button (×) fixed in multi-select mode** — `OnBrowseButtonClick` now explicitly calls `UpdateHasSelection()` and `UpdateDisplayText()` after in-place `SelectedItems.Clear()` + `Add()` mutations, mirroring the pattern already used by `OnClearButtonClick`; `UpdateHasSelection()` also sets `_clearButton.Visibility` directly as a belt-and-suspenders bypass for the WPF `ControlTemplate.Trigger` pipeline
+- **`DataBrowserDialog` multi-select DataGrid** — `SelectionMode=Extended` now correctly applied via a Style `<Setter>` (not a local attribute) so `AllowMultipleSelection` can override it through the `DataTrigger` without being shadowed by local-value precedence
+- **13 new unit tests** in `DataBrowserDialogViewModelTests` covering multi-select constructor, preselection, `OkCommand.CanExecute` with selection states, and filter interactions — **176 unit tests** total
 ### Ayu Dark Theme (v8.2)
 - **`TelAvivMuni-Exercise.Themes.Zed.AyuDark` added** — New standalone theme assembly implementing the Zed editor built-in [Ayu Dark](https://github.com/zed-industries/zed/blob/main/assets/themes/ayu/ayu.json) palette, following the exact same three-file structure as `TelAvivMuni-Exercise.Themes.Zed.GruvboxDark`
 - **Exact Zed palette** — All 21 brush keys (`PrimaryBrush #5ac1fe`, `NeutralDarkBrush #313337`, `TextPrimaryBrush #bfbdb6`, `WhiteBrush #0d1016`, etc.) sourced directly from Zed's `assets/themes/ayu/ayu.json`
@@ -862,7 +876,6 @@ Potential improvements for production use:
 - Implement column sorting (click column headers to sort)
 - Add column resizing (drag column borders)
 - Add export functionality (CSV, Excel)
-- Multi-selection support (Ctrl+Click, Shift+Click)
 - Custom column templates (images, buttons, checkboxes)
 - Additional behaviors (double-click to select, arrow key navigation)
 - Accessibility features (screen reader support, high contrast themes)

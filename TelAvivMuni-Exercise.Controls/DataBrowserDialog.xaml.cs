@@ -80,3 +80,4 @@ public partial class DataBrowserDialog : Window
 		}
 	}
 }
+

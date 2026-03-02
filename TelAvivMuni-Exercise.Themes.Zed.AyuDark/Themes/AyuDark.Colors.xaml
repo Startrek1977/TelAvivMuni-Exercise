@@ -1,51 +1,50 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-  <!--  ============================================  -->
-  <!--  AyuDark Theme — Ayu Dark Color Palette  -->
-  <!--  Based on Zed editor built-in "Ayu Dark" theme  -->
-  <!--  (assets/themes/ayu/ayu.json)  -->
-  <!--    editor.background  #0d1016   text          #bfbdb6  -->
-  <!--    background         #313337   text.muted    #8a8986  -->
-  <!--    surface.background #1f2127   text.accent   #5ac1fe  -->
-  <!--    border             #3f4043   border.variant #2d2f34  -->
-  <!--  ============================================  -->
+    <!--  ============================================  -->
+    <!--  AyuDark Theme — Ayu Dark Color Palette  -->
+    <!--  Based on Zed editor built-in "Ayu Dark" theme  -->
+    <!--  (assets/themes/ayu/ayu.json)  -->
+    <!--  editor.background  #0d1016   text          #bfbdb6  -->
+    <!--  background         #313337   text.muted    #8a8986  -->
+    <!--  surface.background #1f2127   text.accent   #5ac1fe  -->
+    <!--  border             #3f4043   border.variant #2d2f34  -->
+    <!--  ============================================  -->
 
-  <!--  Primary Colors (Ayu cyan-blue accent — text.accent)  -->
-  <SolidColorBrush x:Key="PrimaryBrush"       Color="#5ac1fe" />
-  <SolidColorBrush x:Key="PrimaryDarkBrush"   Color="#1b4a6e" />
-  <SolidColorBrush x:Key="PrimaryDarkerBrush" Color="#153a56" />
-  <SolidColorBrush x:Key="PrimaryLightBrush"  Color="#1f2127" />
+    <!--  Primary Colors (Ayu cyan-blue accent — text.accent)  -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#5ac1fe" />
+    <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#1b4a6e" />
+    <SolidColorBrush x:Key="PrimaryDarkerBrush" Color="#153a56" />
+    <SolidColorBrush x:Key="PrimaryLightBrush" Color="#1f2127" />
 
-  <!--  Secondary Colors (element.selected / element.hover range)  -->
-  <SolidColorBrush x:Key="SecondaryBrush"        Color="#3e4043" />
-  <SolidColorBrush x:Key="SecondaryDarkBrush"    Color="#2d2f34" />
-  <SolidColorBrush x:Key="SecondaryDarkerBrush"  Color="#1f2127" />
+    <!--  Secondary Colors (element.selected / element.hover range)  -->
+    <SolidColorBrush x:Key="SecondaryBrush" Color="#3e4043" />
+    <SolidColorBrush x:Key="SecondaryDarkBrush" Color="#2d2f34" />
+    <SolidColorBrush x:Key="SecondaryDarkerBrush" Color="#1f2127" />
 
-  <!--  Neutral/Background Colors  -->
-  <SolidColorBrush x:Key="NeutralLightBrush"      Color="#3f4043" />
-  <SolidColorBrush x:Key="NeutralMediumBrush"     Color="#2d2f34" />
-  <SolidColorBrush x:Key="NeutralDarkBrush"       Color="#313337" />
-  <SolidColorBrush x:Key="NeutralExtraLightBrush" Color="#1f2127" />
-  <SolidColorBrush x:Key="NeutralHoverBrush"      Color="#2d2f34" />
+    <!--  Neutral/Background Colors  -->
+    <SolidColorBrush x:Key="NeutralLightBrush" Color="#3f4043" />
+    <SolidColorBrush x:Key="NeutralMediumBrush" Color="#2d2f34" />
+    <SolidColorBrush x:Key="NeutralDarkBrush" Color="#313337" />
+    <SolidColorBrush x:Key="NeutralExtraLightBrush" Color="#1f2127" />
+    <SolidColorBrush x:Key="NeutralHoverBrush" Color="#2d2f34" />
 
-  <!--  Border Colors  -->
-  <SolidColorBrush x:Key="BorderBrush"      Color="#3f4043" />
-  <SolidColorBrush x:Key="BorderLightBrush" Color="#2d2f34" />
+    <!--  Border Colors  -->
+    <SolidColorBrush x:Key="BorderBrush" Color="#3f4043" />
+    <SolidColorBrush x:Key="BorderLightBrush" Color="#2d2f34" />
 
-  <!--  Text Colors (Ayu text tokens)  -->
-  <SolidColorBrush x:Key="TextPrimaryBrush"   Color="#bfbdb6" />
-  <SolidColorBrush x:Key="TextSecondaryBrush" Color="#8a8986" />
-  <SolidColorBrush x:Key="TextTertiaryBrush"  Color="#696a6a" />
-  <SolidColorBrush x:Key="TextDisabledBrush"  Color="#696a6a" />
+    <!--  Text Colors (Ayu text tokens)  -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#bfbdb6" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#8a8986" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#696a6a" />
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="#696a6a" />
 
-  <!--  Disabled State  -->
-  <SolidColorBrush x:Key="DisabledBrush" Color="#3f4043" />
+    <!--  Disabled State  -->
+    <SolidColorBrush x:Key="DisabledBrush" Color="#3f4043" />
 
-  <!--  "White" = Ayu editor.background (darkest surface)  -->
-  <SolidColorBrush x:Key="WhiteBrush" Color="#0d1016" />
+    <!--  "White" = Ayu editor.background (darkest surface)  -->
+    <SolidColorBrush x:Key="WhiteBrush" Color="#0d1016" />
 
-  <!--  Loading overlay (semi-transparent dark for dark theme)  -->
-  <SolidColorBrush x:Key="LoadingOverlayBrush" Color="#C00d1016" />
+    <!--  Loading overlay (semi-transparent dark for dark theme)  -->
+    <SolidColorBrush x:Key="LoadingOverlayBrush" Color="#C00d1016" />
 
 </ResourceDictionary>
