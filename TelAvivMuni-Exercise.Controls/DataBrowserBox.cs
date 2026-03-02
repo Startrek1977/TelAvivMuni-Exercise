@@ -341,26 +341,28 @@ public class DataBrowserBox : Control, IColumnConfiguration
 
 		if (AllowMultipleSelection)
 		{
+			// In multi-select mode, a non-null SelectedItems collection must be bound.
+			if (SelectedItems == null)
+			{
+				MessageBox.Show(
+					"Multi-selection is enabled, but no SelectedItems collection is bound. " +
+					"Please bind SelectedItems to a non-null collection when AllowMultipleSelection is true.",
+					"Configuration Error",
+					MessageBoxButton.OK,
+					MessageBoxImage.Error);
+				return;
+			}
+
 			// Multi-select: pass current selection as a list and receive a list back
-			var currentSelection = SelectedItems?.Cast<object>().ToList()
-				?? (IReadOnlyList<object>)[];
+			var currentSelection = SelectedItems.Cast<object>().ToList();
 
 			var result = DialogService.ShowDataBrowserMultiSelect(
 				allItems, title, currentSelection, this);
 
-			// Update SelectedItems with the returned list
-			if (SelectedItems != null)
-			{
-				SelectedItems.Clear();
-				foreach (var item in result)
-					SelectedItems.Add(item);
-			}
-			else
-			{
-				// Create a new list if none exists
-				var newList = new System.Collections.ObjectModel.ObservableCollection<object>(result);
-				SelectedItems = newList;
-			}
+			// Update SelectedItems with the returned list (mutate existing collection only)
+			SelectedItems.Clear();
+			foreach (var item in result)
+				SelectedItems.Add(item);
 
 			// Explicitly sync HasSelection and display text after any in-place mutation.
 			// In-place Clear/Add does not change the SelectedItems DP reference, so
