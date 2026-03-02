@@ -49,7 +49,7 @@ public partial class App : Application
 
 		// Register ViewModels — pass resolved data source description for the status bar.
 		var opts = context.Configuration.GetSection(StorageOptions.SectionName).Get<StorageOptions>()
-				   ?? new StorageOptions();
+				?? new StorageOptions();
 		services.AddTransient<MainWindowViewModel>(sp =>
 		{
 			var store = sp.GetRequiredService<IDataStore<Product>>();
@@ -72,7 +72,7 @@ public partial class App : Application
 		await _host.StartAsync();
 
 		// Only create MainWindow after all application resources are available
-		new MainWindow().Show();
+		nnew MainWindow().Show();
 	}
 
 	protected override async void OnExit(ExitEventArgs e)
