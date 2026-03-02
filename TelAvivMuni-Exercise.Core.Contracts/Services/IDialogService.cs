@@ -29,7 +29,7 @@ public interface IDialogService
     /// <param name="selectedItems">The initially selected items.</param>
     /// <param name="columnConfiguration">Optional column configuration.</param>
     /// <returns>The list of selected items, or the original selection if cancelled.</returns>
-    IReadOnlyList<T> ShowDataBrowserMultiSelectAsync<T>(
+    IReadOnlyList<T> ShowDataBrowserMultiSelect<T>(
         IEnumerable<T> items,
         string title,
         IReadOnlyList<T>? selectedItems = null,

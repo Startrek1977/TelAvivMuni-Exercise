@@ -63,7 +63,7 @@ public class DialogService : IDialogService
 	/// <param name="selectedItems">The currently selected items, if any.</param>
 	/// <param name="columnConfiguration">Optional column configuration for the data grid.</param>
 	/// <returns>The selected items if confirmed; otherwise, the original selection.</returns>
-	public IReadOnlyList<T> ShowDataBrowserMultiSelectAsync<T>(IEnumerable<T> items, string title, IReadOnlyList<T>? selectedItems = null, IColumnConfiguration? columnConfiguration = null) where T : class
+	public IReadOnlyList<T> ShowDataBrowserMultiSelect<T>(IEnumerable<T> items, string title, IReadOnlyList<T>? selectedItems = null, IColumnConfiguration? columnConfiguration = null) where T : class
 	{
 		if (items == null)
 		{

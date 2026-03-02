@@ -1,11 +1,19 @@
 # Theme Style Deduplication Implementation Plan
 
+<<<<<<< HEAD
 **Goal:** Eliminate cross-theme XAML style duplication by renaming theme-prefixed helper styles, extracting shared dark-theme named styles into a single file, renaming `BlueButtonStyle` → `PrimaryButtonStyle` everywhere, and fixing the dark-theme `DataBrowserBox` template to use the same reliable `HasSelection` trigger approach already used in `Generic.xaml`.
 
 **Architecture:**
 - `Dark.Styles.xaml` in `TelAvivMuni-Exercise.Themes/Themes/` is a **canonical template — not loaded at runtime**. It holds the 7 named styles shared by all dark themes as a single source-of-truth reference. It is not referenced via `MergedDictionaries` by any theme.
 - **Why not merged:** WPF's `StaticResource` cannot traverse up to sibling merged dictionaries when a `ResourceDictionary` is loaded via a cross-assembly pack URI. Styles must be inlined in each theme's own `Styles.xaml` so their brush keys resolve from the local `Colors.xaml` (e.g. `GruvboxDark.Colors.xaml`).
 - Each dark theme's `Styles.xaml` **inlines** all 7 shared styles and additionally defines theme-specific content: `BrowseButtonStyle`, `DataBrowserTextBoxStyle`, and the `DataBrowserBox` implicit style.
+=======
+**Goal:** Eliminate cross-theme XAML style duplication by renaming theme-prefixed helper styles, extracting shared dark-theme named styles into a single canonical reference file, renaming `BlueButtonStyle` → `PrimaryButtonStyle` everywhere, and fixing the dark-theme `DataBrowserBox` template to use the same reliable `HasSelection` trigger approach already used in `Generic.xaml`.
+
+**Architecture:**
+- `Dark.Styles.xaml` in `TelAvivMuni-Exercise.Themes/Themes/` is a **canonical template** holding the 7 named styles shared by all dark themes. It is **not loaded at runtime** via `MergedDictionaries`.
+- Each dark theme's `Styles.xaml` **inlines** these 7 styles directly after its own `Colors.xaml` merge. This is required because WPF's `StaticResource` cannot traverse cross-assembly `MergedDictionaries` — the brush keys (e.g. `PrimaryBrush`) must resolve from the same local dictionary where they are defined.
+>>>>>>> origin/46-implement-multiselection-in-products-list
 - The `DataBrowserBox` implicit style in dark themes is updated to use `Style="{StaticResource ClearButtonStyle}"` and a `ControlTemplate.Trigger` on `HasSelection`, matching `Generic.xaml`'s more reliable approach.
 
 **Tech Stack:** WPF XAML, ResourceDictionary, `pack://application:,,,/` URIs, .NET 8.0-windows
@@ -19,7 +27,11 @@
 | File | Role |
 |---|---|
 | `TelAvivMuni-Exercise.Themes/Themes/Shared.xaml` | Brush defaults for `Generic.xaml` (neutral/light fallbacks). **Do not touch.** |
+<<<<<<< HEAD
 | `TelAvivMuni-Exercise.Themes/Themes/Dark.Styles.xaml` | Canonical template (not loaded at runtime) — shared dark named styles inlined into each dark theme |
+=======
+| `TelAvivMuni-Exercise.Themes/Themes/Dark.Styles.xaml` | Canonical template — 7 shared dark named styles. Not loaded at runtime. |
+>>>>>>> origin/46-implement-multiselection-in-products-list
 | `TelAvivMuni-Exercise.Themes.Zed.GruvboxDark/Themes/GruvboxDark.Styles.xaml` | Dark theme styles. Heavy changes. |
 | `TelAvivMuni-Exercise.Themes.Zed.AyuDark/Themes/AyuDark.Styles.xaml` | Dark theme styles. Same changes as Gruvbox. |
 | `TelAvivMuni-Exercise.Themes.Blue/Themes/Blue.Styles.xaml` | Light theme. Only rename `BlueButtonStyle` → `PrimaryButtonStyle`. |
