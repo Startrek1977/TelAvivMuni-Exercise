@@ -54,11 +54,16 @@ No `.csproj` edit needed — `UseWPF=true` SDK projects auto-include all `.xaml`
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--  ============================================  -->
-    <!--  Shared Dark Theme Named Styles               -->
-    <!--  Consumed by GruvboxDark, AyuDark, and any   -->
-    <!--  future dark themes. Brushes are resolved     -->
-    <!--  from the theme's own Colors.xaml via         -->
-    <!--  Application.Current.Resources.               -->
+    <!--  CANONICAL TEMPLATE — NOT LOADED AT RUNTIME  -->
+    <!--                                              -->
+    <!--  This file is NOT referenced via             -->
+    <!--  MergedDictionaries by any theme. It exists  -->
+    <!--  as a single source-of-truth template for    -->
+    <!--  the 7 shared dark-theme named styles.       -->
+    <!--                                              -->
+    <!--  To add a new dark theme: inline all 7       -->
+    <!--  styles into the new theme's Styles.xaml     -->
+    <!--  after its Colors.xaml merge.                -->
     <!--  ============================================  -->
 
     <!--  Base Button Style  -->
@@ -222,7 +227,7 @@ git commit -m "style: add Dark.Styles.xaml with shared dark-theme named styles"
 **Step 1: Replace the entire file content**
 
 The new file:
-1. Merges `Dark.Styles.xaml` (adds the pack URI to `MergedDictionaries`)
+1. Inlines the 7 shared dark-theme named styles from `Dark.Styles.xaml` (copy them directly — do **not** add a `MergedDictionaries` reference to `Dark.Styles.xaml`)
 2. Keeps implicit `Window`, `TextBlock`, `TextBox`, `ScrollBar`-family styles unchanged
 3. Renames `GruvboxDarkBrowseButtonStyle` → `BrowseButtonStyle`
 4. Renames `GruvboxDarkDataBrowserTextBoxStyle` → `DataBrowserTextBoxStyle`
@@ -235,7 +240,6 @@ The new file:
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.GruvboxDark;component/Themes/GruvboxDark.Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Dark.Styles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  ============================================  -->
@@ -504,7 +508,7 @@ Expected: `Build succeeded.`
 
 ```bash
 git add TelAvivMuni-Exercise.Themes.Zed.GruvboxDark/Themes/GruvboxDark.Styles.xaml
-git commit -m "style: refactor GruvboxDark — use shared Dark.Styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
+git commit -m "style: refactor GruvboxDark — inline shared dark styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
 ```
 
 ---
@@ -516,7 +520,7 @@ git commit -m "style: refactor GruvboxDark — use shared Dark.Styles, rename Br
 
 **Step 1: Replace the entire file content**
 
-Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the AyuDark one, and updating the comment header. The result:
+Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the AyuDark one, and updating the comment header. (Do **not** add a `MergedDictionaries` reference to `Dark.Styles.xaml` — inline the 7 styles directly.) The result:
 
 ```xml
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -524,7 +528,6 @@ Apply the identical changes as Task 2, replacing `GruvboxDark` pack URI with the
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes.Zed.AyuDark;component/Themes/AyuDark.Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/TelAvivMuni-Exercise.Themes;component/Themes/Dark.Styles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  ============================================  -->
@@ -793,7 +796,7 @@ Expected: `Build succeeded.`
 
 ```bash
 git add TelAvivMuni-Exercise.Themes.Zed.AyuDark/Themes/AyuDark.Styles.xaml
-git commit -m "style: refactor AyuDark — use shared Dark.Styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
+git commit -m "style: refactor AyuDark — inline shared dark styles, rename BrowseButtonStyle/DataBrowserTextBoxStyle, fix DataBrowserBox HasSelection trigger"
 ```
 
 ---
@@ -920,5 +923,5 @@ git commit -m "style: update DataBrowserDialog to use PrimaryButtonStyle"
 - [ ] All unit tests pass after Task 6
 - [ ] No `BlueButtonStyle` references remain: `grep -r "BlueButtonStyle" --include="*.xaml"` → no output
 - [ ] No theme-prefixed browse/textbox style keys remain: `grep -r "GruvboxDarkBrowseButton\|AyuDarkBrowseButton\|GruvboxDarkDataBrowser\|AyuDarkDataBrowser" --include="*.xaml"` → no output
-- [ ] `Dark.Styles.xaml` is referenced by exactly both dark themes
+- [ ] `Dark.Styles.xaml` is **not** referenced in any theme's `MergedDictionaries` (all 7 shared styles are inlined per theme)
 - [ ] Visual smoke test: launch the app in each theme (Blue, Emerald, Gruvbox, Ayu); confirm `DataBrowserBox` clear button shows/hides correctly when selecting/clearing a product
