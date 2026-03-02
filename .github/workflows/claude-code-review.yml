@@ -5,9 +5,9 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
+  id-token: write
   contents: read
   pull-requests: write
-  id-token: write
 
 jobs:
   code-review:
@@ -125,7 +125,7 @@ jobs:
             inside the async method.
 
             G18. Exceptions must surface through ErrorMessage, not be swallowed.
-            ViewModel command methods must use try/catch and assign ErrorMessage = $"<context>: {ex.Message}".
+            ViewModel command methods must use try/catch and assign ErrorMessage = "$<context>: {ex.Message}".
             Flag empty catch blocks.
 
             ## Category 7 — Testing Conventions
@@ -135,8 +135,9 @@ jobs:
 
             G20. New public methods on non-UI classes require tests for both happy and failure paths.
             If a PR adds or modifies a repository, ViewModel, or service method without a corresponding
-            test file change, flag it — unless the class carries [ExcludeFromCodeCoverage].
+test file change, flag it — unless the class carries [ExcludeFromCodeCoverage].
 
             Post a concise structured review with these sections:
             **Summary**, **Issues** (if any), **Suggestions**, **Verdict**.
-          claude_args: "--max-turns 5"
+          claude_args: "--max-turns 20"
+          show_full_output: "true"
