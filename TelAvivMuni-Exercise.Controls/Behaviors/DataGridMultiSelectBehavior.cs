@@ -67,12 +67,19 @@ public static class DataGridMultiSelectBehavior
 	private static void OnDataGridSelectionChanged(DataGrid dataGrid, ObservableCollection<object> selectedItems, SyncState state)
 	{
 		if (state.IsSyncing) return;
-		if (dataGrid.SelectionMode == DataGridSelectionMode.Single) return;
 
 		state.IsSyncing = true;
 		try
 		{
 			selectedItems.Clear();
+
+			if (dataGrid.SelectionMode == DataGridSelectionMode.Single)
+			{
+				if (dataGrid.SelectedItem != null)
+					selectedItems.Add(dataGrid.SelectedItem);
+				return;
+			}
+
 			foreach (var item in dataGrid.SelectedItems)
 				selectedItems.Add(item);
 		}
@@ -89,11 +96,16 @@ public static class DataGridMultiSelectBehavior
 	private static void OnCollectionChanged(DataGrid dataGrid, ObservableCollection<object> selectedItems, SyncState state)
 	{
 		if (state.IsSyncing) return;
-		if (dataGrid.SelectionMode == DataGridSelectionMode.Single) return;
 
 		state.IsSyncing = true;
 		try
 		{
+			if (dataGrid.SelectionMode == DataGridSelectionMode.Single)
+			{
+				dataGrid.SelectedItem = selectedItems.FirstOrDefault();
+				return;
+			}
+
 			dataGrid.SelectedItems.Clear();
 			foreach (var item in selectedItems)
 				dataGrid.SelectedItems.Add(item);

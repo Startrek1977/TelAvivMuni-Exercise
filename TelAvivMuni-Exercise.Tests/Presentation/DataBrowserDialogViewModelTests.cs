@@ -459,6 +459,19 @@ public class DataBrowserDialogViewModelTests
 		}
 
 		[Fact]
+		public void OkCommand_CanExecute_TrueInMultiSelectWhenSelectedItemsCollectionHasItems()
+		{
+			// Arrange
+			var viewModel = new DataBrowserDialogViewModel(CreateTestProducts(), null, columns: null, allowMultipleSelection: true);
+			viewModel.Initialize();
+			viewModel.SelectedItems.Add(viewModel.FilteredItems.Cast<object>().First());
+
+			// Assert
+			Assert.True(viewModel.OkCommand.CanExecute(null));
+		}
+
+
+		[Fact]
 		public void CancelCommand_SetsDialogResultFalse()
 		{
 			// Arrange
