@@ -423,7 +423,7 @@ public class DataBrowserBox : Control, IColumnConfiguration
 	/// Updates the textbox display text based on the current selection.
 	/// Single-select: shows item display value or placeholder.
 	/// Multi-select (1 item): shows item display value.
-	/// Multi-select (2+ items): shows "&lt;first item&gt; (+N items)" or "(+1 item)" when only one additional item is selected.
+	/// Multi-select (2+ items): shows "<first item> (+N items)" or "(+1 item)" when only one additional item is selected.
 	/// </summary>
 	private void UpdateDisplayText()
 	{
