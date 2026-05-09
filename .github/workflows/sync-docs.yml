@@ -1,0 +1,52 @@
+name: Sync Docs to Public Repo
+on:
+  push:
+    branches: [ main ]  # Trigger sync when you push to the main branch
+    paths:
+      - 'README.md'      # Technical documentation (safe for public)
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout Private Repo
+        uses: actions/checkout@v4  # Will use Node.js 24 with FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 env var
+        with:
+          fetch-depth: 0  # Fetch full history to ensure shallow clone issues don't occur
+
+      - name: Prepare Sync Folder
+        run: | 
+          # Create a clean folder for the public files
+          mkdir -p temp_sync
+
+          # Copy only files that match the paths filter
+          # These are the ONLY files allowed by the 'paths' trigger
+          # Script continues even if some files/folders are not found
+
+          # 1. Copy README.md (technical documentation - safe for public)
+          if [ -f "README.md" ]; then
+            cp README.md temp_sync/
+            echo "✓ Copied: README.md"
+          else
+            echo "⚠️  Warning: README.md not found (skipping)"
+          fi
+
+          # Verify sync
+          echo ""
+          echo "Files ready for sync to public repo:"
+          ls -lR temp_sync/ || echo "(temp_sync is empty - no files matched the paths filter)"
+
+      - name: Push to Public Docs Repo
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.DOCS_SYNC_TOKEN }}
+        with:
+          source-directory: 'temp_sync' # Syncs from the root based 'temp_sync' folder
+          destination-github-username: 'Startrek1977'
+          destination-repository-name: 'TelAviv-Muni-Exercise-Docs'
+          user-email: 'iro1977@gmail.com'
+          user-name: 'TelAviv Muni Exercise Bot'
+          target-branch: main
+          commit-message: 'Sync documentation from private repository'
