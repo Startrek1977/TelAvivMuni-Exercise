@@ -1,14 +1,17 @@
 name: Sync Docs to Public Repo
+
 on:
   push:
     branches: [ main ]  # Trigger sync when you push to the main branch
     paths:
       - 'README.md'      # Technical documentation (safe for public)
-  workflow_dispatch:
-  
+      - 'README_USER_SHORT.md' # End-user guide (safe for public)
+      - '*.png'          # Matches all PNG images at root
+      - 'screenshots/**' # Matches everything inside the screenshots folder
+
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
@@ -18,7 +21,7 @@ jobs:
           fetch-depth: 0  # Fetch full history to ensure shallow clone issues don't occur
 
       - name: Prepare Sync Folder
-        run: | 
+        run: |
           # Create a clean folder for the public files
           mkdir -p temp_sync
 
@@ -34,6 +37,30 @@ jobs:
             echo "⚠️  Warning: README.md not found (skipping)"
           fi
 
+          # 2. Copy README_USER_SHORT.md (end-user guide - safe for public)
+          if [ -f "README_USER_SHORT.md" ]; then
+            cp README_USER_SHORT.md temp_sync/
+            echo "✓ Copied: README_USER_SHORT.md"
+          else
+            echo "⚠️  Warning: README_USER_SHORT.md not found (skipping)"
+          fi
+
+          # 3. Copy all .png files from root
+          if ls *.png 1> /dev/null 2>&1; then
+            cp *.png temp_sync/
+            echo "✓ Copied: PNG files"
+          else
+            echo "⚠️  Warning: No .png files found in root (skipping)"
+          fi
+
+          # 4. Copy screenshots folder (and its contents)
+          if [ -d "screenshots" ]; then
+            cp -r screenshots temp_sync/
+            echo "✓ Copied: screenshots/ folder"
+          else
+            echo "⚠️  Warning: screenshots/ folder not found (skipping)"
+          fi
+
           # Verify sync
           echo ""
           echo "Files ready for sync to public repo:"
@@ -46,8 +73,8 @@ jobs:
         with:
           source-directory: 'temp_sync' # Syncs from the root based 'temp_sync' folder
           destination-github-username: 'Startrek1977'
-          destination-repository-name: 'TelAviv-Muni-Exercise-Docs'
+          destination-repository-name: 'TelAviv-Muni-Exercise-DOCS'
           user-email: 'iro1977@gmail.com'
-          user-name: 'TelAviv Muni Exercise Bot'
+          user-name: 'TelAviv Exercise Bot'
           target-branch: main
-          commit-message: 'Sync documentation from private repository'
+          commit-message: 'Sync Tel Aviv municipal exercise docs from private repo'
