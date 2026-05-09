@@ -4,7 +4,8 @@ on:
     branches: [ main ]  # Trigger sync when you push to the main branch
     paths:
       - 'README.md'      # Technical documentation (safe for public)
-
+  workflow_dispatch:
+  
 jobs:
   build:
     runs-on: windows-latest
