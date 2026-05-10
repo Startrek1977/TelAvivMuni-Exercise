@@ -28,9 +28,12 @@ jobs:
           # Script continues even if some files/folders are not found
 
           # 1. Copy README.md (technical documentation - safe for public)
-          if [ -f "README.md" ]; then
+          if [ -f "README.md" ] 
+          then
+          {
             cp README.md temp_sync/
             echo "✓ Copied: README.md"
+          }
           else
             echo "⚠️  Warning: README.md not found (skipping)"
           fi
