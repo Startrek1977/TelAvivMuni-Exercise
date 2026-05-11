@@ -2,7 +2,7 @@
 
 ## Overview
 
-The solution follows a clean layered architecture with 23 projects. Dependencies flow strictly downward: Persistence → Domain → Core → Presentation → Composition Root. Provider-specific assemblies (database and file-format plugins) are discovered at runtime via assembly scanning so the composition root has no compile-time dependency on individual providers.
+The solution follows a clean layered architecture with 23 projects. Dependencies flow strictly downward: Persistence → Domain → Core → Presentation → Composition Root. Provider-specific assemblies (database and file-format plugins) are discovered at runtime via assembly scanning, so the composition root has no compile-time type coupling to individual providers. In the default build, the composition root may still reference provider projects so their DLLs are deployed and available for runtime discovery.
 
 ## Layer Diagram
 
