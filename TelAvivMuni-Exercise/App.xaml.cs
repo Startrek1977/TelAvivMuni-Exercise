@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,7 +55,7 @@ public partial class App : Application
 		{
 			var store = sp.GetRequiredService<IDataStore<Product>>();
 			var location = store is ILocatableDataStore loc
-				? loc.Location
+				? Path.GetFileName(loc.Location)
 				: opts.ConnectionStringName ?? opts.ConnectionString ?? "—";
 			var dataSourceInfo = $"{opts.Kind}  ·  {opts.Provider}  ·  {location}";
 			return new MainWindowViewModel(sp.GetRequiredService<IUnitOfWork>(), dataSourceInfo);
