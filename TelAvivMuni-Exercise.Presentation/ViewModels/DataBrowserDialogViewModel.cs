@@ -10,6 +10,7 @@ using TelAvivMuni_Exercise.Core.Contracts.ViewModels;
 using TelAvivMuni_Exercise.Domain;
 using TelAvivMuni_Exercise.Infrastructure;
 using TelAvivMuni_Exercise.Persistence;
+using TelAvivMuni_Exercise.Presentation.Extensions;
 
 namespace TelAvivMuni_Exercise.Presentation.ViewModels;
 
@@ -257,7 +258,7 @@ public class DataBrowserDialogViewModel : ObservableObject, IDeferredInitializat
 
 	/// <summary>
 	/// Handles the Cancel command by setting the dialog result to false.
-	/// </summary>
+	/// </summary>	
 	private void OnCancel()
 	{
 		DialogResult = false;
