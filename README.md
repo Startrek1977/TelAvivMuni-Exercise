@@ -15,6 +15,18 @@ This project is a home exercise created as part of an interview for the Software
 - **MVVM** — Pure MVVM with attached behaviors, no UI logic in code-behind
 - **176 unit tests** covering all business logic
 
+## Screenshots
+
+**Main window — DataBrowserBox Control** (AyuDark theme)
+Demonstrates the control embedded in a form: multi-select mode with 4 products selected (Example 1) and single-select with custom columns (Example 2).
+
+![DataBrowserBox Control](screenshots/Window_DataBrowserBox_Control.png)
+
+**Browse Dialog — product selection** (real-time search)
+The modal dialog opened by the browse button. Typing in the search box instantly filters all columns; the item counter at the bottom shows the number of matching rows.
+
+![Select Product Dialog](screenshots/Window_SelectProduct_Control.png)
+
 ## Documentation
 
 | Document | Description |
