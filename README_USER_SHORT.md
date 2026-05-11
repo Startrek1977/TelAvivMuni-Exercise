@@ -17,8 +17,8 @@ A drop-in WPF control that shows the currently selected item(s) alongside a brow
 
 ### Browse Dialog
 
-| Feature | Behaviour |
-|---------|-----------|
+| Feature | Behavior |
+|---------|----------|
 | Search | Type anywhere to filter rows in real time (case-insensitive, searches all columns) |
 | Clear filter | × button appears when search text is present; click to clear |
 | Item counter | Shows the number of currently visible items |
