@@ -35,9 +35,7 @@ dotnet test --settings coverlet.runsettings --collect:"XPlat Code Coverage" --re
 Generate a human-readable coverage report (requires `reportgenerator` tool):
 
 ```bash
-reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" \
-                -targetdir:"coveragereport" \
-                -reporttypes:TextSummary
+reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:TextSummary
 ```
 
 Current coverage: **176 unit tests**, **45.6% line coverage**, **39.2% branch coverage** across all assemblies. Core testable code (repositories, ViewModels, domain models, data stores) maintains near-100% coverage; lower overall figures reflect untested provider registrar classes (CSV, XML, MySQL, PostgreSQL, SQLite, SqlServer) and the composition-root `StorageRegistrationExtensions`.
