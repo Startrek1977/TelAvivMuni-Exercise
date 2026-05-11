@@ -4,6 +4,12 @@
 
 The application displays a product catalog and lets you browse, search, and select products using a reusable `DataBrowserBox` control. It supports single-item and multi-item selection, real-time filtering, and keyboard navigation.
 
+## Screenshots
+
+![Main application window with DataBrowserBox and selected product](screenshots/main-window.png)
+
+![Browse dialog with search, filtering, and item selection](screenshots/browse-dialog.png)
+
 ## Features
 
 ### DataBrowserBox Control
