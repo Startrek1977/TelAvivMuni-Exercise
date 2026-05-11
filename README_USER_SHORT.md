@@ -21,6 +21,8 @@ A drop-in WPF control that shows the currently selected item(s) alongside a brow
 - **Watermark** — shows _"Click to select..."_ in italic when nothing is selected
 - **Custom columns** — configure which columns to show, with custom headers (including Hebrew/RTL), widths, number/currency formats, and alignment
 
+![DataBrowserBox Control — main window](screenshots/Window_DataBrowserBox_Control.png)
+
 ### Browse Dialog
 
 | Feature | Behavior |
@@ -31,6 +33,8 @@ A drop-in WPF control that shows the currently selected item(s) alongside a brow
 | Selection highlight | Selected row has a blue background and bold text |
 | Scroll to selection | Previously selected item is automatically scrolled into view when the dialog opens |
 | Resizable | Drag dialog borders to resize |
+
+![Browse Dialog — product selection with real-time search](screenshots/Window_SelectProduct_Control.png)
 
 ### Keyboard Shortcuts
 
