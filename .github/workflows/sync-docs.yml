@@ -5,6 +5,9 @@ on:
     branches: [ main ]  # Trigger sync when you push to the main branch
     paths:
       - 'README.md'      # Technical documentation (safe for public)
+      - 'README_USER_SHORT.md' # End-user guide (safe for public)
+      - '*.png'          # Matches all PNG images at root
+      - 'screenshots/**' # Matches everything inside the screenshots folder
   
   workflow_dispatch:
 
@@ -37,6 +40,30 @@ jobs:
             echo "⚠️  Warning: README.md not found (skipping)"
           fi
 
+          # 2. Copy '.md (end-user guide - safe for public)
+          if [ -f "README_USER_SHORT.md" ]; then
+            cp README_USER_SHORT.md temp_sync/
+            echo "✓ Copied: README_USER_SHORT.md"
+          else
+            echo "⚠️  Warning: README_USER_SHORT.md not found (skipping)"
+          fi
+
+          # 3. Copy all .png files from root
+          if ls *.png 1> /dev/null 2>&1; then
+            cp *.png temp_sync/
+            echo "✓ Copied: PNG files"
+          else
+            echo "⚠️  Warning: No .png files found in root (skipping)"
+          fi
+
+          # 4. Copy screenshots folder (and its contents)
+          if [ -d "screenshots" ]; then
+            cp -r screenshots temp_sync/
+            echo "✓ Copied: screenshots/ folder"
+          else
+            echo "⚠️  Warning: screenshots/ folder not found (skipping)"
+          fi
+          
           # Verify sync
           echo ""
           echo "Files ready for sync to public repo:"
