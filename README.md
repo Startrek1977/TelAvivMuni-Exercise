@@ -87,7 +87,7 @@ TelAvivMuni-Exercise.sln
 └── TelAvivMuni-Exercise.Tests/                     # Unit tests (176 tests)
 ```
 
-> Provider plugins (SqlServer, SQLite, PostgreSQL, MySQL, XML, CSV) are discovered at runtime via assembly scanning — drop a new provider DLL into the bin directory and update `appsettings.json`; no recompilation needed.
+> Provider plugins (SqlServer, SQLite, PostgreSQL, MySQL, Json, XML, CSV) are discovered at runtime via assembly scanning — drop a new provider DLL into the bin directory and update `appsettings.json`; no recompilation needed.
 
 ## License
 
