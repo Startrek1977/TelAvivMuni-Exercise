@@ -6,6 +6,7 @@ on:
     paths:
       - 'README.md'      # Technical documentation (safe for public)
       - 'README_USER_SHORT.md' # End-user guide (safe for public)
+      - 'ARCHITECTURE.md' # Architecture documentation (safe for public)
       - '*.png'          # Matches all PNG images at root
       - 'screenshots/**' # Matches everything inside the screenshots folder
   
@@ -48,7 +49,15 @@ jobs:
             echo "⚠️  Warning: README_USER_SHORT.md not found (skipping)"
           fi
 
-          # 3. Copy all .png files from root
+          # 3. Copy ARCHITECTURE.md (architecture documentation - safe for public)
+          if [ -f "ARCHITECTURE.md" ]; then
+            cp ARCHITECTURE.md temp_sync/
+            echo "✓ Copied: ARCHITECTURE.md"
+          else
+            echo "⚠️  Warning: ARCHITECTURE.md not found (skipping)"
+          fi
+
+          # 4. Copy all .png files from root
           if ls *.png 1> /dev/null 2>&1; then
             cp *.png temp_sync/
             echo "✓ Copied: PNG files"
@@ -56,7 +65,7 @@ jobs:
             echo "⚠️  Warning: No .png files found in root (skipping)"
           fi
 
-          # 4. Copy screenshots folder (and its contents)
+          # 5. Copy screenshots folder (and its contents)
           if [ -d "screenshots" ]; then
             cp -r screenshots temp_sync/
             echo "✓ Copied: screenshots/ folder"
